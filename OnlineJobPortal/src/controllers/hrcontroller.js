@@ -13,6 +13,9 @@ exports.saveHr = (req, res) => {
         });
 };
 
+
+// get ALL HRS
+
 exports.getHrs=(req,res)=>{
       let promise=hrctrl.getHr();
     promise.then((result)=>{
