@@ -23,8 +23,7 @@ exports.getHrs=(req,res)=>{
         res.send(err);
     });
 }
-<<<<<<< HEAD
-=======
+
 
 exports.loginHr=(req, res)=>{
     let {email, password}=req.body;
@@ -54,5 +53,6 @@ exports.detHRByID=(req,res)=>{
     }).catch((err)=>{
         res.send(err);
     })
+
 }
->>>>>>> 68aa0fe0b964f64da8c934a8c2abb812cbce15b5
+
