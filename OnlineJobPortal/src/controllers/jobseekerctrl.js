@@ -12,3 +12,23 @@ exports.regSeekers = (req, res) => {
 };
 
 
+
+exports.getSeeker = (req, res) => {
+    jobctrl.getAllSeekers()
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+};
+
+exports.getLogSeeker=(req,res)=>{
+    let {email, password}=req.body;
+    let Promice=jobctrl.loginSeeker(email, password);
+    Promice.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+}
