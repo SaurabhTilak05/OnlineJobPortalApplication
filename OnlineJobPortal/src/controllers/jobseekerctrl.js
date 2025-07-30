@@ -1,9 +1,9 @@
-let jobctrl=require("../models/jobseekermodel.js");
+let jobsctrl=require("../models/jobseekermodel.js");
 
 
 exports.regSeekers = (req, res) => {
     let {name,  email, password, phone, address } = req.body;
-   let Promice= jobctrl.regSeeker(name,  email, password, phone, address)
+   let Promice= jobsctrl.regSeeker(name,  email, password, phone, address)
        Promice.then((result)=>{
         res.send(result);
        }).catch((err)=>{
@@ -14,7 +14,7 @@ exports.regSeekers = (req, res) => {
 
 
 exports.getSeeker = (req, res) => {
-    jobctrl.getAllSeekers()
+    jobsctrl.getAllSeekers()
         .then((result) => {
             res.send(result);
         })
@@ -23,9 +23,9 @@ exports.getSeeker = (req, res) => {
         });
 };
 
-exports.getLogSeeker=(req,res)=>{
+exports.getLogJobSeeker=(req,res)=>{
     let {email, password}=req.body;
-    let Promice=jobctrl.loginSeeker(email, password);
+    let Promice=jobsctrl.loginSeeker(email, password);
     Promice.then((result)=>{
         res.send(result);
     }).catch((err)=>{
