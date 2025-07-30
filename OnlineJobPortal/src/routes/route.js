@@ -1,7 +1,8 @@
 let express = require("express");
 let adCtrl = require("../controllers/adminController.js");
 let hrCtrl=require("../controllers/hrcontroller.js");
-let jobctrl=require("../controllers/jobseekerctrl.js");
+let jobskrctrl=require("../controllers/jobseekerctrl.js");
+let jobctrl=require("../controllers/jobcontrol.js");
 
 let router = express.Router();
 
@@ -18,12 +19,23 @@ router.post("/hrLogin",hrCtrl.loginHr);
 // update all fields 
 router.put("/UpdateHr",hrCtrl.updateHr);
 // Delete hr by Id
-
+router.delete("/deleteHR",hrCtrl.detHRByID);
 // Job Seeker routes
-router.post("/regJobSeeker",jobctrl.regSeekers);
+router.post("/regJobSeeker",jobskrctrl.regSeekers);
 // to show all job seekers
-router.get("/getAllJobSeeker",jobctrl.getSeeker);
+router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 //Login the job seeker using email and password
-router.post("/loginseeker",jobctrl.getLogSeeker);
+router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
+
+// Add data in job table 
+router.post("/AddJob",jobctrl.addingJob);
+// get all jobs 
+router.get("/viewAllJobs",jobctrl.getAllJob);
+// get job by ID
+router.get("/getJobById",jobctrl.getJobById);
+// uodate the job 
+router.put("/updateJob",jobctrl.UpdateJobById);
+// delete job by id 
+router.delete("/deleteJob",jobctrl.getDeleteJob);
 
 module.exports = router;
