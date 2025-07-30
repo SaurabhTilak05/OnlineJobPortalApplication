@@ -29,6 +29,8 @@ exports.getHr=()=>{
     });
 };
 
+
+// login the hr with email and password
 exports.hrLogin=(email,password)=>{
     return new Promise((resolve,reject)=>{
         db.query("select *from hr where email=? and password=?",[email,password],(err,result)=>{
@@ -43,7 +45,7 @@ exports.hrLogin=(email,password)=>{
     })
 }
 
-
+// update the hr data 
 exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>{
     return new Promise((resolve, reject)=>{
         db.query("update hr set hr_name=?, company_name=?, email=?, password=?, phone=?, status=? where hr_id=?",[hr_name, company_name, email, password, phone, status,hr_id],(err,result)=>{
