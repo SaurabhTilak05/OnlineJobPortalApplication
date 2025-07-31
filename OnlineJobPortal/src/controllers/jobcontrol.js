@@ -50,5 +50,14 @@ exports.getDeleteJob=(req, res)=>{
     }).catch((err)=>{
         res.send(err);
     })
-
+}
+ 
+exports.searchJobByTitle=(req,res)=>{
+    let {title}=req.body;
+    let Promice=jobctrl.searchByTitle(title);
+    Promice.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
 }
