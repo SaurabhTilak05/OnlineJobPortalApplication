@@ -1,11 +1,9 @@
-const adminCtrl = require("../models/adminModel.js");
-
+let adminCtrl = require("../models/adminModel.js");
 
 exports.saveAdmin = (req, res) => {
-    const { username, password } = req.body || {};
-
-    adminCtrl.addAdmin(username, password)
-        .then((result) => {
+    let { username, password } = req.body ;
+  let promise=  adminCtrl.addAdmin(username, password);
+       promise.then((result) => {
             return res.status(200).json({ message: result });
         })
         .catch((err) => {
@@ -15,3 +13,13 @@ exports.saveAdmin = (req, res) => {
 };
 
 
+exports.adminLogin=(req,res)=>{
+        let  { username, password } = req.body ;
+        let promise=adminCtrl.adminLogin(username,password);
+        promise.then((result)=>{
+            res.send(result);
+        }).catch((err)=>{
+            res.send(err);
+        })
+        
+}
