@@ -38,4 +38,6 @@ router.put("/updateJob",jobctrl.UpdateJobById);
 // delete job by id 
 router.delete("/deleteJob",jobctrl.getDeleteJob);
 
+router.get("/searchByTitle",jobctrl.searchJobByTitle);
+
 module.exports = router;

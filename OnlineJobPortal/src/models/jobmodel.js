@@ -1,6 +1,7 @@
 const { resolveInclude, promiseImpl } = require("ejs");
 let db=require("../../db.js");
 
+
 exports.addJob=(hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)=>{
     return new Promise((resolve, reject)=>{
         db.query("INSERT into jobs (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) VALUES (?, ?,?,?,?,?,?,?,?,?)",
@@ -66,7 +67,20 @@ exports.deleteJob=(job_id)=>{
                 return reject("Something is wrong...");
             }
             else{
-                return resolve("Delete successfull...");
+                return resolve("Delete Job successfull...");
+            }
+        })
+    })
+}
+
+exports.searchByTitle=(title)=>{
+     return new Promise((resolve, reject)=>{
+        db.query("select  *from jobs where title=?",[title],(err, result)=>{
+            if(err){
+                return reject("Something is wrong...");
+            }
+            else{
+                return resolve(result);
             }
         })
     })
