@@ -98,3 +98,22 @@ exports.searchByTitle=(title)=>{
         })
     })
 }
+
+
+
+//this is for the search job by using location 
+
+exports.jobbyLocation=(location)=>{
+     return new Promise((resolve, reject)=>{
+        db.query("select  *from jobs where location=?",[location],(err, result)=>{
+            if(err){
+                return reject("Something is wrong...");
+            }
+            else{
+                return resolve(result);
+                console.log(result);
+
+            }
+        })
+    })
+}
