@@ -44,8 +44,8 @@ exports.UpdateJobById=(req,res)=>{
 
 exports.getDeleteJob=(req, res)=>{
     let {job_id}=req.body;
-    let Promice=jobctrl.deleteJob(job_id);
-    Promice.then((result)=>{
+    let Promise=jobctrl.deleteJob(job_id);
+    Promise.then((result)=>{
         res.send(result);
     }).catch((err)=>{
         res.send(err);
@@ -54,8 +54,20 @@ exports.getDeleteJob=(req, res)=>{
  
 exports.searchJobByTitle=(req,res)=>{
     let {title}=req.body;
-    let Promice=jobctrl.searchByTitle(title);
-    Promice.then((result)=>{
+    let Promise=jobctrl.searchByTitle(title);
+    Promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+}
+
+
+//this api for the seacrh job by student 
+exports.jobbylocation=(req,res)=>{
+    let {location}=req.body;
+    let Promise=jobctrl.jobbyLocation(location);
+    Promise.then((result)=>{
         res.send(result);
     }).catch((err)=>{
         res.send(err);

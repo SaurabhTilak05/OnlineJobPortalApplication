@@ -48,6 +48,10 @@ router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
 
 
+// for the search job by laction 
+router.get("/viewjobbylocation",jobctrl.jobbylocation);
+
+
 
 
 // Add data in job table 
