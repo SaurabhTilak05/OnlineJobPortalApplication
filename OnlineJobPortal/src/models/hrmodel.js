@@ -60,6 +60,7 @@ exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>
 }
 
 
+//delete hr using its id 
 exports.delHrById=(hr_id)=>{
     return new Promise((resolve ,reject)=>{
         db.query("delete from hr where hr_id=?",[hr_id],(err, result)=>{
@@ -75,3 +76,17 @@ exports.delHrById=(hr_id)=>{
 }
 
 
+// for the delete student by hr
+exports.deleteStudById = (seeker_id) => {
+    return new Promise((resolve, reject) => {
+        db.query("DELETE FROM job_seekers WHERE seeker_id = ?", [seeker_id], (err, result) => {
+            if (err) {
+                return reject("Student not deleted...");
+            }
+            if (result.affectedRows === 0) {
+                return reject("No student found with that ID.");
+            }
+            return resolve("Student deleted successfully.");
+        });
+    });
+};

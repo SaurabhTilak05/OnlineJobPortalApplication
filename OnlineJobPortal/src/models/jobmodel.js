@@ -1,7 +1,7 @@
 const { resolveInclude, promiseImpl } = require("ejs");
 let db=require("../../db.js");
 
-
+//api for the addjob by the hr 
 exports.addJob=(hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)=>{
     return new Promise((resolve, reject)=>{
         db.query("INSERT into jobs (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) VALUES (?, ?,?,?,?,?,?,?,?,?)",
@@ -19,6 +19,8 @@ exports.addJob=(hr_id, title, company, opening, experience_required, location, p
 }
 
 
+
+//for the see all job
 exports.getallJobs=()=>{
     return new Promise((resolve, reject)=>{
         db.query("select *from jobs",(err, result)=>{
@@ -33,6 +35,10 @@ exports.getallJobs=()=>{
     })
 }
 
+
+
+//search job by using jobId
+
 exports.getJobById=(job_id)=>{
         return new Promise((resolve, reject)=>{
             db.query("select *from jobs where job_id=?",[job_id],(err,result)=>{
@@ -46,6 +52,9 @@ exports.getJobById=(job_id)=>{
         })
 }
 
+
+
+//update the job 
 exports.updateJob=( title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id)=>{
     return new Promise((resolve, reject)=>{
         db.query("update jobs set title=?, company=?, opening=?, experience_required=?, location=?, package=?, skills_required=?, description=?, deadline=? where job_id=?",
@@ -60,6 +69,7 @@ exports.updateJob=( title, company, opening, experience_required, location, pack
     })
 }
 
+// delete job   
 exports.deleteJob=(job_id)=>{
     return new Promise((resolve, reject)=>{
         db.query("delete from jobs where job_id=?",[job_id],(err, result)=>{
@@ -72,6 +82,9 @@ exports.deleteJob=(job_id)=>{
         })
     })
 }
+
+
+//search job by the title
 
 exports.searchByTitle=(title)=>{
      return new Promise((resolve, reject)=>{
