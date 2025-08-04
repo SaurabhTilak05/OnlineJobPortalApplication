@@ -64,7 +64,6 @@ exports.searchJobByTitle=(req,res)=>{
 
 
 //this api for the seacrh job by student 
-
 exports.jobbylocation=(req,res)=>{
     let {location}=req.body;
     let Promise=jobctrl.jobbyLocation(location);

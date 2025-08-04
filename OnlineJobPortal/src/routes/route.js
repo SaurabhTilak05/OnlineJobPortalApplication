@@ -46,6 +46,8 @@ router.post("/regJobSeeker",jobskrctrl.regSeekers);
 router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
+
+
 // for the search job by laction 
 router.get("/viewjobbylocation",jobctrl.jobbylocation);
 
