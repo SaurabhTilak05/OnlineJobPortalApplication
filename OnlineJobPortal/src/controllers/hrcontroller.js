@@ -47,8 +47,8 @@ exports.updateHr=(req,res)=>{
 
 exports.detHRByID=(req,res)=>{
     let {hr_id}=req.body;
-    let Promice=hrctrl.delHrById(hr_id);
-    Promice.then((result)=>{
+    let promise=hrctrl.delHrById(hr_id);
+    promise.then((result)=>{
         res.send(result);
     }).catch((err)=>{
         res.send(err);
@@ -56,3 +56,12 @@ exports.detHRByID=(req,res)=>{
 
 }
 
+
+
+// for the delete student by hr
+exports.DeleteStudByID = (req, res) => {
+    const { seeker_id } = req.params;
+    hrctrl.deleteStudById(seeker_id)
+        .then((result) => res.send(result))
+        .catch((err) => res.send(err));
+};

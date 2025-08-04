@@ -23,3 +23,41 @@ exports.adminLogin=(req,res)=>{
         })
         
 }
+
+
+//new made by kishor
+//view all jobs 
+exports.viewAlljobforAdmin=(req,res)=>{
+    let promise=adminCtrl.viewalljobAdmin();
+    promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    });
+}
+
+
+
+//search Hr by its id
+exports.searchHrByid=(req,res)=>{
+    let {hr_id}=req.body;
+    let Promice=adminCtrl.SearchHR(hr_id);
+    Promice.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+
+}
+
+
+//view all application to admin
+exports.viewallapplicant=(req,res)=>{
+    let promise=adminCtrl.viewallApplication();
+    promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    });
+}
+
