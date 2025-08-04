@@ -32,3 +32,15 @@ exports.getLogJobSeeker=(req,res)=>{
         res.send(err);
     })
 }
+
+
+exports.applyJob=(req,res)=>{
+    let {job_id, seeker_id, status}=req.body;
+    let Promise =jobsctrl.applyJobs(job_id, seeker_id, status);
+    Promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+
+}

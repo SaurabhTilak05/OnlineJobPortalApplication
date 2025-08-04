@@ -45,3 +45,21 @@ exports.loginSeeker=(email, password)=>{
         })
     })   
 }
+
+exports.applyJobs=(job_id, seeker_id, status)=>{
+    return new Promise((resolve, reject)=>{
+        db.query("insert into applications (job_id, seeker_id, status) values (?,?,?)",
+            [job_id, seeker_id, status],
+            (err,result)=>{
+                if(err)
+                {
+                    return reject("Not Applied For Job");
+                }
+                else{
+                    return resolve("Applied Successfull.....");
+                }
+            }
+        )
+    })
+
+}

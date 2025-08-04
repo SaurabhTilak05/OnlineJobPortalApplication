@@ -66,5 +66,9 @@ router.put("/updateJob",jobctrl.UpdateJobById);
 router.delete("/deleteJob",jobctrl.getDeleteJob);
 
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
+//Applied for the job 
+router.post("/applyedJob",jobskrctrl.applyJob);
+
+
 
 module.exports = router;
