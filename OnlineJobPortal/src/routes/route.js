@@ -8,6 +8,7 @@ let router = express.Router();
 
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
+// Admin login by email and password
 router.post("/adminLogin",adCtrl.adminLogin);
 
 //new made by kishor
@@ -19,10 +20,6 @@ router.get("/SearchHRById",adCtrl.searchHrByid);
 
 //veiw all application for the admin
 router.get("/viewallapplications",adCtrl.viewallapplicant);
-
-
-
-
 
 // Hr routes
 router.post("/registerHr", hrCtrl.registerHr);
@@ -53,7 +50,6 @@ router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
 // for the search job by laction 
 router.get("/viewjobbylocation",jobctrl.jobbylocation);
 
-
 // Add data in job table 
 router.post("/AddJob",jobctrl.addingJob);
 // get all jobs 
@@ -68,7 +64,6 @@ router.delete("/deleteJob",jobctrl.getDeleteJob);
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
-
 
 
 module.exports = router;
