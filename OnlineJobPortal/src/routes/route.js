@@ -50,11 +50,8 @@ router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
 
-
 // for the search job by laction 
 router.get("/viewjobbylocation",jobctrl.jobbylocation);
-
-
 
 
 // Add data in job table 
@@ -67,7 +64,7 @@ router.get("/getJobById",jobctrl.getJobById);
 router.put("/updateJob",jobctrl.UpdateJobById);
 // delete job by id 
 router.delete("/deleteJob",jobctrl.getDeleteJob);
-
+// search job by title 
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
