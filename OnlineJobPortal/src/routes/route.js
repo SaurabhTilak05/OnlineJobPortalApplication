@@ -39,7 +39,7 @@ router.delete("/deleteHR",hrCtrl.detHRByID);
 router.delete("/DeleteStudByID/:seeker_id", hrCtrl.DeleteStudByID);
 //Add interview schedule
 router.post("/interviewSchedule",hrCtrl.getSchedules);
-//get schedule 
+//get schedule for the interview 
 router.get("/getschedule",hrCtrl.getshed);
 
 
