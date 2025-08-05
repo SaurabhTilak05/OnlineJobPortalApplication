@@ -37,7 +37,10 @@ router.delete("/deleteHR",hrCtrl.detHRByID);
 // for the delete student by hr
 //router.delete("/DeleteStudByID", hrCtrl.DeleteStudByID);
 router.delete("/DeleteStudByID/:seeker_id", hrCtrl.DeleteStudByID);
-
+//Add interview schedule
+router.post("/interviewSchedule",hrCtrl.getSchedules);
+//get schedule 
+router.get("/getschedule",hrCtrl.getshed);
 
 
 // Job Seeker routes

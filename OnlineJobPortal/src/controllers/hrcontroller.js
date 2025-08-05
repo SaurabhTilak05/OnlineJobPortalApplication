@@ -53,15 +53,33 @@ exports.detHRByID=(req,res)=>{
     }).catch((err)=>{
         res.send(err);
     })
-
 }
-
-
 
 // for the delete student by hr
 exports.DeleteStudByID = (req, res) => {
-    const { seeker_id } = req.params;
+    let {seeker_id } = req.params;
     hrctrl.deleteStudById(seeker_id)
         .then((result) => res.send(result))
         .catch((err) => res.send(err));
 };
+
+// Scheduling the job interview
+exports.getSchedules=(req,res)=>{
+    let { job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks}=req.body;
+    hrctrl.getSchedule(job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks)
+    .then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+}
+
+// Get Schedule 
+exports.getshed=(req,res)=>{
+    let Promice=hrctrl.getSched();
+    Promice.then((result)=>{
+       res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    });
+}

@@ -90,3 +90,29 @@ exports.deleteStudById = (seeker_id) => {
         });
     });
 };
+
+exports.getSchedule=(job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks)=>{
+    return new Promise((resolve, reject)=>{
+        db.query("insert into interview_schedule (job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks) values (?,?,?,?,?,?,?,?,?,?)",[job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks], (err, result)=>{
+            if(err)
+            {
+                return reject("Schedule not created...");
+            }else{
+                return resolve("schedule succesfull.......");
+            }
+
+        })
+    })
+}
+
+exports.getSched=()=>{
+     return new Promise((resolve, reject)=>{
+        db.query("select *from interview_schedule",(err, result)=>{
+              if(err){
+                reject(err);
+            }else{
+                resolve(result);
+            }
+        })
+     })
+}
