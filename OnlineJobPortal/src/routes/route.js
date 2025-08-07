@@ -3,6 +3,8 @@ let adCtrl = require("../controllers/adminController.js");
 let hrCtrl=require("../controllers/hrcontroller.js");
 let jobskrctrl=require("../controllers/jobseekerctrl.js");
 let jobctrl=require("../controllers/jobcontrol.js");
+let email=require("../controllers/emailctrl.js");
+
 let router = express.Router();
 
 // Admin routes
@@ -64,5 +66,9 @@ router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
 
+
+
+// Send mail testing 
+router.post("/sendEmail",email.sendGemail);
 
 module.exports = router;
