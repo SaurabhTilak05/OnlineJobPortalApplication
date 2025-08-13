@@ -24,8 +24,6 @@ exports.adminLogin=(req,res)=>{
         
 }
 
-
-//new made by kishor
 //view all jobs 
 exports.viewAlljobforAdmin=(req,res)=>{
     let promise=adminCtrl.viewalljobAdmin();
@@ -61,3 +59,21 @@ exports.viewallapplicant=(req,res)=>{
     });
 }
 
+exports.contactUs=(req,res)=>{
+    let {full_name,email,message}=req.body;
+    let promise=adminCtrl.contUs(full_name,email,message);
+    promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+}
+
+exports.getcontact=(req,res)=>{
+    let promise=adminCtrl.getAllCont();
+    promise.then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
+    })
+}
