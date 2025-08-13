@@ -5,7 +5,6 @@ require("dotenv").config();
 let app = express();
 // this is cors library to connect the 
 // node to react
-
 let cors = require("cors");
 app.use(cors());
 
