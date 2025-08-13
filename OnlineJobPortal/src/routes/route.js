@@ -11,8 +11,11 @@ let router = express.Router();
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
 router.post("/adminLogin",adCtrl.adminLogin);
+// Contact Up 
+router.post("/contact",adCtrl.contactUs);
+// view all contacts
+router.get("/getallcontact",adCtrl.getcontact);
 
-//new made by kishor
 //view all job  list to student
 router.get("/viewAlljobforAdmin",adCtrl.viewAlljobforAdmin);
 
