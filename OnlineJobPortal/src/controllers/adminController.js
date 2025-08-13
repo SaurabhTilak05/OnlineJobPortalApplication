@@ -1,15 +1,18 @@
+const jwt = require("jsonwebtoken");
 let adminCtrl = require("../models/adminModel.js");
 
+const SECRET_KEY = "kishor@123";
+
+// Save admin (only for logged-in admins)
 exports.saveAdmin = (req, res) => {
-    let { username, password } = req.body ;
-  let promise=  adminCtrl.addAdmin(username, password);
-       promise.then((result) => {
-            return res.status(200).json({ message: result });
-        })
-        .catch((err) => {
-            console.error("Error saving admin:", err);
-            return res.status(500).json({ error: err });
-        });
+    let { username, password } = req.body;
+    let promise = adminCtrl.addAdmin(username, password);
+    promise.then((result) => {
+        return res.status(200).json({ message: result });
+    }).catch((err) => {
+        console.error("Error saving admin:", err);
+        return res.status(500).json({ error: err });
+    });
 };
 
 

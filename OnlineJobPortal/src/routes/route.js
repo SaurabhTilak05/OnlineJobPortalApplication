@@ -4,6 +4,7 @@ let hrCtrl=require("../controllers/hrcontroller.js");
 let jobskrctrl=require("../controllers/jobseekerctrl.js");
 let jobctrl=require("../controllers/jobcontrol.js");
 let email=require("../controllers/emailctrl.js");
+// let { verifyToken, verifyRole } = require("../middleware/auth");
 
 let router = express.Router();
 
