@@ -30,10 +30,6 @@ exports.adminLogin=(username, password)=>{
 
 
 
-
-
-
-//new made by kishor
 //for the view all job for admin
 exports.viewalljobAdmin=()=>{
     return new Promise((resolve,reject)=>{
@@ -73,3 +69,28 @@ exports.viewallApplication=()=>{
         });
     });
 };
+
+exports.contUs=(full_name,email,message)=>{
+    return new Promise((resolve,reject)=>{
+        db.query("insert into contact_us (full_name,email,message) values (?,?,?)",[full_name,email,message],(err,result)=>{
+            if(err)
+            {
+                return reject("Your Response not Send");
+            }
+            else{
+                return resolve("Send Your Response Sucessfull...");
+            }
+        })
+    })
+}
+exports.getAllCont=()=>{
+    return new Promise((resolve, reject)=>{
+          db.query("select * from contact_us ",(err,result)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(result);
+            }
+        });
+    })
+}
