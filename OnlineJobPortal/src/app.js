@@ -8,7 +8,12 @@ const router = require("./routes/route.js");
 require("dotenv").config();
 let app = express();
 
+
 // this is cors library
+
+// this is cors library to connect the 
+// node to react
+
 let cors = require("cors");
 app.use(cors());
 
