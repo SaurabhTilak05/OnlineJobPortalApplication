@@ -1,16 +1,9 @@
 // src/components/Sign.jsx
 import React from "react";
 import { NavLink } from "react-router-dom";
+
 class Sign extends React.Component {
-  handleLogin=(e)=>{
-
-
-    alert("login successful");
-  }
-
-
   render() {
-
     return (
       <>
         {/* Login Form */}
@@ -23,6 +16,7 @@ class Sign extends React.Component {
                     <h3 className="text-center fw-bold mb-4">LOGIN</h3>
 
                     <form>
+                      {/* Username */}
                       <div className="mb-3">
                         <label className="form-label">Username</label>
                         <input
@@ -31,6 +25,8 @@ class Sign extends React.Component {
                           placeholder="Enter your username"
                         />
                       </div>
+
+                      {/* Password */}
                       <div className="mb-3">
                         <label className="form-label">Password</label>
                         <input
@@ -40,20 +36,38 @@ class Sign extends React.Component {
                         />
                       </div>
 
+                      {/* Role Selection */}
+                      <div className="mb-3">
+                        <label className="form-label">Select Role</label>
+                        <select className="form-select">
+                          <option value="">-- Select Role --</option>
+                          <option value="admin">Admin</option>
+                          <option value="hr">HR</option>
+                          <option value="user">User</option>
+                        </select>
+                      </div>
+
+                      {/* Remember + Forgot */}
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                          <input type="checkbox" className="form-check-input me-1" /> Save password
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-1"
+                          />{" "}
+                          Save password
                         </div>
                         <NavLink to="/forgot" className="text-danger small">
                           Forgot Password?
                         </NavLink>
                       </div>
 
-                      <button type="submit"  onClick={this.handleLogin}  onclassName="btn btn-success w-100">
+                      {/* Submit */}
+                      <button type="submit" className="btn btn-success w-100">
                         LOGIN
                       </button>
                     </form>
 
+                    {/* Links */}
                     <p className="text-center small">
                       Haven’t Any Account Yet?{" "}
                       <NavLink to="/register" className="text-danger fw-bold">
@@ -63,6 +77,7 @@ class Sign extends React.Component {
                     <p className="text-center small">or</p>
                     <p className="text-center small">Login With Social</p>
 
+                    {/* Social Login Buttons */}
                     <div className="d-flex justify-content-center gap-2">
                       <button className="btn btn-outline-danger">Google</button>
                       <button className="btn btn-primary">Facebook</button>
@@ -80,3 +95,4 @@ class Sign extends React.Component {
 }
 
 export default Sign;
+

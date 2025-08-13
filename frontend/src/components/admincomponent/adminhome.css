@@ -1,0 +1,11 @@
+.admin-page button {
+  font-weight: bold;
+}
+
+.admin-page aside {
+  border-right: 2px solid black;
+}
+
+.admin-page header {
+  border-bottom: 2px solid black;
+}
