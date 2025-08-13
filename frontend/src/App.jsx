@@ -7,6 +7,7 @@ import Register from "./components/register.jsx";
 import "./App.css";
 import About from "./components/about.jsx";
 import Contact from "./components/contact.jsx";
+import AddJob from "./components/AddJob.jsx";
 
 class App extends React.Component {
   render() {
@@ -63,6 +64,9 @@ class App extends React.Component {
           <Route path="/register" element={< Register/>}/>
           <Route path="/about" element={< About/>}/>
              <Route path="/contact" element={< Contact/>}/>
+
+
+             <Route path="/addjob" element={<AddJob />}/> 
         </Routes>
       </BrowserRouter>
     );
