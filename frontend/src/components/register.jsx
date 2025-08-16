@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
-
-const API_URL = "/api/job-seekers"; // <-- change to your real endpoint
+import RegisterServ from "../servise/registerserv.js";
 
 export default function RegisterJobSeeker() {
   const [form, setForm] = useState({
@@ -13,99 +12,60 @@ export default function RegisterJobSeeker() {
     address: "",
   });
 
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
   const [serverMsg, setServerMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const validate = () => {
-    const e = {};
-
-    if (!form.name.trim()) e.name = "Full name is required";
-
-    if (!form.email.trim()) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Enter a valid email";
-
-    if (!form.password) e.password = "Password is required";
-    else if (form.password.length < 6)
-      e.password = "Use at least 6 characters";
-
-    if (!form.confirmPassword) e.confirmPassword = "Confirm your password";
-    else if (form.password !== form.confirmPassword)
-      e.confirmPassword = "Passwords do not match";
-
-    if (form.phone && !/^\+?[0-9]{7,15}$/.test(form.phone))
-      e.phone = "Enter a valid phone number";
-
-    if (!form.address.trim()) e.address = "Address is required";
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setServerMsg("");
-    if (!validate()) return;
-
-    setSubmitting(true);
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          password: form.password, // hash on server!
-          phone: form.phone.trim(),
-          address: form.address.trim(),
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || `Request failed (${res.status})`);
-      }
-
-      const data = await res.json();
-      setServerMsg(
-        data?.message || "Registration successful. You can now sign in."
-      );
-      // Optionally reset the form
-      setForm({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        phone: "",
-        address: "",
-      });
-    } catch (err) {
-      setServerMsg(err.message || "Something went wrong");
-    } finally {
-      setSubmitting(false);
+    if (
+      !form.name ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.phone ||
+      !form.address
+    ) {
+      setServerMsg("⚠️ All fields are required!");
+      setTimeout(() => setServerMsg(""), 3000);
+      return;
     }
-  };
+    setSubmitting(true);
 
-  const passwordStrength = (() => {
-    const pw = form.password || "";
-    let score = 0;
-    if (pw.length >= 6) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[a-z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    if (!pw) return { label: "", percent: 0 };
-    const labels = ["Weak", "Okay", "Fair", "Good", "Strong"];
-    const idx = Math.min(score - 1, labels.length - 1);
-    return { label: labels[idx], percent: (score / 5) * 100 };
-  })();
+    RegisterServ.register(form)
+      .then(() => {
+        setServerMsg("Registered successfully!");
+
+        setForm({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          phone: "",
+          address: "",
+        });
+        setTimeout(() => {
+          setServerMsg("");
+        }, 3000);
+      })
+      .catch((err) => {
+        setServerMsg("Registration Failed! " + (err.message || err));
+        setTimeout(() => {
+          setServerMsg("");
+        }, 3000);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
 
   return (
     <section className="py-5">
@@ -122,7 +82,7 @@ export default function RegisterJobSeeker() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} noValidate>
+                <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label className="form-label">Full Name</label>
                     <input
@@ -130,12 +90,9 @@ export default function RegisterJobSeeker() {
                       name="name"
                       value={form.name}
                       onChange={handleChange}
-                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      className="form-control"
                       placeholder="Enter your full name"
                     />
-                    {errors.name && (
-                      <div className="invalid-feedback">{errors.name}</div>
-                    )}
                   </div>
 
                   <div className="mb-3">
@@ -145,12 +102,9 @@ export default function RegisterJobSeeker() {
                       name="email"
                       value={form.email}
                       onChange={handleChange}
-                      className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                      className="form-control"
                       placeholder="you@example.com"
                     />
-                    {errors.email && (
-                      <div className="invalid-feedback">{errors.email}</div>
-                    )}
                   </div>
 
                   <div className="mb-3">
@@ -160,12 +114,9 @@ export default function RegisterJobSeeker() {
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
-                      className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+                      className="form-control"
                       placeholder="e.g. +919876543210"
                     />
-                    {errors.phone && (
-                      <div className="invalid-feedback">{errors.phone}</div>
-                    )}
                   </div>
 
                   <div className="mb-3">
@@ -174,54 +125,58 @@ export default function RegisterJobSeeker() {
                       name="address"
                       value={form.address}
                       onChange={handleChange}
-                      className={`form-control ${errors.address ? "is-invalid" : ""}`}
+                      className="form-control"
                       rows={3}
                       placeholder="Your full address"
                     />
-                    {errors.address && (
-                      <div className="invalid-feedback">{errors.address}</div>
-                    )}
                   </div>
 
-                  <div className="mb-3">
+                  {/* Password with show/hide */}
+                  <div className="mb-3 position-relative">
                     <label className="form-label">Password</label>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={form.password}
                       onChange={handleChange}
-                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                      className="form-control"
                       placeholder="Create a password"
                     />
-                    {errors.password && (
-                      <div className="invalid-feedback">{errors.password}</div>
-                    )}
-                    {passwordStrength.label && (
-                      <div className="mt-2">
-                        <div className="progress" role="progressbar" aria-label="Password strength">
-                          <div
-                            className="progress-bar"
-                            style={{ width: `${passwordStrength.percent}%` }}
-                          />
-                        </div>
-                        <small className="text-muted">Strength: {passwordStrength.label}</small>
-                      </div>
-                    )}
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        right: "15px",
+                        top: "38px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {showPassword ? "🙈" : "👁️"}
+                    </span>
                   </div>
 
-                  <div className="mb-4">
+                  {/* Confirm Password with show/hide */}
+                  <div className="mb-4 position-relative">
                     <label className="form-label">Confirm Password</label>
                     <input
-                      type="password"
+                      type={showConfirm ? "text" : "password"}
                       name="confirmPassword"
                       value={form.confirmPassword}
                       onChange={handleChange}
-                      className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
+                      className="form-control"
                       placeholder="Re-enter your password"
                     />
-                    {errors.confirmPassword && (
-                      <div className="invalid-feedback">{errors.confirmPassword}</div>
-                    )}
+                    <span
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      style={{
+                        position: "absolute",
+                        right: "15px",
+                        top: "38px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {showConfirm ? "🙈" : "👁️"}
+                    </span>
                   </div>
 
                   <button
@@ -239,8 +194,9 @@ export default function RegisterJobSeeker() {
 
                 <hr className="my-4" />
                 <div className="small text-muted">
-                  <strong>Security note:</strong> The password is sent to the server where it
-                  must be hashed (e.g., bcrypt) before storing into <code>job_seekers.password</code>.
+                  <strong>Security note:</strong> The password must be hashed
+                  (e.g., bcrypt) before storing into{" "}
+                  <code>job_seekers.password</code>.
                 </div>
               </div>
             </div>

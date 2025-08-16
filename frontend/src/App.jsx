@@ -8,30 +8,25 @@ import "./App.css";
 import About from "./components/about.jsx";
 import Contact from "./components/contact.jsx";
 import AddJob from "./components/AddJob.jsx";
+import HRDashboard from "./components/hrdashbord.jsx";
+import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
+
 
 class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
         {/* Navbar */}
-        <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-          <div className="container">
-              <div className="logo mb-3">
-      <img
-        src="/images/logo1.png"
-        alt="Company Logo"
-        style={{ width: "50px", height: "auto", paddingTop:"20px" }}
-      />
+        <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom ">
+        <div className="container">
+        <div className="logo mb-3">
+      <img  src="/images/logo1.png" alt="Company Logo" style={{ width: "50px", height: "auto", paddingTop:"20px" }}  />
     </div>
             <NavLink className="navbar-brand bg-bold" to="/">
               Quick start <span className="text-danger">Carrier</span>
             </NavLink>
 
-            <button
-              className="navbar-toggler"
-              type="button"
-             
-            >
+            <button className="navbar-toggler"  type="button" >
               <span className="navbar-toggler-icon"></span>
             </button>
 
@@ -62,11 +57,12 @@ class App extends React.Component {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Sign />} /> 
           <Route path="/register" element={< Register/>}/>
+
+          <Route path="/hr-dashboard" element={<HRDashboard />} />
           <Route path="/about" element={< About/>}/>
-             <Route path="/contact" element={< Contact/>}/>
-
-
-             <Route path="/addjob" element={<AddJob />}/> 
+          <Route path="/contact" element={< Contact/>}/>
+          <Route path="/addjob" element={<AddJob />}/> 
+          <Route path="/view-applicants" element={<ViewJobApplicents />} />
         </Routes>
       </BrowserRouter>
     );
