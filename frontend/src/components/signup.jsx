@@ -1,6 +1,7 @@
 // src/components/Sign.jsx
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import AdminAuthService from "../servise/AdminAuthService";
 
 export default function Sign() {
   const navigate = useNavigate();
@@ -9,12 +10,13 @@ export default function Sign() {
     password: "",
     role: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { username, password, role } = form;
@@ -24,17 +26,23 @@ export default function Sign() {
       return;
     }
 
-   
-   if (username === "admin" && password === "12345" && role === "admin") {
-   navigate("/adminhome");  
-} else if (role === "user") {
-   navigate("/user-dashboard");
-} else if (role === "hr") {
-   navigate("/hr-dashboard");
-} else {
-   alert("Invalid credentials or role");
-}
+    try {
+      setLoading(true);
+      const res = await AdminAuthService.login({ username, password });
+      // Save token & role
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("role", res.role);
 
+      // Redirect based on role
+      if (res.role === "admin") navigate("/adminhome");
+      else if (res.role === "hr") navigate("/hr-dashboard");
+      else if (res.role === "user") navigate("/user-dashboard");
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,7 +81,7 @@ export default function Sign() {
                     />
                   </div>
 
-                  {/* Role Selection */}
+                  {/* Role */}
                   <div className="mb-3">
                     <label className="form-label">Select Role</label>
                     <select
@@ -89,7 +97,7 @@ export default function Sign() {
                     </select>
                   </div>
 
-                  {/* Remember + Forgot */}
+                  {/* Remember + Register */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
                       <input
@@ -98,18 +106,17 @@ export default function Sign() {
                       />{" "}
                       Save password
                     </div>
-                  <NavLink to="/register" className="text-danger fw-bold">
-                    Click Here
-                  </NavLink>
+                    <NavLink to="/register" className="text-danger fw-bold">
+                      Click Here
+                    </NavLink>
                   </div>
 
                   {/* Submit */}
-                  <button type="submit" className="btn btn-success w-100" >
-                    LOGIN
+                  <button type="submit" className="btn btn-success w-100">
+                    {loading ? "Logging in..." : "LOGIN"}
                   </button>
                 </form>
 
-                {/* Links */}
                 <p className="text-center small mt-3">
                   Haven’t Any Account Yet?{" "}
                   <NavLink to="/register" className="text-danger fw-bold">
@@ -119,7 +126,7 @@ export default function Sign() {
                 <p className="text-center small">or</p>
                 <p className="text-center small">Login With Social</p>
 
-                {/* Social Login Buttons */}
+                {/* Social Buttons */}
                 <div className="d-flex justify-content-center gap-2">
                   <button className="btn btn-outline-danger">Google</button>
                   <button className="btn btn-primary">Facebook</button>

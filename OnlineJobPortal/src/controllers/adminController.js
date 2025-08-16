@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 let adminCtrl = require("../models/adminModel.js");
 
-const SECRET_KEY = process.env.JWT_SECRET || "kishor@123"; // 🔐 better from .env
+const SECRET_KEY = process.env.JWT_SECRET || "kishor@123"; 
 
 // ----------------- REGISTER ADMIN -----------------
 exports.saveAdmin = async (req, res) => {
@@ -47,6 +47,7 @@ exports.adminLogin = async (req, res) => {
 
     // check password
     const isMatch = await bcrypt.compare(password, admin.password);
+    console.log("is match is "+isMatch)
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
