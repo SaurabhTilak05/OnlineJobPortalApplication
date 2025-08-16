@@ -86,7 +86,8 @@ router.delete("/deleteJob",jobctrl.getDeleteJob);
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
-
+//View Applicant for jobs
+router.get("/view-applicants",jobskrctrl.getApplicants);
 
 
 // Send mail testing 

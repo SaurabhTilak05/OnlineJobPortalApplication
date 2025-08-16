@@ -46,10 +46,10 @@ exports.loginSeeker=(email, password)=>{
     })   
 }
 
-exports.applyJobs=(job_id, seeker_id, status)=>{
+exports.applyJobs=(job_id, seeker_id)=>{
     return new Promise((resolve, reject)=>{
-        db.query("insert into applications (job_id, seeker_id, status) values (?,?,?)",
-            [job_id, seeker_id, status],
+        db.query("insert into applications (job_id, seeker_id) values (?,?)",
+            [job_id, seeker_id],
             (err,result)=>{
                 if(err)
                 {
@@ -62,4 +62,19 @@ exports.applyJobs=(job_id, seeker_id, status)=>{
         )
     })
 
+}
+
+exports.getAllApplicant=()=>{
+    return new Promise((resolve, reject)=>{
+        // select s.name, s.email,s.phone ,j.title from job_seekers s inner join applications a on s.seeker_id=a.seeker_id inner join jobs j on a.job_id=j.job_id;
+        db.query("select s.name, s.email,s.phone ,j.title from job_seekers s inner join applications a on s.seeker_id=a.seeker_id inner join jobs j on a.job_id=j.job_id ",(err, result)=>{
+            if(err)
+            {
+                return reject(err);
+            }
+            else{
+                return resolve(result);
+            }
+        })
+    })
 }
