@@ -62,7 +62,7 @@ class Sign extends React.Component {
                       </div>
 
                       {/* Submit */}
-                      <button type="submit" className="btn btn-success w-100">
+                      <button type="submit" className="btn btn-success w-100" >
                         LOGIN
                       </button>
                     </form>
