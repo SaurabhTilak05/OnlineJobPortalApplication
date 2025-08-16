@@ -1,17 +1,3 @@
-// RegisterJobSeeker.jsx
-// Single-file React component for creating a Job Seeker based on your MySQL table:
-// job_seekers(seeker_id, name, email, password, phone, address, created_at)
-//
-// ✅ How to use
-// - Drop this file anywhere in your React app (e.g., src/components/RegisterJobSeeker.jsx)
-// - Import and render <RegisterJobSeeker /> inside your route/page
-// - Update API_URL to match your backend endpoint (expects POST JSON)
-// - Uses Bootstrap utility classes if you have Bootstrap included
-//
-// Example backend endpoint (Node/Express):
-//   POST /api/job-seekers
-//   body: { name, email, password, phone, address }
-//   returns: { message: "created", seeker_id: 123 }
 
 import React, { useState } from "react";
 
