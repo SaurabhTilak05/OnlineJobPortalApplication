@@ -4,7 +4,7 @@ let hrCtrl=require("../controllers/hrcontroller.js");
 let jobskrctrl=require("../controllers/jobseekerctrl.js");
 let jobctrl=require("../controllers/jobcontrol.js");
 let email=require("../controllers/emailctrl.js");
-// let { verifyToken, verifyRole } = require("../middleware/auth");
+ let { verifyToken,  verifyAdmin} = require("../middlewares/authmiddleware.js");
 
 let router = express.Router();
 
@@ -12,19 +12,36 @@ let router = express.Router();
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
 router.post("/adminLogin",adCtrl.adminLogin);
+
+// // view all contacts
+// router.get("/getallcontact",adCtrl.getcontact);
+
+// //view all job  list to student
+// router.get("/viewAlljobforAdmin",adCtrl.viewAlljobforAdmin);
+
+// //search hr to admin
+// router.get("/SearchHRById",adCtrl.searchHrByid);
+
+// //veiw all application for the admin
+// router.get("/viewallapplications",adCtrl.viewallapplicant);
+
+
+// Protect admin-only APIs
+router.get("/viewAlljobforAdmin", verifyToken, verifyAdmin, adCtrl.viewAlljobforAdmin);
+router.get("/SearchHRById", verifyToken, verifyAdmin, adCtrl.searchHrByid);
+router.get("/viewallapplications", verifyToken, verifyAdmin, adCtrl.viewallapplicant);
+router.get("/getallcontact", verifyToken, verifyAdmin, adCtrl.getcontact);
+
+
+
+
+
+
+
+
 // Contact Up 
 router.post("/contact",adCtrl.contactUs);
-// view all contacts
-router.get("/getallcontact",adCtrl.getcontact);
 
-//view all job  list to student
-router.get("/viewAlljobforAdmin",adCtrl.viewAlljobforAdmin);
-
-//search hr to admin
-router.get("/SearchHRById",adCtrl.searchHrByid);
-
-//veiw all application for the admin
-router.get("/viewallapplications",adCtrl.viewallapplicant);
 
 // Hr routes
 router.post("/registerHr", hrCtrl.registerHr);
