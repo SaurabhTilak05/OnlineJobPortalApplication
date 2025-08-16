@@ -1,14 +1,18 @@
 let db = require("../../db.js");
 
-exports.addAdmin = (username, password) => {
+exports.addAdmin = (username, password, role) => {
     return new Promise((resolve, reject) => {
-        db.query("INSERT INTO admin (username, password) VALUES (?, ?)", [username, password], (err, result) => {
-            if (err) {
-                console.error("DB error:", err);
-                return reject("Data Not Save");
+        db.query(
+            "INSERT INTO admin (username, password, role) VALUES (?, ?, ?)",
+            [username, password, role],
+            (err, result) => {
+                if (err) {
+                    console.error("DB error:", err);
+                    return reject("Data Not Saved");
+                }
+                return resolve("Admin Saved Successfully");
             }
-          return  resolve("Admin Saved Successfully");
-        });
+        );
     });
 };
 
@@ -16,20 +20,17 @@ exports.addAdmin = (username, password) => {
 
 
 
-exports.adminLogin=(username, password)=>{
-    return new Promise((resolve, reject)=>{
-        db.query("select *from admin where username=? and password=?",[username, password],(err,result)=>{
-            if( err || result.length === 0)
-            {
-                return reject("Invalid Admin Credentials.. ");
-            }
-            else{
-                return resolve("Admin Login Successfull.....");
-            }
-        })
+exports.adminLogin = (username) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM admin WHERE username = ?", [username], (err, result) => {
+      if (err || result.length === 0) {
+        return reject("Invalid Admin Credentials.. ");
+      } else {
+        return resolve(result);
+      }
     });
-}
-
+  });
+};
 
 
 
