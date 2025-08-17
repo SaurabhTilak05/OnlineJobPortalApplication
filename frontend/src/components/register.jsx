@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import RegisterServ from "../servise/registerserv.js";
+import RegisterServ from "../service/registerserv.js";
 
 export default function RegisterJobSeeker() {
   const [form, setForm] = useState({
