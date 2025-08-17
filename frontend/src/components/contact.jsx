@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddJObService from "../servise/addjobserv.js";
+import AddJObService from "../service/addjobserv.js";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
