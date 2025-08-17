@@ -10,13 +10,14 @@ import Contact from "./components/contact.jsx";
 import AddJob from "./components/AddJob.jsx";
 import HRDashboard from "./components/hrdashbord.jsx";
 import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
+import ViewAllJob from "./components/viewalljob.jsx";
 
 
 class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        {/* Navbar */}
+  
         <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom ">
         <div className="container">
         <div className="logo mb-3">
@@ -63,6 +64,10 @@ class App extends React.Component {
           <Route path="/contact" element={< Contact/>}/>
           <Route path="/addjob" element={<AddJob />}/> 
           <Route path="/view-applicants" element={<ViewJobApplicents />} />
+        
+        <Route path="/viewallpost" element={<ViewAllJob />}/> 
+
+          
         </Routes>
       </BrowserRouter>
     );
@@ -72,4 +77,3 @@ class App extends React.Component {
 export default App;
 
 
-//hello
