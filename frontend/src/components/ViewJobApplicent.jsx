@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ApplicantService from "../servise/applicantServ.js"; 
+import ApplicantService from "../service/applicantServ.js"; 
 
 export default function ViewApplicants() {
   const [applicants, setApplicants] = useState([]);
