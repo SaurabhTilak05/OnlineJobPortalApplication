@@ -1,148 +1,215 @@
-import React from "react";
-import ReactDom from "react-dom";
-import AddJObService from "../servise/addjobserv.js";
+import React, { useState } from "react";
+import AddJObService from "../service/addjobserv.js";
 
-export default class AddJob extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hr_id: "",
-      title: "",
-      company: "",
-      opening: "",
-      experience_required: "",
-      location: "",
-      package: "",
-      skills_required: "",
-      description: "",
-      deadline: "",
-      msg:""
-    };
-  }
+export default function AddJob() {
+  const [formData, setFormData] = useState({
+    hr_id: "",
+    title: "",
+    company: "",
+    opening: "",
+    experience_required: "",
+    location: "",
+    package: "",
+    skills_required: "",
+    description: "",
+    deadline: "",
+  });
 
-  addingjob = () => {
-  let promise = AddJObService.addJob(this.state);
-  promise
-    .then((result) => {
-      console.log(result);
-      this.setState({
-        msg: result.data.message,
-        hr_id: "",
-        title: "",
-        company: "",
-        opening: "",
-        experience_required: "",
-        location: "",
-        package: "",
-        skills_required: "",
-        description: "",
-        deadline: ""
+  const [msg, setMsg] = useState("");
+
+  const addingjob = () => {
+    let promise = AddJObService.addJob(formData);
+    promise
+      .then((result) => {
+        setMsg(result.data.message);
+        setFormData({
+          hr_id: "",
+          title: "",
+          company: "",
+          opening: "",
+          experience_required: "",
+          location: "",
+          package: "",
+          skills_required: "",
+          description: "",
+          deadline: "",
+        });
+      })
+      .catch((err) => {
+        setMsg("❌ Failed to save job. Try again!");
+        console.error(err);
       });
-    })
-    .catch((err) => {
-      this.setState({ msg: "Failed to save job" });
-      console.error(err);
-    });
-};
+  };
 
-  render() {
-    return (
-        <>
-          <div className="container mt-5 d-flex justify-content-center">
-            <div className="card p-4 shadow-lg bg-light w-100" style={{ maxWidth: "700px" }} >
-               {this.state.msg && (
-                <div className="form-group mt-3">
-                  <div className="alert alert-info text-center">
-                    {this.state.msg}
-                  </div>
-                </div>
-              )}
-              <h2 className="text-center mb-4 text-primary">Add Job</h2>
+  return (
+    <div className="container py-5">
+      <div className="card shadow-lg border-0 rounded-4 p-4">
+        {/* Title */}
+        <h2 className="text-center text-primary fw-bold mb-4">
+          📝 Post a New Job
+        </h2>
 
-              <div className="form-group mb-3">
-                <label>HR ID</label>
-                <input type="text" name="hr_id" className="form-control" value={this.state.hr_id} onChange={(e) => this.setState({ hr_id: e.target.value })} placeholder="Enter HR ID" />
-              </div>
+        {/* Success/Error Message */}
+        {msg && (
+          <div className="alert alert-info text-center fw-semibold">{msg}</div>
+        )}
 
-              <div className="form-group mb-3">
-                <label>Job Title</label>
-                <input type="text" name="title" className="form-control" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value })} placeholder="Enter Job Title"/>
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Company</label>
-                <input type="text"  name="company"  className="form-control"  value={this.state.company}  onChange={(e) => this.setState({ company: e.target.value })} placeholder="Enter Company Name" />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Openings</label>
-                <input type="text" name="opening" className="form-control" value={this.state.opening} onChange={(e) => this.setState({ opening: e.target.value })} placeholder="Number of Openings"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Experience Required</label>
-                <input  type="text" name="experience_required" className="form-control" value={this.state.experience_required} onChange={(e) => this.setState({ experience_required: e.target.value }) } placeholder="Years of Experience Required"/>
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Location</label>
-                <input
-                  type="text"
-                  name="location"
-                  className="form-control"
-                  value={this.state.location}
-                  onChange={(e) => this.setState({ location: e.target.value })}
-                  placeholder="Job Location"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Package</label>
-                <input
-                  type="text"
-                  name="package"
-                  className="form-control"
-                  value={this.state.package}
-                  onChange={(e) => this.setState({ package: e.target.value })}
-                  placeholder="CTC / Package"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Skills Required</label>
-                <input
-                  type="text"
-                  name="skills_required"
-                  className="form-control"
-                  value={this.state.skills_required}
-                  onChange={(e) =>
-                    this.setState({ skills_required: e.target.value })
-                  }
-                  placeholder="Skills (comma separated)"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Job Description</label>
-                <textarea name="description" className="form-control" rows="4" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value })  } placeholder="Enter detailed job description" ></textarea>
-              </div>
-
-              <div className="form-group mb-4">
-                <label>Application Deadline</label>
-                <input
-                  type="date"
-                  name="deadline"
-                  className="form-control"
-                  value={this.state.deadline}
-                  onChange={(e) => this.setState({ deadline: e.target.value })}
-                />
-              </div>
-               <button type="submit" className="btn btn-primary w-100" onClick={this.addingjob}>Add Job</button>
-            </div>
+        {/* Form Layout */}
+        <div className="row g-3">
+          {/* HR ID */}
+          <div className="col-md-6">
+            <label className="form-label">HR ID</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.hr_id}
+              onChange={(e) =>
+                setFormData({ ...formData, hr_id: e.target.value })
+              }
+              placeholder="Enter HR ID"
+            />
           </div>
-       
-      </>
-    );
-  }
+
+          {/* Job Title */}
+          <div className="col-md-6">
+            <label className="form-label">Job Title</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              placeholder="Enter Job Title"
+            />
+          </div>
+
+          {/* Company */}
+          <div className="col-md-6">
+            <label className="form-label">Company</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.company}
+              onChange={(e) =>
+                setFormData({ ...formData, company: e.target.value })
+              }
+              placeholder="Enter Company Name"
+            />
+          </div>
+
+          {/* Openings */}
+          <div className="col-md-6">
+            <label className="form-label">Openings</label>
+            <input
+              type="number"
+              className="form-control"
+              value={formData.opening}
+              onChange={(e) =>
+                setFormData({ ...formData, opening: e.target.value })
+              }
+              placeholder="Number of Openings"
+            />
+          </div>
+
+          {/* Experience */}
+          <div className="col-md-6">
+            <label className="form-label">Experience Required</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.experience_required}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  experience_required: e.target.value,
+                })
+              }
+              placeholder="e.g. 2+ Years"
+            />
+          </div>
+
+          {/* Location */}
+          <div className="col-md-6">
+            <label className="form-label">Location</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.location}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+              placeholder="Job Location"
+            />
+          </div>
+
+          {/* Package */}
+          <div className="col-md-6">
+            <label className="form-label">Package (CTC)</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.package}
+              onChange={(e) =>
+                setFormData({ ...formData, package: e.target.value })
+              }
+              placeholder="e.g. 6 LPA"
+            />
+          </div>
+
+          {/* Skills */}
+          <div className="col-md-6">
+            <label className="form-label">Skills Required</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formData.skills_required}
+              onChange={(e) =>
+                setFormData({ ...formData, skills_required: e.target.value })
+              }
+              placeholder="Skills (comma separated)"
+            />
+          </div>
+
+         
+          <div className="col-12">
+            <label className="form-label">Job Description</label>
+            <textarea
+              className="form-control"
+              rows="4"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              placeholder="Enter detailed job description"
+            ></textarea>
+          </div>
+
+         
+          <div className="col-md-6">
+            <label className="form-label">Application Deadline</label>
+            <input
+              type="date"
+              className="form-control"
+              value={formData.deadline}
+              onChange={(e) =>
+                setFormData({ ...formData, deadline: e.target.value })
+              }
+            />
+          </div>
+        </div>
+
+      
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            className="btn btn-success px-5 py-2 fw-semibold shadow-sm"
+            onClick={addingjob}
+          >
+            🚀 Post Job
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
