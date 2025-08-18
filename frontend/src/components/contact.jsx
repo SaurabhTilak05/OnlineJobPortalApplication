@@ -8,6 +8,10 @@ export default function Contact() {
     message: "",
   });
 
+
+
+  
+
   const [msg, setMsg] = useState("");
 
   const handleChange = (e) => {

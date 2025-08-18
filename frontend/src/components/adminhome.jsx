@@ -90,12 +90,14 @@ export default function Adminhome() {
               background: "linear-gradient(145deg, #ffffff, #f1f1f1)",
             }}
           >
+
             <div className="card-body p-4">
+
+            {/* <div className="card-body p-5">
+
               <h3 className="fw-bold">Welcome, Admin 👋</h3>
-              <p className="text-muted mt-3">
-                Use the sidebar to manage HRs, students, and applications.
-              </p>
-            </div>
+             
+            </div> */}
           </div>
 
           {/* ✅ Nested route content */}

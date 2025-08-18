@@ -1,9 +1,9 @@
 let hrctrl= require("../models/hrmodel.js");
 
 exports.registerHr = (req, res) => {
-    const { hr_name, company_name, email, password, phone, status } = req.body || {};
+    const { hr_name, company_name, email,phone } = req.body || {};
 
-    hrctrl.addHr(hr_name, company_name, email, password, phone, status )
+    hrctrl.addHr(hr_name, company_name, email, phone )
         .then((result) => {
             return res.status(200).json({ message: result });
         })
