@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter,Router,NavLink } from "react-router-dom";
+
+import AddJObService  from "../servise/addjobserv";
 export default function AddHR() {
   const [formData, setFormData] = useState({
     hr_name: "",
     company_name: "",
     email: "",
-    password: "",
-    phone: ""
+    phone: "",
   });
 
   // handle input change
@@ -19,22 +19,18 @@ export default function AddHR() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/hr", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      await AddJObService.AddHR(formData); // ✅ use service
+      alert("HR Added Successfully ✅");
 
-      if (response.ok) {
-        alert("HR Added Successfully ✅");
-        setFormData({ hr_name: "", company_name: "", email: "", password: "", phone: "" });
-      } else {
-        const errorData = await response.json();
-        alert("Error: " + errorData.message);
-      }
+      setFormData({
+        hr_name: "",
+        company_name: "",
+        email: "",
+        phone: "",
+      });
     } catch (err) {
-      alert("Failed to connect to server ❌");
-      console.error(err);
+      console.error("Error adding HR:", err);
+      alert("Failed to add HR ❌");
     }
   };
 
@@ -71,21 +67,13 @@ export default function AddHR() {
             required
           />
           <input
-            type="password"
-            name="password"
-            placeholder="Enter Password"
-            className="form-control mb-3"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <input
             type="text"
             name="phone"
             placeholder="Enter Phone Number"
             className="form-control mb-3"
             value={formData.phone}
             onChange={handleChange}
+            required
           />
           <button type="submit" className="btn btn-primary w-100">
             Add HR

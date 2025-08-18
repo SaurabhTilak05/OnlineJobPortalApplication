@@ -13,7 +13,14 @@ class AddJObService {
     }
 
 
+    AddHR(hrdata){
+      return axios.post("http://localhost:8080/AddHr",hrdata,{
 
-    
+      });
+      
+    }
+
+
+
 }
 export default new AddJObService();
