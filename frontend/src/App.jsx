@@ -22,7 +22,7 @@ class App extends React.Component {
     return (
         <BrowserRouter>
           {/* Navbar */}
-          <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom ">
+          <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
           <div className="container">
           <div className="logo mb-3">
         <img  src="/images/logo1.png" alt="Company Logo" style={{ width: "50px", height: "auto", paddingTop:"20px" }}  />
