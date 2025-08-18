@@ -15,6 +15,7 @@ import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
 
 import AdminHome from "./components/AdminHome";
 import PrivateRoute from "./components/PrivateRoute";
+import AddHR from "./components/AddHR.jsx";
 
 class App extends React.Component {
   render() {
@@ -67,10 +68,14 @@ class App extends React.Component {
             <Route path="/contact" element={< Contact/>}/>
             <Route path="/addjob" element={<AddJob />}/> 
             <Route path="/view-applicants" element={<ViewJobApplicents />} />
+            <Route path="/addhr" element={<AddHR/>}/>
+            
             <Route path="/adminhome" element={
             <PrivateRoute role="admin">
               <AdminHome />
             </PrivateRoute>
+           
+
           } />
 
           </Routes>
