@@ -2,10 +2,10 @@ let db=require("../../db.js");
 
 
 // Add hr in database
-exports.addHr = (hr_name, company_name, email, password, phone) => {
+exports.addHr = (hr_name, company_name, email, phone) => {
     return new Promise((resolve, reject) => {
         db.query( "INSERT INTO hr (hr_name, company_name, email, phone) VALUES ( ?, ?, ?, ?)",
-            [hr_name, company_name, email, password, phone],
+            [hr_name, company_name, email, phone],
             (err, result) => {
                 if (err) {
                     console.log(err);
