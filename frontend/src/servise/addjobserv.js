@@ -11,5 +11,9 @@ class AddJObService {
       return axios.post("http://localhost:8080/contact",cont ,{
       });
     }
+
+
+
+    
 }
 export default new AddJObService();
