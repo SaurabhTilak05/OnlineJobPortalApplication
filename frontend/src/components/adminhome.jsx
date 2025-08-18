@@ -44,14 +44,12 @@ export default function Adminhome() {
         {/* Sidebar */}
         <aside
           className={`p-3 text-white shadow d-flex flex-column
-            ${sidebarOpen ? "d-block" : "d-none"} 
+            ${sidebarOpen ? "d-block position-fixed top-0 start-0 h-100" : "d-none"} 
             d-md-block`}
           style={{
             width: "260px",
             background: "rgba(33,37,41,0.95)",
             backdropFilter: "blur(8px)",
-            position: sidebarOpen ? "absolute" : "relative",
-            height: "100%",
             zIndex: 1000,
           }}
         >
@@ -90,14 +88,9 @@ export default function Adminhome() {
               background: "linear-gradient(145deg, #ffffff, #f1f1f1)",
             }}
           >
-
-            <div className="card-body p-4">
-
-            {/* <div className="card-body p-5">
-
+            <div className="card-body p-5">
               <h3 className="fw-bold">Welcome, Admin 👋</h3>
-             
-            </div> */}
+            </div>
           </div>
 
           {/* ✅ Nested route content */}

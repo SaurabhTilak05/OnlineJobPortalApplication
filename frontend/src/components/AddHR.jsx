@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import AddJObService  from "../servise/addjobserv";
+import AddJObService  from "../service/addjobserv";
 export default function AddHR() {
   const [formData, setFormData] = useState({
     hr_name: "",
