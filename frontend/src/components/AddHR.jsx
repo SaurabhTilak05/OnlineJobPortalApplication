@@ -1,113 +1,94 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-export default function HRRegistration() {
+import { BrowserRouter,Router,NavLink } from "react-router-dom";
+export default function AddHR() {
   const [formData, setFormData] = useState({
     hr_name: "",
     company_name: "",
     email: "",
     password: "",
-    phone: "",
+    phone: ""
   });
 
+  // handle input change
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // handle form submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Just log for now; connect to backend API later
-    console.log("HR Form submitted:", formData);
+    try {
+      const response = await fetch("http://localhost:5000/api/hr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    // Example POST to backend:
-    /*
-    fetch("/api/hr", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("Success:", data))
-      .catch((err) => console.error("Error:", err));
-    */
+      if (response.ok) {
+        alert("HR Added Successfully ✅");
+        setFormData({ hr_name: "", company_name: "", email: "", password: "", phone: "" });
+      } else {
+        const errorData = await response.json();
+        alert("Error: " + errorData.message);
+      }
+    } catch (err) {
+      alert("Failed to connect to server ❌");
+      console.error(err);
+    }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "600px" }}>
+    <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <div className="card shadow p-4">
-        <h3 className="text-center mb-4"> Add HR </h3>
+        <h3 className="text-center mb-4">Add HR</h3>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">HR Name</label>
-            <input
-              type="text"
-              name="hr_name"
-              className="form-control"
-              required
-              placeholder="Enter HR name"
-              value={formData.hr_name}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Company Name</label>
-            <input
-              type="text"
-              name="company_name"
-              className="form-control"
-              required
-              placeholder="Enter company name"
-              value={formData.company_name}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              required
-              placeholder="Enter email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              required
-              placeholder="Enter password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Phone</label>
-            <input
-              type="text"
-              name="phone"
-              className="form-control"
-              placeholder="Enter phone number"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-          </div>
-
+          <input
+            type="text"
+            name="hr_name"
+            placeholder="Enter HR Name"
+            className="form-control mb-3"
+            value={formData.hr_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="company_name"
+            placeholder="Enter Company Name"
+            className="form-control mb-3"
+            value={formData.company_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            className="form-control mb-3"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            className="form-control mb-3"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="phone"
+            placeholder="Enter Phone Number"
+            className="form-control mb-3"
+            value={formData.phone}
+            onChange={handleChange}
+          />
           <button type="submit" className="btn btn-primary w-100">
-            Register HR
+            Add HR
           </button>
         </form>
       </div>

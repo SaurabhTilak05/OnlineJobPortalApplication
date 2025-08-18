@@ -14,7 +14,7 @@ export default function Adminhome() {
         {/* Sidebar */}
         <aside className="bg-light border-end p-3" style={{ width: "250px" }}>
           <NavLink
-            to="/admin/addhr"
+            to="/addhr"
             className="btn btn-outline-dark w-100 mb-3"
           >
             Add HR
@@ -42,40 +42,7 @@ export default function Adminhome() {
           </NavLink>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-grow-1 p-4">
-          <div
-            className="card shadow p-4"
-            style={{ maxWidth: "500px", margin: "0 auto" }}
-          >
-            <h4 className="text-center mb-4">Add HR</h4>
-            <form>
-              <input
-                type="text"
-                placeholder="Enter name"
-                className="form-control mb-3"
-              />
-              <input
-                type="email"
-                placeholder="Enter email id"
-                className="form-control mb-3"
-              />
-              <input
-                type="text"
-                placeholder="Enter mobile no"
-                className="form-control mb-3"
-              />
-              <input
-                type="text"
-                placeholder="Company name"
-                className="form-control mb-3"
-              />
-              <button type="submit" className="btn btn-primary w-100">
-                Add HR
-              </button>
-            </form>
-          </div>
-        </main>
+      
       </div>
     </div>
   );
