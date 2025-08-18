@@ -12,10 +12,10 @@ import HRDashboard from "./components/hrdashbord.jsx";
 import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
 
 
-
-import AdminHome from "./components/adminhome.jsx";
 import PrivateRoute from "./components/PrivateRoute";
 import AddHR from "./components/AddHR.jsx";
+import ViewHR from "./components/viewHR.jsx";
+import Adminhome from "./components/adminhome.jsx";
 
 class App extends React.Component {
   render() {
@@ -73,11 +73,11 @@ class App extends React.Component {
 
 
 
-           <Route path="/adminhome" element={<AdminHome />}>
-           
-            <Route path="addhr" element={<AddHR />} />
-            {/* Add more nested routes later (viewhr, application, etc.) */}
-          </Route>
+            <Route path="/adminhome" element={<Adminhome />}>
+          {/* Child Routes - NOTICE no leading "/" */}
+          <Route path="addhr" element={<AddHR />} />
+          <Route path="viewshr" element={<ViewHR />} />
+        </Route>
        
           </Routes>
 
