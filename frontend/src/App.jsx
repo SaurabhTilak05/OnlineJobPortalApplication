@@ -22,11 +22,11 @@ class App extends React.Component {
     return (
         <BrowserRouter>
           {/* Navbar */}
-          <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+          <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom  ">
           <div className="container">
           <div className="logo mb-3">
-        <img  src="/images/logo1.png" alt="Company Logo" style={{ width: "50px", height: "auto", paddingTop:"20px" }}  />
-      </div>
+             <img  src="/images/logo1.png" alt="Company Logo" style={{ width: "50px", height: "auto", paddingTop:"20px" }}  />
+          </div>
               <NavLink className="navbar-brand bg-bold" to="/">
                 Quick start <span className="text-danger">Carrier</span>
               </NavLink>
@@ -73,11 +73,12 @@ class App extends React.Component {
             <Route path="/adminhome" element={
             <PrivateRoute role="admin">
               <AdminHome />
+               
             </PrivateRoute>
            
 
-          } />
-
+          } >
+            </Route>
           </Routes>
 
 
