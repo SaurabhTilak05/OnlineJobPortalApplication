@@ -95,7 +95,7 @@ exports.viewAlljobforAdmin = async (req, res) => {
 
 exports.searchHrByid = async (req, res) => {
   try {
-    let { hr_id } = req.body;
+   let { hr_id } = req.params;
     let result = await adminCtrl.SearchHR(hr_id);
     res.json(result);
   } catch (err) {

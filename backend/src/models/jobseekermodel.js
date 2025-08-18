@@ -28,6 +28,20 @@ exports.getAllSeekers = () => {
     });
 };
 
+exports.getuserById=(seeker_id)=>{
+    return new Promise((resolve, reject)=>{
+        db.query("select *from job_seekers where seeker_id=?",[seeker_id],(err,result)=>{
+            if(err)
+            {
+                return reject(err);
+            }else{
+                return resolve(result);
+            }
+
+        })
+    })
+}
+
 // Login job seeker with email and password
 exports.loginSeeker=(email, password)=>{
     return new Promise((resolve, reject)=>{

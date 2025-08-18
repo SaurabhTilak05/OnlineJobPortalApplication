@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUsers, FaBriefcase, FaUserPlus, FaSignOutAlt } from "react-icons/fa";
-import AddJObService from "../service/addjobserv.js"; // ✅ check path
+import AddJObService from "../service/addjobserv.js"; 
 
 export default function HRDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -84,7 +84,7 @@ export default function HRDashboard() {
               <div className="card text-white bg-warning shadow-sm rounded-4">
                 <div className="card-body">
                   <h5 className="card-title">Interviews Scheduled</h5>
-                  <p className="card-text fs-3">8</p>
+                  <p className="card-text fs-3">0</p>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function HRDashboard() {
               <tbody>
                 {jobs.length > 0 ? (
                   jobs
-                    .slice(-5) // ✅ show only latest 5 jobs
+                    .slice(-5) //  show only latest 5 jobs
                     .reverse()
                     .map((job) => (
                       <tr key={job.id}>

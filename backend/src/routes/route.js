@@ -28,7 +28,7 @@ router.post("/adminLogin",adCtrl.adminLogin);
 
 // Protect admin-only APIs
 router.get("/viewAlljobforAdmin", verifyToken, verifyAdmin, adCtrl.viewAlljobforAdmin);
-router.get("/SearchHRById", verifyToken, verifyAdmin, adCtrl.searchHrByid);
+router.get("/SearchHRById/:hr_id", verifyToken, verifyAdmin, adCtrl.searchHrByid);
 router.get("/viewallapplications", verifyToken, verifyAdmin, adCtrl.viewallapplicant);
 router.get("/getallcontact", verifyToken, verifyAdmin, adCtrl.getcontact);
 
@@ -68,6 +68,8 @@ router.post("/regJobSeeker",jobskrctrl.regSeekers);
 router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
+// get job seeker by id
+router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 
 // for the search job by laction 
 router.get("/viewjobbylocation",jobctrl.jobbylocation);

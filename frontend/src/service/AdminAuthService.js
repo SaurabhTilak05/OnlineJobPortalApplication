@@ -3,7 +3,7 @@ import axios from "axios";
 class AdminAuthService {
   login(credentials) {
     return axios
-      .post("http://localhost:5000/adminLogin", credentials)
+      .post("http://localhost:8080/adminLogin", credentials)
       .then((res) => res.data); // returns {message, token, role, username}
   }
 

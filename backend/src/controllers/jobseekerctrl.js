@@ -33,6 +33,22 @@ exports.getLogJobSeeker=(req,res)=>{
     })
 }
 
+exports.getUserById = (req, res) => {
+    let { seeker_id } = req.params; 
+
+    jobsctrl.getuserById(seeker_id)
+        .then((result) => {
+            if (!result) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.json(result);
+        })
+        .catch((err) => {
+            console.error("Error fetching user:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+        });
+};
+
 
 exports.applyJob=(req,res)=>{
     let {job_id, seeker_id}=req.body;

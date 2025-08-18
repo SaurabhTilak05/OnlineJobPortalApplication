@@ -11,7 +11,8 @@ import AddJob from "./components/AddJob.jsx";
 import HRDashboard from "./components/hrdashbord.jsx";
 import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
 import ViewAllJob from "./components/viewalljob.jsx";
-
+import UserDashboard from "./components/userdashbord.jsx";
+import UserProfile from "./components/userprofile.jsx";
 
 class App extends React.Component {
   render() {
@@ -66,8 +67,8 @@ class App extends React.Component {
           <Route path="/view-applicants" element={<ViewJobApplicents />} />
         
         <Route path="/viewallpost" element={<ViewAllJob />}/> 
-
-          
+        <Route path="/userDashbord" element={<UserDashboard/>}/>
+          <Route   path="/user" element={<UserProfile/>} />
         </Routes>
       </BrowserRouter>
     );
