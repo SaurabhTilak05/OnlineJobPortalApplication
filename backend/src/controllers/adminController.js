@@ -5,6 +5,8 @@ let adminCtrl = require("../models/adminModel.js");
 const SECRET_KEY = process.env.JWT_SECRET || "kishor@123"; 
 
 
+
+
 exports.saveAdmin = async (req, res) => {
   try {
     let { username, password, role } = req.body;
@@ -47,6 +49,7 @@ exports.adminLogin = async (req, res) => {
 
     // check password
     const isMatch = await bcrypt.compare(password, admin.password);
+    console.log("is match is "+isMatch)
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
