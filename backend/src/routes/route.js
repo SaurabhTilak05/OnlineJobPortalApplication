@@ -44,7 +44,11 @@ router.post("/contact",adCtrl.contactUs);
 
 
 // Hr routes
-router.post("/registerHr", hrCtrl.registerHr);
+router.post("/AddHr", hrCtrl.registerHr);
+
+
+
+
 // view all Hr 
 router.get("/viewHr", hrCtrl.getHrs);
 //hr login with email and password
