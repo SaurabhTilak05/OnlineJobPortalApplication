@@ -10,29 +10,16 @@ import Contact from "./components/contact.jsx";
 import AddJob from "./components/AddJob.jsx";
 import HRDashboard from "./components/hrdashbord.jsx";
 import ViewJobApplicents from "./components/ViewJobApplicent.jsx";
-import ViewAllJob from "./components/viewalljob.jsx";
-import UserDashboard from "./components/userdashbord.jsx";
-import UserProfile from "./components/userprofile.jsx";
+
 
 
 import AdminHome from "./components/AdminHome";
 import PrivateRoute from "./components/PrivateRoute";
+import AddHR from "./components/AddHR.jsx";
 
-class App extends React.Component 
-{
-  render()
-   {
+class App extends React.Component {
+  render() {
     return (
-      <BrowserRouter>
-  
-        <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom ">
-        <div className="container">
-        <div className="logo mb-3">
-      <img  src="/images/logo1.png" alt="Company Logo" style={{ width: "50px", height: "auto", paddingTop:"20px" }}  />
-    </div>
-            <NavLink className="navbar-brand bg-bold" to="/">
-              Quick start <span className="text-danger">Carrier</span>
-            </NavLink>
         <BrowserRouter>
           {/* Navbar */}
           <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom ">
@@ -43,7 +30,6 @@ class App extends React.Component
               <NavLink className="navbar-brand bg-bold" to="/">
                 Quick start <span className="text-danger">Carrier</span>
               </NavLink>
-
 
               <button className="navbar-toggler"  type="button" >
                 <span className="navbar-toggler-icon"></span>
@@ -77,28 +63,19 @@ class App extends React.Component
             <Route path="/signup" element={<Sign />} /> 
             <Route path="/register" element={< Register/>}/>
 
-
-          <Route path="/hr-dashboard" element={<HRDashboard />} />
-          <Route path="/about" element={< About/>}/>
-          <Route path="/contact" element={< Contact/>}/>
-          <Route path="/addjob" element={<AddJob />}/> 
-          <Route path="/view-applicants" element={<ViewJobApplicents />} />
-        
-        <Route path="/viewallpost" element={<ViewAllJob />}/> 
-        <Route path="/userDashbord" element={<UserDashboard/>}/>
-          <Route   path="/user" element={<UserProfile/>} />
-        </Routes>
-      </BrowserRouter>
-    );
             <Route path="/hr-dashboard" element={<HRDashboard />} />
             <Route path="/about" element={< About/>}/>
             <Route path="/contact" element={< Contact/>}/>
             <Route path="/addjob" element={<AddJob />}/> 
             <Route path="/view-applicants" element={<ViewJobApplicents />} />
+            <Route path="/addhr" element={<AddHR/>}/>
+            
             <Route path="/adminhome" element={
             <PrivateRoute role="admin">
               <AdminHome />
             </PrivateRoute>
+           
+
           } />
 
           </Routes>
@@ -106,10 +83,7 @@ class App extends React.Component
 
         </BrowserRouter>
       );
-
   }
 }
 
 export default App;
-
-

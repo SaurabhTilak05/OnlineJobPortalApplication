@@ -1,7 +1,7 @@
 // src/components/Sign.jsx
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import AdminAuthService from "../servise/AdminAuthService";
+import AdminAuthService from "../service/AdminAuthService";
 
 export default function Sign() {
   const navigate = useNavigate();
@@ -34,7 +34,8 @@ export default function Sign() {
       localStorage.setItem("role", res.role);
 
       // Redirect based on role
-      if (res.role === "admin") navigate("/adminhome");
+      if (res.role === "admin") navigate("/adminhome")
+       
       else if (res.role === "hr") navigate("/hr-dashboard");
       else if (res.role === "user") navigate("/user-dashboard");
 

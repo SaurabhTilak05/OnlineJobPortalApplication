@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import AdminAuthService from "../servise/AdminAuthService";
+import AdminAuthService from "../service/AdminAuthService.js";
 
 const PrivateRoute = ({ children, role }) => {
   const isAuth = AdminAuthService.isAuthenticated();
