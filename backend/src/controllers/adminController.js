@@ -3,10 +3,6 @@ const bcrypt = require("bcryptjs");
 let adminCtrl = require("../models/adminModel.js");
 
 const SECRET_KEY = process.env.JWT_SECRET || "kishor@123"; 
-<<<<<<< HEAD:OnlineJobPortal/src/controllers/adminController.js
-=======
-
->>>>>>> fc45fe81890a64020387576cb63e9945fb3b7a7a:backend/src/controllers/adminController.js
 
 exports.saveAdmin = async (req, res) => {
   try {
