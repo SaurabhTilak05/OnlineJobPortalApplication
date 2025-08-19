@@ -39,7 +39,7 @@ exports.adminLogin = async (req, res) => {
 
     // fetch from DB
     let result = await adminCtrl.adminLogin(username);
-
+    console.log(result)
     if (!result || result.length === 0) {
       return res.status(401).json({ message: "Invalid username" });
     }

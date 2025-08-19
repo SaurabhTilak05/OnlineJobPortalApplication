@@ -13,14 +13,14 @@ export default function Sign() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value }) ;
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { username, password, role } = form;
 
+    console.log("loggin cred "+username + "\t" + password+"\t"+role);
     if (!username || !password || !role) {
       alert("Please fill in all fields");
       return;
@@ -28,17 +28,30 @@ export default function Sign() {
 
     try {
       setLoading(true);
+
+      let res;
+
+      if (role === "admin") {
+        res = await AdminAuthService.login({ username, password });
+      } else if (role === "hr") {
+        // email = username, phone = password
+        res = await AdminAuthService.hrLogin({ username, password });
+      } else {
+        alert("User login not implemented yet");
+        return;
+      }
+
+
       const res = await AdminAuthService.login({ username, password, role });
+
       // Save token & role
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
 
       // Redirect based on role
-      if (res.role === "admin") navigate("/adminhome")
-       
-      else if (res.role === "hr") navigate("/hr-dashboard");
+      if (res.role === "admin") navigate("/adminhome");
+      else if (res.role === "hr") navigate("/hrdashbord");
       else if (res.role === "user") navigate("/user-dashboard");
-
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     } finally {
@@ -65,7 +78,7 @@ export default function Sign() {
                       className="form-control"
                       value={form.username}
                       onChange={handleChange}
-                      placeholder="Enter your username"
+                      placeholder="Enter your username / email"
                     />
                   </div>
 
@@ -78,7 +91,7 @@ export default function Sign() {
                       className="form-control"
                       value={form.password}
                       onChange={handleChange}
-                      placeholder="Enter your password"
+                      placeholder="Enter your password / phone"
                     />
                   </div>
 
