@@ -1,4 +1,105 @@
 let hrctrl= require("../models/hrmodel.js");
+const bcrypt = require("bcrypt");
+let db=require("../../db.js");
+const jwt = require("jsonwebtoken");
+
+const SECRET = process.env.JWT_SECRET || "mySecretKey";
+
+// Admin adds HR (phone will be used as password, store hashed)
+
+exports.addHR1 = async (req, res) => {
+  try {
+    const { hr_name, email, phone, company_name } = req.body;
+
+    // hash the phone number (used as password)
+    const hashedPassword = await bcrypt.hash(phone, 10);
+
+    await db.query(
+      "INSERT INTO hr (hr_name, email, phone, company_name, password) VALUES (?, ?, ?, ?, ?)",
+      [hr_name, email, phone, company_name, hashedPassword]
+    );
+
+    res.status(201).json({ message: "HR added successfully" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error adding HR", error });
+  }
+};
+
+
+// HR login
+
+exports.hrLogin = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+
+    // 1️⃣ check HR exists
+    const [rows] = await db.query("SELECT * FROM hr WHERE email = ?", [email]);
+    if (rows.length === 0) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const hr = rows[0];
+
+    // 2️⃣ compare entered phone with stored hash
+    const isMatch = await bcrypt.compare(phone, hr.password);
+    if (!isMatch) {
+
+        console.log(isMatch);
+
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // 3️⃣ generate JWT
+    const token = jwt.sign(
+      { id: hr.id, email: hr.email }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: "1h" }
+    );
+
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error logging in", error });
+  }
+};
+
+// Get HR profile (protected)
+exports.getProfile = async (req, res) => {
+  try {
+    // req.user is coming from middleware (decoded token data)
+    res.json({
+      message: "HR profile accessed successfully",
+      hr: req.user
+    });
+  } catch (err) {
+    console.log(err);
+    
+    res.status(500).json({ message: "Error fetching profile", error: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.registerHr = (req, res) => {
     const { hr_name, company_name, email,phone } = req.body || {};
@@ -13,7 +114,6 @@ exports.registerHr = (req, res) => {
         });
 };
 
-
 // get ALL HRS
 exports.getHrs=(req,res)=>{
     let promise=hrctrl.getHr();
@@ -25,6 +125,12 @@ exports.getHrs=(req,res)=>{
 }
 
 
+
+
+
+
+
+
 exports.loginHr=(req, res)=>{
     let {email, password}=req.body;
     let Promice=hrctrl.hrLogin(email,password);
@@ -34,6 +140,7 @@ exports.loginHr=(req, res)=>{
         res.send(err);
     })
 }
+
 
 exports.updateHr=(req,res)=>{
     let {hr_id,hr_name, company_name, email, password, phone, status}=req.body;
