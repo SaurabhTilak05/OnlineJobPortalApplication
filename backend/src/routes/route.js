@@ -20,6 +20,9 @@ router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
 
 
 
+
+
+
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password

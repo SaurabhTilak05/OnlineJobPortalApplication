@@ -7,6 +7,15 @@ class AdminAuthService {
       .then((res) => res.data); // returns {message, token, role, username}
   }
 
+  
+  hrLogin(data) {
+    console.log(data);
+    
+    return axios.post("http://localhost:8080/hr/login", data)
+    .then(res => res.data);
+  }
+
+
   logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

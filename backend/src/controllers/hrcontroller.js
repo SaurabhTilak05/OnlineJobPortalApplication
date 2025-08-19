@@ -2,6 +2,8 @@ let hrctrl= require("../models/hrmodel.js");
 const bcrypt = require("bcrypt");
 let db=require("../../db.js");
 const jwt = require("jsonwebtoken");
+//const conn = require("../../db.js");
+
 
 const SECRET = process.env.JWT_SECRET || "mySecretKey";
 
@@ -32,18 +34,22 @@ exports.addHR1 = async (req, res) => {
 
 exports.hrLogin = async (req, res) => {
   try {
-    const { email, phone } = req.body;
 
-    // 1️⃣ check HR exists
-    const [rows] = await db.query("SELECT * FROM hr WHERE email = ?", [email]);
+    console.log(req.body.username);
+    console.log(req.body.password)
+    console.log(req.body.role);
+    const { username, password } = req.body;
+        console.log(""+username)
+    
+    const [rows] = await db.query("SELECT * FROM hr WHERE email = ?", [username]);
     if (rows.length === 0) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const hr = rows[0];
 
-    // 2️⃣ compare entered phone with stored hash
-    const isMatch = await bcrypt.compare(phone, hr.password);
+    
+    const isMatch = await bcrypt.compare(password, hr.password);
     if (!isMatch) {
 
         console.log(isMatch);
@@ -51,7 +57,6 @@ exports.hrLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // 3️⃣ generate JWT
     const token = jwt.sign(
       { id: hr.id, email: hr.email }, 
       process.env.JWT_SECRET, 
@@ -66,20 +71,28 @@ exports.hrLogin = async (req, res) => {
   }
 };
 
+
+
+
+
 // Get HR profile (protected)
 exports.getProfile = async (req, res) => {
   try {
-    // req.user is coming from middleware (decoded token data)
+    const [rows] = await conn.query("SELECT id, hr_name, email, company_name FROM hr WHERE id = ?", [req.user.id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "HR not found" });
+    }
+
     res.json({
-      message: "HR profile accessed successfully",
-      hr: req.user
+      message: "HR profile fetched successfully",
+      hr: rows[0]   // return HR details
     });
   } catch (err) {
-    console.log(err);
-    
     res.status(500).json({ message: "Error fetching profile", error: err.message });
   }
 };
+
 
 
 
