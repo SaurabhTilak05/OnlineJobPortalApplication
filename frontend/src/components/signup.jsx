@@ -28,7 +28,7 @@ export default function Sign() {
 
     try {
       setLoading(true);
-      const res = await AdminAuthService.login({ username, password });
+      const res = await AdminAuthService.login({ username, password, role });
       // Save token & role
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);

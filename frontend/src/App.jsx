@@ -16,6 +16,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
+import ViewApplicants from "./components/viewapplicant.jsx";
 
 class App extends React.Component {
   render() {
@@ -77,6 +78,7 @@ class App extends React.Component {
           {/* Child Routes - NOTICE no leading "/" */}
           <Route path="addhr" element={<AddHR />} />
           <Route path="viewshr" element={<ViewHR />} />
+          <Route path="view-applicants" element={<ViewApplicants/>} />
         </Route>
        
           </Routes>

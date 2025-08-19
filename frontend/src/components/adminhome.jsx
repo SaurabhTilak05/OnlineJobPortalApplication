@@ -16,8 +16,12 @@ export default function Adminhome() {
   const navItems = [
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
     { to: "viewshr", icon: <FaUsers />, label: "View HR" },
-    { to: "application", icon: <FaClipboardList />, label: "Applications" },
-    { to: "register-student", icon: <FaUserGraduate />, label: "Register Student" },
+    { to: "view-applicants", icon: <FaClipboardList />, label: "Applications" },
+    {
+      to: "register-student",
+      icon: <FaUserGraduate />,
+      label: "Register Student",
+    },
   ];
 
   return (
@@ -25,11 +29,9 @@ export default function Adminhome() {
       {/* Header */}
       <header
         className="text-white py-3 shadow d-flex justify-content-between align-items-center px-3"
-        style={{
-          background: "linear-gradient(90deg, #0d6efd, #6610f2)",
-        }}
+        style={{ background: "linear-gradient(90deg, #0d6efd, #6610f2)" }}
       >
-        <h2 className="m-0">🚀 Admin Dashboard</h2>
+        <h2 className="m-0 ">🚀 Admin Dashboard</h2>
 
         {/* Mobile toggle button */}
         <button
@@ -44,7 +46,11 @@ export default function Adminhome() {
         {/* Sidebar */}
         <aside
           className={`p-3 text-white shadow d-flex flex-column
-            ${sidebarOpen ? "d-block position-fixed top-0 start-0 h-100" : "d-none"} 
+            ${
+              sidebarOpen
+                ? "d-block position-fixed top-0 start-0 h-100"
+                : "d-none"
+            } 
             d-md-block`}
           style={{
             width: "260px",
