@@ -1,3 +1,4 @@
+
 // src/components/Sign.jsx
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -20,7 +21,6 @@ export default function Sign() {
     e.preventDefault();
     const { username, password, role } = form;
 
-    console.log("loggin cred "+username + "\t" + password+"\t"+role);
     if (!username || !password || !role) {
       alert("Please fill in all fields");
       return;
@@ -32,26 +32,29 @@ export default function Sign() {
       let res;
 
       if (role === "admin") {
+        // Admin login
         res = await AdminAuthService.login({ username, password });
       } else if (role === "hr") {
-        // email = username, phone = password
-        res = await AdminAuthService.hrLogin({ username, password });
-      } else {
+        // HR login (if backend expects email + phone instead of username + password, change here)
+        res = await AdminAuthService.hrLogin({ email: username, phone: password });
+      } else if (role === "user") {
         alert("User login not implemented yet");
         return;
       }
 
+      // Save token & role in localStorage
+      if (res?.token && res?.role) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("role", res.role);
 
-      const res = await AdminAuthService.login({ username, password, role });
+        // Redirect based on role
+        if (res.role === "admin") navigate("/adminhome");
+        else if (res.role === "hr") navigate("/hrdashbord");
+        else if (res.role === "user") navigate("/user-dashboard");
+      } else {
+        alert("Invalid response from server");
+      }
 
-      // Save token & role
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("role", res.role);
-
-      // Redirect based on role
-      if (res.role === "admin") navigate("/adminhome");
-      else if (res.role === "hr") navigate("/hrdashbord");
-      else if (res.role === "user") navigate("/user-dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     } finally {
