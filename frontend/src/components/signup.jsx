@@ -28,6 +28,7 @@ export default function Sign() {
 
     try {
       setLoading(true);
+
       let res;
 
       if (role === "admin") {
@@ -39,6 +40,9 @@ export default function Sign() {
         alert("User login not implemented yet");
         return;
       }
+
+
+      const res = await AdminAuthService.login({ username, password, role });
 
       // Save token & role
       localStorage.setItem("token", res.token);
