@@ -1,6 +1,39 @@
 let db=require("../../db.js");
 
 
+//this is for the authentication
+
+// Find HR by email
+exports.findByEmail = async (email) => {
+  const [rows] = await db.query("SELECT * FROM hr WHERE email=?", [email]);
+  return rows[0];
+};
+
+// Add HR
+exports.addHR1 = async ({ hr_name, email, phone, company_name }) => {
+  const [result] = await db.query(
+    "INSERT INTO hr (hr_name, email, phone, company_name) VALUES (?,?,?,?)",
+    [hr_name, email, phone, company_name]
+  );
+  return result.insertId;
+};
+
+
+
+// Get HR by ID (without password)
+exports.findById = async (id) => {
+  const [rows] = await db.query(
+    "SELECT hr_id, hr_name, email, company_name, created_at FROM hr WHERE hr_id=?",
+    [id]
+  );
+  return rows[0];
+};
+
+
+
+
+
+
 // Add hr in database
 exports.addHr = (hr_name, company_name, email, phone) => {
     return new Promise((resolve, reject) => {
