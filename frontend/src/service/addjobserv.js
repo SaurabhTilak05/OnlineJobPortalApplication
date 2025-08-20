@@ -13,11 +13,6 @@ class AddJObService {
     }
 
 
-     getAllJobs() {
-    return axios.get("http://localhost:8080/viewAllJobs");
-  }
-
-
     AddHR(hrdata){
       return axios.post("http://localhost:8080/AddHr",hrdata,{
 
@@ -25,9 +20,7 @@ class AddJObService {
       
     }
 
-     getAllJobs() {
-    return axios.get("http://localhost:8080/viewAllJobs");
-  }
+
 
 }
 export default new AddJObService();
