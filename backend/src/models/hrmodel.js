@@ -1,23 +1,27 @@
-let db=require("../../db.js");
+const db = require("../../db.js");
 
 
 //this is for the authentication
 
 // Find HR by email
+
 exports.findByEmail = async (email) => {
-  const [rows] = await db.query("SELECT * FROM hr WHERE email=?", [email]);
-  return rows[0];
+  const sql = "SELECT * FROM hr WHERE email = ?";
+  const [rows] = await db.query(sql, [email]);
+  return rows;
 };
 
 // Add HR
-exports.addHR1 = async ({ hr_name, email, phone, company_name }) => {
-  const [result] = await db.query(
-    "INSERT INTO hr (hr_name, email, phone, company_name) VALUES (?,?,?,?)",
-    [hr_name, email, phone, company_name]
-  );
-  return result.insertId;
-};
 
+
+exports.createHR = async (hr_name, company_name, email, phone, hashedPassword, role) => {
+  const sql = `
+    INSERT INTO hr (hr_name, company_name, email, phone, password, role) 
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  const [result] = await db.query(sql, [hr_name, company_name, email, phone, hashedPassword, role]);
+  return result;
+};
 
 
 // Get HR by ID (without password)

@@ -1,18 +1,19 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import AdminAuthService from "../service/AdminAuthService.js";
 
-const PrivateRoute = ({ children, role }) => {
-  const isAuth = AdminAuthService.isAuthenticated();
-  const userRole = AdminAuthService.getRole();
+export default function PrivateRoute({ children, allowedRole }) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
-  console.log("PrivateRoute:", isAuth, userRole, role); // Debug
+  // if no token → send to signup page
+  if (!token) {
+    return <Navigate to="/signup" replace />;
+  }
 
-  if (!isAuth || userRole.toLowerCase() !== role.toLowerCase()) {
-    return <Navigate to="/signup" />; // redirect to login if unauthorized
+  // if role mismatch → block and redirect
+  if (allowedRole && role !== allowedRole) {
+    return <Navigate to="/signup" replace />;
   }
 
   return children;
-};
-
-export default PrivateRoute;
+}
