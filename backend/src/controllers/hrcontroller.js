@@ -1,73 +1,74 @@
-let hrctrl= require("../models/hrmodel.js");
 const bcrypt = require("bcrypt");
-let db=require("../../db.js");
+const hrModel = require("../models/hrModel.js"); 
 const jwt = require("jsonwebtoken");
-//const conn = require("../../db.js");
-
 
 const SECRET = process.env.JWT_SECRET || "mySecretKey";
 
-// Admin adds HR (phone will be used as password, store hashed)
+// Admin adds HR (phone will be used as password, stored hashed)
 
 exports.addHR1 = async (req, res) => {
+  const { hr_name, company_name, email, phone } = req.body;
+  const role = "hr";
+
   try {
-    const { hr_name, email, phone, company_name } = req.body;
+    // default password = phone (hashed)
+    const hashedPassword = await bcrypt.hash(phone.toString(), 10);
 
-    // hash the phone number (used as password)
-    const hashedPassword = await bcrypt.hash(phone, 10);
+    // call model (await)
+    const result = await hrModel.createHR(hr_name, company_name, email, phone, hashedPassword, role);
 
-    await db.query(
-      "INSERT INTO hr (hr_name, email, phone, company_name, password) VALUES (?, ?, ?, ?, ?)",
-      [hr_name, email, phone, company_name, hashedPassword]
-    );
-
-    res.status(201).json({ message: "HR added successfully" });
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).json({ message: "Error adding HR", error });
+    res.status(201).json({
+      message: "HR added successfully",
+      hrId: result.insertId,
+    });
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+    res.status(500).json({ message: "Database error", error: err });
   }
 };
+
 
 
 // HR login
 
 exports.hrLogin = async (req, res) => {
   try {
+    const { username, password } = req.body; // username = email, password = phone
+    console.log("username"+username+" password"+password);
+    console.log(req.body);
+    // Find HR by email
+    const result = await hrModel.findByEmail(username);
+    console.log("result is"+result);
 
-    console.log(req.body.username);
-    console.log(req.body.password)
-    console.log(req.body.role);
-    const { username, password } = req.body;
-        console.log(""+username)
-    
-    const [rows] = await db.query("SELECT * FROM hr WHERE email = ?", [username]);
-    if (rows.length === 0) {
-      return res.status(400).json({ message: "Invalid email or password" });
+    if (result.length === 0) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
     }
 
-    const hr = rows[0];
+    const hr = result[0];
 
-    
-    const isMatch = await bcrypt.compare(password, hr.password);
-    if (!isMatch) {
-
-        console.log(isMatch);
-
-      return res.status(400).json({ message: "Invalid email or password" });
+    // phone number check (no bcrypt, direct match)
+    if (hr.phone.toString() !== password.toString()) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
     }
 
+    // Generate JWT
     const token = jwt.sign(
-      { id: hr.id, email: hr.email }, 
-      process.env.JWT_SECRET, 
+      { id: hr.hr_id, email: hr.email, role: hr.role },
+      "mySecretKey",
       { expiresIn: "1h" }
     );
 
-    res.json({ message: "Login successful", token });
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).json({ message: "Error logging in", error });
+    res.json({
+      message: "HR login successful",
+      role: hr.role,
+      hrId: hr.hr_id,
+      token
+    });
+  } catch (err) {
+    console.error("Error during HR login:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -20,6 +20,7 @@ export default function Sign() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password, role } = form;
+    console.log("Form data on submit:", form);
 
     if (!username || !password || !role) {
       alert("Please fill in all fields");
@@ -32,15 +33,54 @@ export default function Sign() {
       let res;
 
       if (role === "admin") {
+
+        // ✅ Admin login → backend expects username + password
+        res = await AdminAuthService.login({ username, password });
+      } else if (role === "hr") {
+        // ✅ HR login → backend also expects username + password
+        res = await AdminAuthService.hrLogin({
+          username,
+          password,
+        });
+      } else {
+
         // Admin login
         res = await AdminAuthService.login({ username, password });
       } else if (role === "hr") {
         // HR login (if backend expects email + phone instead of username + password, change here)
         res = await AdminAuthService.hrLogin({ email: username, phone: password });
       } else if (role === "user") {
+
         alert("User login not implemented yet");
         return;
       }
+
+
+
+      // ✅ Save token & role for PrivateRoute check
+      if (res.token && res.role) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("role", res.role);
+      } else {
+        throw new Error("Invalid response from server");
+      }
+
+      // ✅ Redirect based on role
+      if (res.role === "admin") {
+        navigate("/adminhome");
+      } else if (res.role === "hr") {
+        navigate("/hrdashboard");
+      } else if (res.role === "user") {
+        navigate("/user-dashboard");
+      }
+
+
+      const res = await AdminAuthService.login({ username, password, role });
+
+      // Save token & role
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("role", res.role);
+
 
       // Save token & role in localStorage
       if (res?.token && res?.role) {
@@ -55,8 +95,10 @@ export default function Sign() {
         alert("Invalid response from server");
       }
 
+
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      console.error("Login error:", err);
+      alert(err.response?.data?.message || err.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -72,16 +114,16 @@ export default function Sign() {
                 <h3 className="text-center fw-bold mb-4">LOGIN</h3>
 
                 <form onSubmit={handleSubmit}>
-                  {/* Username */}
+                  {/* Username / Email */}
                   <div className="mb-3">
-                    <label className="form-label">Username</label>
+                    <label className="form-label">Username / Email</label>
                     <input
                       type="text"
                       name="username"
                       className="form-control"
                       value={form.username}
                       onChange={handleChange}
-                      placeholder="Enter your username / email"
+                      placeholder="Enter username or email"
                     />
                   </div>
 
@@ -94,11 +136,11 @@ export default function Sign() {
                       className="form-control"
                       value={form.password}
                       onChange={handleChange}
-                      placeholder="Enter your password / phone"
+                      placeholder="Enter password"
                     />
                   </div>
 
-                  {/* Role */}
+                  {/* Role Selection */}
                   <div className="mb-3">
                     <label className="form-label">Select Role</label>
                     <select
@@ -117,14 +159,10 @@ export default function Sign() {
                   {/* Remember + Register */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                      <input
-                        type="checkbox"
-                        className="form-check-input me-1"
-                      />{" "}
-                      Save password
+                      <input type="checkbox" className="form-check-input me-1" /> Save password
                     </div>
                     <NavLink to="/register" className="text-danger fw-bold">
-                      Click Here
+                      Register
                     </NavLink>
                   </div>
 
@@ -137,13 +175,13 @@ export default function Sign() {
                 <p className="text-center small mt-3">
                   Haven’t Any Account Yet?{" "}
                   <NavLink to="/register" className="text-danger fw-bold">
-                    Click Here
+                    Register Here
                   </NavLink>
                 </p>
+
                 <p className="text-center small">or</p>
                 <p className="text-center small">Login With Social</p>
 
-                {/* Social Buttons */}
                 <div className="d-flex justify-content-center gap-2">
                   <button className="btn btn-outline-danger">Google</button>
                   <button className="btn btn-primary">Facebook</button>
