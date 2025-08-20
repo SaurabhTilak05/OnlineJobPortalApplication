@@ -12,7 +12,11 @@ let router = express.Router();
  //hr authentication 
 const verifyToken1=require("../middlewares/Hrauthmiddleware.js");
 router.post("/addHr", hrCtrl.addHR1);
+
+
 router.post("/hr/login", hrCtrl.hrLogin);
+
+
 
 // Protected
 router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
