@@ -75,7 +75,7 @@ router.post("/hrLogin",hrCtrl.loginHr);
 // update all fields 
 router.put("/UpdateHr",hrCtrl.updateHr);
 // Delete hr by Id
-router.delete("/deleteHR",hrCtrl.detHRByID);
+router.delete("/deleteHR/:hr_id", hrCtrl.deleteHRByID);
 // for the delete student by hr
 //router.delete("/DeleteStudByID", hrCtrl.DeleteStudByID);
 router.delete("/DeleteStudByID/:seeker_id", hrCtrl.DeleteStudByID);

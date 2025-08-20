@@ -166,16 +166,18 @@ exports.updateHr=(req,res)=>{
     })
 }
 
-exports.detHRByID=(req,res)=>{
-    let {hr_id}=req.body;
-    let promise=hrctrl.delHrById(hr_id);
-    promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
-}
+exports.deleteHRByID = (req, res) => {
+  const { hr_id } = req.params;
 
+  // ✅ using Promise
+  let promise=hrctrl.delHrById(hr_id);
+   promise.then((result) => {
+      res.status(200).json({ message: result });
+    })
+    .catch((err) => {
+      res.status(400).json({ message: err });
+    });
+};
 // for the delete student by hr
 exports.DeleteStudByID = (req, res) => {
     let {seeker_id } = req.params;

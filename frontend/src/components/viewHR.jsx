@@ -22,6 +22,18 @@ export default function ViewHR() {
     }
   };
 
+  // ✅ Delete HR by id
+  const deleteHR = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this HR?")) return;
+
+    try {
+      await HRService.deleteHR(id);
+      setHrList(hrList.filter((hr) => hr.hr_id !== id));
+    } catch (err) {
+      alert("Failed to delete HR");
+    }
+  };
+
   return (
     <section className="py-5">
       <div className="container">
@@ -39,27 +51,36 @@ export default function ViewHR() {
               <table className="table table-hover table-striped shadow-sm rounded-3 overflow-hidden">
                 <thead className="table-dark">
                   <tr>
-                    <th scope="col">#ID</th>
+                    <th scope="col">Sr.No</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Company</th>
                     <th scope="col">Contact</th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {hrList.length > 0 ? (
-                    hrList.map((hr) => (
+                    hrList.map((hr,index) => (
                       <tr key={hr.hr_id}>
-                        <td>{hr.hr_id}</td>
+                        <td>{index+1}</td>
                         <td>{hr.hr_name}</td>
                         <td>{hr.email}</td>
                         <td>{hr.company_name}</td>
                         <td>{hr.phone}</td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => deleteHR(hr.hr_id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No HRs found
                       </td>
                     </tr>
@@ -89,6 +110,12 @@ export default function ViewHR() {
                       <p className="card-text">
                         <strong>Contact:</strong> {hr.phone}
                       </p>
+                      <button
+                        className="btn btn-sm btn-danger mt-2"
+                        onClick={() => deleteHR(hr.hr_id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))

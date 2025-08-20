@@ -81,7 +81,7 @@ exports.applyJobs=(job_id, seeker_id)=>{
 exports.getAllApplicant=()=>{
     return new Promise((resolve, reject)=>{
         // select s.name, s.email,s.phone ,j.title from job_seekers s inner join applications a on s.seeker_id=a.seeker_id inner join jobs j on a.job_id=j.job_id;
-        db.query("select s.name, s.email,s.phone ,j.title from job_seekers s inner join applications a on s.seeker_id=a.seeker_id inner join jobs j on a.job_id=j.job_id ",(err, result)=>{
+        db.query("select s.name, s.email,s.phone ,j.title, a.status  from job_seekers s inner join applications a on s.seeker_id=a.seeker_id inner join jobs j on a.job_id=j.job_id ",(err, result)=>{
             if(err)
             {
                 return reject(err);
