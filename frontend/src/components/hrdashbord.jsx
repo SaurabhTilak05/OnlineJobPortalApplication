@@ -72,10 +72,10 @@ export default function HRDashboard() {
               <div className="card text-white bg-success shadow-sm rounded-4">
                 <div className="card-body">
                   <h5 className="card-title">Applicants</h5>
-                  <p className="card-text fs-3">
-                    {/* sum of applicants_count */}
+                  {/* <p className="card-text fs-3">
+                    sum of applicants_count
                     {jobs.reduce((sum, job) => sum + (job.applicants_count || 0), 0)}
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>
