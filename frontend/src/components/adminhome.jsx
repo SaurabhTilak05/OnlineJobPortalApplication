@@ -31,7 +31,7 @@ export default function Adminhome() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    navigate("/signup");   // ✅ redirect to signup
+    navigate("/signup");  
   };
 
   return (

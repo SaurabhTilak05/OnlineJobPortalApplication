@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";   // ✅ added useNavigate
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddJObService from "../service/addjobserv.js";
 import { FaUsers, FaBriefcase, FaUserPlus, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
@@ -8,6 +8,8 @@ export default function HRDashboard() {
   const [jobs, setJobs] = useState([]);
   const [msg, setMsg] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const navigate = useNavigate();  // ✅ initialize navigate
 
   useEffect(() => {
     AddJObService.getAllJobs()
@@ -18,6 +20,12 @@ export default function HRDashboard() {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => {
     if (window.innerWidth < 992) setIsSidebarOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/signup");   // ✅ will redirect properly
   };
 
   return (
@@ -52,9 +60,9 @@ export default function HRDashboard() {
             </NavLink>
           </li>
           <li className="nav-item mt-3">
-            <NavLink to="/logout" className="nav-link text-danger" onClick={closeSidebar}>
-              <FaSignOutAlt className="me-2" /> Logout
-            </NavLink>
+            <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+              <FaSignOutAlt className="me-1" /> Logout
+            </button>
           </li>
         </ul>
       </nav>
@@ -156,7 +164,7 @@ export default function HRDashboard() {
             position: fixed;
             top: 0;
             left: 0;
-              width: 200px;
+            width: 200px;
             height: 100%;
             transform: translateX(-100%);
             z-index: 1050;
