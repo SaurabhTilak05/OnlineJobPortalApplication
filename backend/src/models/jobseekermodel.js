@@ -70,9 +70,7 @@ exports.applyJobs = async (job_id, seeker_id) => {
 // ✅ Get all applicants
 exports.getAllApplicant = async () => {
   try {
-    const [rows] = await db.query(`
-      SELECT s.name, s.email, s.phone, j.title, a.status 
-      FROM job_seekers s 
+    const [rows] = await db.query(`  SELECT s.name, s.email, s.phone, j.title, a.status  FROM job_seekers s 
       INNER JOIN applications a ON s.seeker_id = a.seeker_id 
       INNER JOIN jobs j ON a.job_id = j.job_id
     `);

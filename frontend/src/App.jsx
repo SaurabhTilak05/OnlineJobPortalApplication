@@ -14,7 +14,6 @@ import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 import UserProfile from "./components/userprofile.jsx";
-
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,172 +22,157 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-          {/* Brand */}
-          <NavLink
-            className="navbar-brand fw-bold d-flex align-items-center"
-            to="/"
-            onClick={closeNavbar}
-          >
-            <img
-              src="/images/logo1.png"
-              alt="Company Logo"
-              style={{ width: "40px", marginRight: "10px" }}
-            />
-            <span>
-              QuickStart <span className="text-danger">Career</span>
-            </span>
-          </NavLink>
+      <div className="app-layout d-flex flex-column min-vh-100">
+        {/* Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+          <div className="container-fluid d-flex justify-content-between align-items-center">
+            {/* Brand */}
+            <NavLink
+              className="navbar-brand fw-bold d-flex align-items-center"
+              to="/"
+              onClick={closeNavbar}
+            >
+              <img
+                src="/images/logo1.png"
+                alt="Company Logo"
+                style={{ width: "40px", marginRight: "10px" }}
+              />
+              <span>
+                QuickStart <span className="text-danger">Career</span>
+              </span>
+            </NavLink>
 
-          {/* Desktop Menu */}
-          <div className="d-none d-lg-flex align-items-center gap-4">
-            <NavLink className="nav-link" to="/" onClick={closeNavbar}>
-              Home
-            </NavLink>
-            <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
-              About Us
-            </NavLink>
-            <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
-              Contact
-            </NavLink>
-            <NavLink
-              className="btn btn-outline-danger ms-3"
-              to="/register"
-              onClick={closeNavbar}
+            {/* Desktop Menu */}
+            <div className="d-none d-lg-flex align-items-center gap-4">
+              <NavLink className="nav-link" to="/" onClick={closeNavbar}>
+                Home
+              </NavLink>
+              <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
+                About Us
+              </NavLink>
+              <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
+                Contact
+              </NavLink>
+              <NavLink
+                className="btn btn-outline-danger ms-3"
+                to="/register"
+                onClick={closeNavbar}
+              >
+                Register
+              </NavLink>
+              <NavLink
+                className="btn btn-danger ms-2"
+                to="/signup"
+                onClick={closeNavbar}
+              >
+                Sign Up
+              </NavLink>
+            </div>
+
+            {/* Mobile Toggle */}
+            <button
+              className="navbar-toggler d-lg-none"
+              type="button"
+              onClick={toggleNavbar}
             >
-              Register
-            </NavLink>
-            <NavLink
-              className="btn btn-danger ms-2"
-              to="/signup"
-              onClick={closeNavbar}
-            >
-              Sign Up
-            </NavLink>
+              <span className="navbar-toggler-icon"></span>
+            </button>
           </div>
+        </nav>
 
-          {/* Mobile Toggle */}
-          <button
-            className="navbar-toggler d-lg-none"
-            type="button"
-            onClick={toggleNavbar}
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+        {/* Mobile Side Drawer */}
+        <div
+          className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
+          onClick={closeNavbar}
+        >
+          <ul className="list-unstyled p-4">
+            <li>
+              <NavLink className="nav-link" to="/" onClick={closeNavbar}>
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
+                About Us
+              </NavLink>
+            </li>
+            <li>
+              <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
+                Contact
+              </NavLink>
+            </li>
+            <li className="mt-3">
+              <NavLink
+                className="btn btn-outline-danger w-100 mb-2"
+                to="/register"
+                onClick={closeNavbar}
+              >
+                Register
+              </NavLink>
+              <NavLink
+                className="btn btn-danger w-100"
+                to="/signup"
+                onClick={closeNavbar}
+              >
+                Sign Up
+              </NavLink>
+            </li>
+          </ul>
         </div>
-      </nav>
 
-      {/* Mobile Side Drawer */}
-      <div
-  className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
-  onClick={closeNavbar}
->
-    
-        <ul className="list-unstyled p-4">
-          <li>
-            <NavLink className="nav-link" to="/" onClick={closeNavbar}>
-              Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
-              About Us
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
-              Contact
-            </NavLink>
-          </li>
-          <li className="mt-3">
-            <NavLink
-              className="btn btn-outline-danger w-100 mb-2"
-              to="/register"
-              onClick={closeNavbar}
-            >
-              Register
-            </NavLink>
-            <NavLink
-              className="btn btn-danger w-100"
-              to="/signup"
-              onClick={closeNavbar}
-            >
-              Sign Up
-            </NavLink>
-          </li>
-        </ul>
-      </div>
+        {/* Overlay */}
+        {isOpen && (
+          <div className="overlay d-lg-none" onClick={closeNavbar}></div>
+        )}
 
-      {/* Overlay */}
-      {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
-
-      {/* Routes - all full width */}
-      <main className="main-wrapper full-width">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<Sign />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/addjob" element={<AddJob />} />
-          <Route path="/view-applicants" element={<ViewJobApplicants />} />
+        {/* Main Content - takes all remaining height */}
+        <main className="main-wrapper flex-grow-1 py-3">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<Sign />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/addjob" element={<AddJob />} />
+            <Route path="/view-applicants" element={<ViewJobApplicants />} />
             <Route path="/userProfile" element={<UserProfile />} />
-          
-          <Route
-            path="/adminhome"
-            element={
-              <PrivateRoute allowedRole="admin">
-                <Adminhome />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/adminhome/addhr"
-            element={
-              <PrivateRoute allowedRole="admin">
-                <AddHR />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/adminhome/viewshr"
-            element={
-              <PrivateRoute allowedRole="admin">
-                <ViewHR />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/hrdashboard"
-            element={
-              <PrivateRoute allowedRole="hr">
-                <HRDashboard />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-light text-center py-3 border-top mt-4">
-        <p className="mb-0 small text-muted">
-          © {new Date().getFullYear()} QuickStart Career. All Rights Reserved.
-        </p>
-      </footer>
+            {/* Admin routes */}
+            <Route
+              path="/adminhome"
+              element={
+                <PrivateRoute allowedRole="admin">
+                  <Adminhome />
+                </PrivateRoute>
+              }
+            >
+              <Route path="addhr" element={<AddHR />} />
+              <Route path="viewshr" element={<ViewHR />} />
+              <Route path="application" element={<ViewJobApplicants />} />
+              <Route path="register-student" element={<Register />} />
+            </Route>
+
+            {/* HR Dashboard */}
+            <Route
+              path="/hrdashboard"
+              element={
+                <PrivateRoute allowedRole="hr">
+                  <HRDashboard />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </main>
+
+      
+      </div>
 
       {/* Custom CSS */}
       <style>{`
-        .main-wrapper.full-width {
-          width: 100%;
-          padding: 0 15px; /* horizontal padding for responsiveness */
-          margin: 0;
-        }
         .side-drawer {
           position: fixed;
           top: 0;
-          left: -200px;   
+          left: -200px;
           width: 150px;
           height: 100%;
           background: #fff;
