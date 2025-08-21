@@ -81,7 +81,7 @@ export default function App() {
 
       {/* Mobile Side Drawer */}
       <div
-        className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
+        className={side-drawer ${isOpen ? "open" : ""} d-lg-none}
         onClick={closeNavbar}
       >
         <ul className="list-unstyled p-4">
