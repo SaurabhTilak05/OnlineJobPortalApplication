@@ -56,17 +56,15 @@ exports.addHr = (hr_name, company_name, email, phone) => {
 };
 
 // getAll hr in the table 
-exports.getHr=()=>{
-    return new Promise((resolve,reject)=>{
-        db.query("select * from hr ",(err,result)=>{
-            if(err){
-                reject(err);
-            }else{
-                resolve(result);
-            }
-        });
-    });
+exports.getHr = async () => {
+  try {
+    const [rows] = await db.query("SELECT * FROM hr");
+    return rows;
+  } catch (err) {
+    throw err;
+  }
 };
+
 
 
 // login the hr with email and password
