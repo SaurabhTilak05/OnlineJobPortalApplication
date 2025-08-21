@@ -5,17 +5,16 @@ class AddJObService {
         });
     } 
 
+      getAllJobs() {
+         return axios.get("http://localhost:8080/viewAllJobs");
+      }
+
 
     
     contactUs(cont){
       return axios.post("http://localhost:8080/contact",cont ,{
       });
     }
-
-
-     getAllJobs() {
-    return axios.get("http://localhost:8080/viewAllJobs");
-  }
 
 
     AddHR(hrdata){
@@ -25,9 +24,7 @@ class AddJObService {
       
     }
 
-     getAllJobs() {
-    return axios.get("http://localhost:8080/viewAllJobs");
-  }
+
 
 }
 export default new AddJObService();

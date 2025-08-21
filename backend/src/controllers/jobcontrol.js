@@ -1,75 +1,110 @@
+let jobctrl = require("../models/jobmodel.js");
 
-let jobctrl=require("../models/jobmodel.js");
+// ✅ Add job
+exports.addingJob = async (req, res) => {
+  try {
+    const {
+      hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline,  } = req.body;
 
-exports.addingJob=(req,res)=>{
-    let {hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline}=req.body;
-    let Promise=jobctrl.addJob(hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)
-    Promise.then((result)=>{
-    res.send(result);
-    }).catch((err)=>{
-    res.send(err);
-    })
-}
+    const result = await jobctrl.addJob(  hr_id,  title,  company,  opening,  experience_required,  location,  package,  skills_required, description,  deadline );
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
+// ✅ Get all jobs
+exports.getAllJobs = async (req, res) => {
+  try {
+    const result = await jobctrl.getAllJob();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
-exports.getAllJob=(req,res)=>{
-    let promise=jobctrl.getallJobs();
-    promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    });
-}
+// ✅ Get job by ID
+exports.getJobById = async (req, res) => {
+  try {
+    const { job_id } = req.body;
+    const result = await jobctrl.getJobById(job_id);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
-exports.getJobById=(req,res)=>{
-    let {job_id}=req.body;
-    let Promise=jobctrl.getJobById(job_id);
-   Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    });
-}
+// ✅ Update job by ID
+exports.UpdateJobById = async (req, res) => {
+  try {
+    const {
+      title,
+      company,
+      opening,
+      experience_required,
+      location,
+      package,
+      skills_required,
+      description,
+      deadline,
+      job_id,
+    } = req.body;
 
-exports.UpdateJobById=(req,res)=>{
-    let { title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id}=req.body;
-    let Promise=jobctrl.updateJob(title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id);
-    Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
+    const result = await jobctrl.updateJob(
+      title,
+      company,
+      opening,
+      experience_required,
+      location,
+      package,
+      skills_required,
+      description,
+      deadline,
+      job_id
+    );
 
-}
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
-exports.getDeleteJob=(req, res)=>{
-    let {job_id}=req.body;
-    let Promise=jobctrl.deleteJob(job_id);
-    Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
-}
- 
-exports.searchJobByTitle=(req,res)=>{
-    let {title}=req.body;
-    let Promise=jobctrl.searchByTitle(title);
-    Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
-}
+// ✅ Delete job by ID
+exports.getDeleteJob = async (req, res) => {
+  try {
+    const { job_id } = req.body;
+    const result = await jobctrl.deleteJob(job_id);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
+// ✅ Search job by title
+exports.searchJobByTitle = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const result = await jobctrl.searchByTitle(title);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
-//this api for the seacrh job by student 
-exports.jobbylocation=(req,res)=>{
-    let {location}=req.body;
-    let Promise=jobctrl.jobbyLocation(location);
-    Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
-}
+// ✅ Search job by location (for students)
+exports.jobbylocation = async (req, res) => {
+  try {
+    const { location } = req.body;
+    const result = await jobctrl.jobbyLocation(location);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
