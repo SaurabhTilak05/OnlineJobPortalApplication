@@ -100,8 +100,8 @@ router.get("/viewjobbylocation",jobctrl.jobbylocation);
 // Add data in job table 
 router.post("/AddJob",jobctrl.addingJob);
 // get all jobs 
-router.get("/viewAllJobs",jobctrl.getAllJob);
-// get job by ID
+router.get("/viewAllJobs",jobctrl.getAllJobs);
+// get job by ID//viewAllJobs
 router.get("/getJobById",jobctrl.getJobById);
 // uodate the job 
 router.put("/updateJob",jobctrl.UpdateJobById);

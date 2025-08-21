@@ -5,6 +5,10 @@ class AddJObService {
         });
     } 
 
+      getAllJobs() {
+         return axios.get("http://localhost:8080/viewAllJobs");
+      }
+
 
     
     contactUs(cont){

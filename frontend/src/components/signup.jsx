@@ -1,4 +1,3 @@
-
 // src/components/Sign.jsx
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -29,11 +28,9 @@ export default function Sign() {
 
     try {
       setLoading(true);
-
       let res;
 
       if (role === "admin") {
-
         // ✅ Admin login → backend expects username + password
         res = await AdminAuthService.login({ username, password });
       } else if (role === "hr") {
@@ -43,19 +40,9 @@ export default function Sign() {
           password,
         });
       } else {
-
-        // Admin login
-        res = await AdminAuthService.login({ username, password });
-      } else if (role === "hr") {
-        // HR login (if backend expects email + phone instead of username + password, change here)
-        res = await AdminAuthService.hrLogin({ email: username, phone: password });
-      } else if (role === "user") {
-
         alert("User login not implemented yet");
         return;
       }
-
-
 
       // ✅ Save token & role for PrivateRoute check
       if (res.token && res.role) {
@@ -73,28 +60,6 @@ export default function Sign() {
       } else if (res.role === "user") {
         navigate("/user-dashboard");
       }
-
-
-      const res = await AdminAuthService.login({ username, password, role });
-
-      // Save token & role
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("role", res.role);
-
-
-      // Save token & role in localStorage
-      if (res?.token && res?.role) {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("role", res.role);
-
-        // Redirect based on role
-        if (res.role === "admin") navigate("/adminhome");
-        else if (res.role === "hr") navigate("/hrdashbord");
-        else if (res.role === "user") navigate("/user-dashboard");
-      } else {
-        alert("Invalid response from server");
-      }
-
 
     } catch (err) {
       console.error("Login error:", err);

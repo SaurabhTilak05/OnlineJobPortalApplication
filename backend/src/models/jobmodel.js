@@ -1,106 +1,87 @@
-const { resolveInclude, promiseImpl } = require("ejs");
-let db=require("../../db.js");
+let db = require("../../db.js");
 
+// Add Job
+exports.addJob = async (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) => {
+  try {
+    const [result] = await db.query(
+      `INSERT INTO jobs 
+        (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline]
+    );
+    return { message: "Job Added Successfully", insertId: result.insertId };
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.addJob=(hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)=>{
-    return new Promise((resolve, reject)=>{
-        db.query("INSERT into jobs (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) VALUES (?, ?,?,?,?,?,?,?,?,?)",
-            [hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline],
-            (err,result)=>{
-                if(err){
-                    return reject("Job Not Added");
-                }
-                else{
-                    return resolve("Job Added Sucessfull..........");
-                }
-            }
-        )
-    })
-}
+//  Get All Jobs
+exports.getAllJob = async () => {
+  try {
+    const [rows] = await db.query("SELECT * FROM jobs ORDER BY created_at DESC");
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
 
+//  Get Job by ID
+exports.getJobById = async (job_id) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM jobs WHERE job_id = ?", [job_id]);
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.getallJobs=()=>{
-    return new Promise((resolve, reject)=>{
-        db.query("select *from jobs",(err, result)=>{
-            if(err)
-            {
-                return reject("Something is Wrong....");
-            }
-            else{
-                return resolve(result);
-            }
-        })
-    })
-}
+//  Update Job
+exports.updateJob = async (title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id) => {
+  try {
+    const [result] = await db.query(
+      `UPDATE jobs 
+       SET title=?, company=?, opening=?, experience_required=?, location=?, package=?, skills_required=?, description=?, deadline=? 
+       WHERE job_id=?`,
+      [title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id]
+    );
+    return { message: "Job Updated Successfully", affectedRows: result.affectedRows };
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.getJobById=(job_id)=>{
-        return new Promise((resolve, reject)=>{
-            db.query("select *from jobs where job_id=?",[job_id],(err,result)=>{
-                if(err){
-                    return reject("Data Not found...");
-                }
-                else{
-                    return resolve(result);
-                }
-            })
-        })
-}
+//  Delete Job
+exports.deleteJob = async (job_id) => {
+  try {
+    const [result] = await db.query("DELETE FROM jobs WHERE job_id = ?", [job_id]);
+    return { message: "Job Deleted Successfully", affectedRows: result.affectedRows };
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.updateJob=( title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id)=>{
-    return new Promise((resolve, reject)=>{
-        db.query("update jobs set title=?, company=?, opening=?, experience_required=?, location=?, package=?, skills_required=?, description=?, deadline=? where job_id=?",
-            [ title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id],(err,result)=>{
-            if(err){
-                return reject("Something is wrong...");
-            }
-            else{
-                return resolve(result);
-            }
-        });
-    })
-}
+//  Search by Title
+exports.searchByTitle = async (title) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT j.* 
+       FROM jobs j 
+       LEFT JOIN hr h ON j.hr_id = h.hr_id 
+       WHERE j.title = ?`,
+      [title]
+    );
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.deleteJob=(job_id)=>{
-    return new Promise((resolve, reject)=>{
-        db.query("delete from jobs where job_id=?",[job_id],(err, result)=>{
-            if(err){
-                return reject("Something is wrong...");
-            }
-            else{
-                return resolve("Delete Job successfull...");
-            }
-        })
-    })
-}
-
-exports.searchByTitle=(title)=>{
-     return new Promise((resolve, reject)=>{
-        db.query("select j.* from jobs j left join hr h on j.hr_id=h.hr_id  where title=?",[title],(err, result)=>{
-            if(err){
-                return reject("Something is wrong...");
-            }
-            else{
-                return resolve(result);
-            }
-        })
-    })
-}
-
-
-
-//this is for the search job by using location 
-
-exports.jobbyLocation=(location)=>{
-     return new Promise((resolve, reject)=>{
-        db.query("select  *from jobs where location=?",[location],(err, result)=>{
-            if(err){
-                return reject("Something is wrong...");
-            }
-            else{
-                return resolve(result);
-                console.log(result);
-
-            }
-        })
-    })
-}
+//  Search by Location
+exports.jobbyLocation = async (location) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM jobs WHERE location = ?", [location]);
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
