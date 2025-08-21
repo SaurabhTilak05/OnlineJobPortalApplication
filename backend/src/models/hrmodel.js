@@ -23,6 +23,10 @@ exports.createHR = async (hr_name, company_name, email, phone, hashedPassword, r
   return result;
 };
 
+exports.findByEmail = (email) => {
+  const sql = `SELECT * FROM hr WHERE email = ?`;
+  return db.promise().query(sql, [email]).then(([rows]) => rows);
+};
 
 // Get HR by ID (without password)
 exports.findById = async (id) => {
