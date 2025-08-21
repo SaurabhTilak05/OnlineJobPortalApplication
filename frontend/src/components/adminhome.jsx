@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";  // ✅ useNavigate imported
 
 import {
   FaUserPlus,
@@ -13,6 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Adminhome() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();   // ✅ hook for navigation
 
   const navItems = [
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
@@ -24,7 +25,14 @@ export default function Adminhome() {
       label: "Register Student",
     },
   ];
+
   const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/signup");   // ✅ redirect to signup
+  };
 
   return (
     <>
@@ -41,13 +49,20 @@ export default function Adminhome() {
           >
             <h2 className="m-0">🚀 Admin Dashboard</h2>
 
-            {/* Mobile toggle button */}
-            <button
-              className="btn btn-light d-md-none"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {sidebarOpen ? <FaTimes /> : <FaBars />}
-            </button>
+            <div className="d-flex align-items-center gap-3">
+              {/* Logout Button */}
+              <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+                Logout
+              </button>
+
+              {/* Mobile toggle button */}
+              <button
+                className="btn btn-light d-md-none"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+              >
+                {sidebarOpen ? <FaTimes /> : <FaBars />}
+              </button>
+            </div>
           </header>
 
           <div className="d-flex flex-grow-1">

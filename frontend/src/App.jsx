@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
@@ -14,18 +14,17 @@ import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 
-function AppContent() {
+export default function App() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
 
   return (
-    <>
+    <BrowserRouter>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div className="container d-flex justify-content-between align-items-center">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
           {/* Brand */}
           <NavLink
             className="navbar-brand fw-bold d-flex align-items-center"
@@ -82,9 +81,10 @@ function AppContent() {
 
       {/* Mobile Side Drawer */}
       <div
-        className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
-        onClick={closeNavbar}
-      >
+  className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
+  onClick={closeNavbar}
+>
+    
         <ul className="list-unstyled p-4">
           <li>
             <NavLink className="nav-link" to="/" onClick={closeNavbar}>
@@ -123,15 +123,8 @@ function AppContent() {
       {/* Overlay */}
       {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
 
-      {/* Routes */}
-      <main
-        className={
-          location.pathname.includes("dashboard") ||
-          location.pathname.includes("adminhome")
-            ? ""
-            : "container m-2"
-        }
-      >
+      {/* Routes - all full width */}
+      <main className="main-wrapper full-width">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Sign />} />
@@ -184,6 +177,11 @@ function AppContent() {
 
       {/* Custom CSS */}
       <style>{`
+        .main-wrapper.full-width {
+          width: 100%;
+          padding: 0 15px; /* horizontal padding for responsiveness */
+          margin: 0;
+        }
         .side-drawer {
           position: fixed;
           top: 0;
@@ -196,7 +194,7 @@ function AppContent() {
           z-index: 1050;
         }
         .side-drawer.open {
-          left: 0;   /* slide in from left */
+          left: 0;
         }
         .overlay {
           position: fixed;
@@ -208,14 +206,6 @@ function AppContent() {
           z-index: 1040;
         }
       `}</style>
-    </>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
     </BrowserRouter>
   );
 }

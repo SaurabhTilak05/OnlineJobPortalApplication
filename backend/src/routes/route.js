@@ -15,7 +15,7 @@ router.post("/addHr", hrCtrl.addHR1);
 
 
 router.post("/hr/login", hrCtrl.hrLogin);
-
+ 
 
 
 // Protected
