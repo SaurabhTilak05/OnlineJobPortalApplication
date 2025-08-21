@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const hrModel = require("../models/hrModel.js"); 
 const jwt = require("jsonwebtoken");
-
+const { sendEmail } = require("../services/sendEmail.js");
 const SECRET = process.env.JWT_SECRET || "mySecretKey";
 
 // Admin adds HR (phone will be used as password, stored hashed)
@@ -16,6 +16,9 @@ exports.addHR1 = async (req, res) => {
 
     // call model (await)
     const result = await hrModel.createHR(hr_name, company_name, email, phone, hashedPassword, role);
+
+     const message = `Hello ${hr_name},\n\nYour HR account has been created.\nUsername: ${email}\nPassword: ${phone}\n\nPlease change your password after first login.`;
+    await sendEmail(email, "HR Account Credentials", message);
 
     res.status(201).json({
       message: "HR added successfully",
