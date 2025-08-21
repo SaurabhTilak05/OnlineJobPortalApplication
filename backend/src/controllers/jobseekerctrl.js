@@ -1,6 +1,6 @@
 let jobsctrl = require("../models/jobseekermodel.js");
 
-// ✅ Register Seeker
+//  Register Seeker
 exports.regSeekers = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
@@ -11,7 +11,7 @@ exports.regSeekers = async (req, res) => {
   }
 };
 
-// ✅ Get All Seekers
+//  Get All Seekers
 exports.getSeeker = async (req, res) => {
   try {
     const result = await jobsctrl.getAllSeekers();
@@ -21,7 +21,7 @@ exports.getSeeker = async (req, res) => {
   }
 };
 
-// ✅ Login Job Seeker
+//  Login Job Seeker
 exports.getLogJobSeeker = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -32,7 +32,7 @@ exports.getLogJobSeeker = async (req, res) => {
   }
 };
 
-// ✅ Get User by ID
+//  Get User by ID
 exports.getUserById = async (req, res) => {
   try {
     const { seeker_id } = req.params;
@@ -49,7 +49,7 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// ✅ Apply for Job
+//  Apply for Job
 exports.applyJob = async (req, res) => {
   try {
     const { job_id, seeker_id } = req.body;
@@ -60,7 +60,7 @@ exports.applyJob = async (req, res) => {
   }
 };
 
-// ✅ Get All Applicants
+//  Get All Applicants
 exports.getApplicants = async (req, res) => {
   try {
     const result = await jobsctrl.getAllApplicant();
