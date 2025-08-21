@@ -28,7 +28,6 @@ export default function Sign() {
 
     try {
       setLoading(true);
-
       let res;
 
       if (role === "admin") {
@@ -45,7 +44,6 @@ export default function Sign() {
         return;
       }
 
-<<<<<<< HEAD
       // ✅ Save token & role for PrivateRoute check
       if (res.token && res.role) {
         localStorage.setItem("token", res.token);
@@ -62,14 +60,6 @@ export default function Sign() {
       } else if (res.role === "user") {
         navigate("/user-dashboard");
       }
-=======
-
-      const res = await AdminAuthService.login({ username, password, role });
-
-      // Save token & role
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("role", res.role);
->>>>>>> 16134febb61e1b690ebeff02152e9d97eb64612e
 
     } catch (err) {
       console.error("Login error:", err);
