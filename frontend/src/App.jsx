@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
+import UserProfile from "./components/userprofile.jsx";
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,6 +133,8 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/addjob" element={<AddJob />} />
           <Route path="/view-applicants" element={<ViewJobApplicants />} />
+            <Route path="/userProfile" element={<UserProfile />} />
+          
           <Route
             path="/adminhome"
             element={
