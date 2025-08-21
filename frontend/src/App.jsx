@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
@@ -14,14 +14,15 @@ import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 
-export default function App() {
+function AppContent() {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
 
   return (
-    <BrowserRouter>
+    <>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div className="container d-flex justify-content-between align-items-center">
@@ -81,7 +82,7 @@ export default function App() {
 
       {/* Mobile Side Drawer */}
       <div
-        className={side-drawer ${isOpen ? "open" : ""} d-lg-none}
+        className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
         onClick={closeNavbar}
       >
         <ul className="list-unstyled p-4">
@@ -123,50 +124,56 @@ export default function App() {
       {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
 
       {/* Routes */}
-     <main className={window.location.pathname.includes("dashboard") || window.location.pathname.includes("adminhome") ? "" : "container m-2"}>
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/signup" element={<Sign />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/about" element={<About />} />
-    <Route path="/contact" element={<Contact />} />
-    <Route path="/addjob" element={<AddJob />} />
-    <Route path="/view-applicants" element={<ViewJobApplicants />} />
-    <Route
-      path="/adminhome"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <Adminhome />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/adminhome/addhr"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <AddHR />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/adminhome/viewshr"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <ViewHR />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/hrdashboard"
-      element={
-        <PrivateRoute allowedRole="hr">
-          <HRDashboard />
-        </PrivateRoute>
-      }
-    />
-  </Routes>
-</main>
-
+      <main
+        className={
+          location.pathname.includes("dashboard") ||
+          location.pathname.includes("adminhome")
+            ? ""
+            : "container m-2"
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Sign />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/addjob" element={<AddJob />} />
+          <Route path="/view-applicants" element={<ViewJobApplicants />} />
+          <Route
+            path="/adminhome"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <Adminhome />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminhome/addhr"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <AddHR />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminhome/viewshr"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <ViewHR />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/hrdashboard"
+            element={
+              <PrivateRoute allowedRole="hr">
+                <HRDashboard />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </main>
 
       {/* Footer */}
       <footer className="bg-light text-center py-3 border-top mt-4">
@@ -176,32 +183,39 @@ export default function App() {
       </footer>
 
       {/* Custom CSS */}
-     <style>{`
-    .side-drawer {
-      position: fixed;
-      top: 0;
-      left: -200px;   
-      width: 150px;
-      height: 100%;
-      background: #fff;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-      transition: left 0.3s ease-in-out;
-      z-index: 1050;
-    }
-    .side-drawer.open {
-      left: 0;   /* slide in from left */
-    }
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.3);
-      z-index: 1040;
-  }
-`}</style>
+      <style>{`
+        .side-drawer {
+          position: fixed;
+          top: 0;
+          left: -200px;   
+          width: 150px;
+          height: 100%;
+          background: #fff;
+          box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+          transition: left 0.3s ease-in-out;
+          z-index: 1050;
+        }
+        .side-drawer.open {
+          left: 0;   /* slide in from left */
+        }
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.3);
+          z-index: 1040;
+        }
+      `}</style>
+    </>
+  );
+}
 
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
