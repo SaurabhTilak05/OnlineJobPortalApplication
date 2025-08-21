@@ -24,7 +24,7 @@ export default function App() {
     <BrowserRouter>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div className="container d-flex justify-content-between align-items-center">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
           {/* Brand */}
           <NavLink
             className="navbar-brand fw-bold d-flex align-items-center"
@@ -122,51 +122,50 @@ export default function App() {
       {/* Overlay */}
       {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
 
-      {/* Routes */}
-     <main className={window.location.pathname.includes("dashboard") || window.location.pathname.includes("adminhome") ? "" : "container m-2"}>
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/signup" element={<Sign />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/about" element={<About />} />
-    <Route path="/contact" element={<Contact />} />
-    <Route path="/addjob" element={<AddJob />} />
-    <Route path="/view-applicants" element={<ViewJobApplicants />} />
-    <Route
-      path="/adminhome"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <Adminhome />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/adminhome/addhr"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <AddHR />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/adminhome/viewshr"
-      element={
-        <PrivateRoute allowedRole="admin">
-          <ViewHR />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/hrdashboard"
-      element={
-        <PrivateRoute allowedRole="hr">
-          <HRDashboard />
-        </PrivateRoute>
-      }
-    />
-  </Routes>
-</main>
-
+      {/* Routes - all full width */}
+      <main className="main-wrapper full-width">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Sign />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/addjob" element={<AddJob />} />
+          <Route path="/view-applicants" element={<ViewJobApplicants />} />
+          <Route
+            path="/adminhome"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <Adminhome />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminhome/addhr"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <AddHR />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminhome/viewshr"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <ViewHR />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/hrdashboard"
+            element={
+              <PrivateRoute allowedRole="hr">
+                <HRDashboard />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </main>
 
       {/* Footer */}
       <footer className="bg-light text-center py-3 border-top mt-4">
@@ -176,32 +175,36 @@ export default function App() {
       </footer>
 
       {/* Custom CSS */}
-     <style>{`
-    .side-drawer {
-      position: fixed;
-      top: 0;
-      left: -200px;   
-      width: 150px;
-      height: 100%;
-      background: #fff;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-      transition: left 0.3s ease-in-out;
-      z-index: 1050;
-    }
-    .side-drawer.open {
-      left: 0;   /* slide in from left */
-    }
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.3);
-      z-index: 1040;
-  }
-`}</style>
-
+      <style>{`
+        .main-wrapper.full-width {
+          width: 100%;
+          padding: 0 15px; /* horizontal padding for responsiveness */
+          margin: 0;
+        }
+        .side-drawer {
+          position: fixed;
+          top: 0;
+          left: -200px;   
+          width: 150px;
+          height: 100%;
+          background: #fff;
+          box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+          transition: left 0.3s ease-in-out;
+          z-index: 1050;
+        }
+        .side-drawer.open {
+          left: 0;
+        }
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.3);
+          z-index: 1040;
+        }
+      `}</style>
     </BrowserRouter>
   );
 }
