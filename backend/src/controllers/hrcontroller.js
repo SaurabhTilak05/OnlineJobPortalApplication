@@ -118,7 +118,7 @@ exports.getProfile = async (req, res) => {
 exports.registerHr = (req, res) => {
     const { hr_name, company_name, email,phone } = req.body || {};
 
-    hrctrl.addHr(hr_name, company_name, email, phone )
+    hrModel.addHr(hr_name, company_name, email, phone )
         .then((result) => {
             return res.status(200).json({ message: result });
         })
@@ -129,15 +129,14 @@ exports.registerHr = (req, res) => {
 };
 
 // get ALL HRS
-exports.getHrs=(req,res)=>{
-    let promise=hrctrl.getHr();
-    promise.then((result)=>{
-       res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    });
-}
-
+exports.getHrs = async (req, res) => {
+  try {
+    const result = await hrModel.getHr();  // wait for promise to resolve
+    res.send(result);
+  } catch (err) {
+    res.status(500).send(err);  // better to send proper error code
+  }
+};
 
 
 
@@ -147,7 +146,7 @@ exports.getHrs=(req,res)=>{
 
 exports.loginHr=(req, res)=>{
     let {email, password}=req.body;
-    let Promice=hrctrl.hrLogin(email,password);
+    let Promice=hrModel.hrLogin(email,password);
     Promice.then((result)=>{
         res.send(result);
     }).catch((err)=>{
@@ -170,7 +169,7 @@ exports.deleteHRByID = (req, res) => {
   const { hr_id } = req.params;
 
   // ✅ using Promise
-  let promise=hrctrl.delHrById(hr_id);
+  let promise=hrModel.delHrById(hr_id);
    promise.then((result) => {
       res.status(200).json({ message: result });
     })
