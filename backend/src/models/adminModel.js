@@ -116,19 +116,24 @@ exports.viewallApplication=()=>{
     });
 };
 
-exports.contUs=(full_name,email,message)=>{
-    return new Promise((resolve,reject)=>{
-        db.query("insert into contact_us (full_name,email,message) values (?,?,?)",[full_name,email,message],(err,result)=>{
-            if(err)
-            {
-                return reject("Your Response not Send");
-            }
-            else{
-                return resolve("Send Your Response Sucessfull...");
-            }
-        })
-    })
-}
+// Using async/await
+exports.contUs = async (full_name, email, message) => {
+  try {
+    const [result] = await db.execute(
+      "INSERT INTO contact_us (full_name, email, message) VALUES (?, ?, ?)",
+      [full_name, email, message]
+    );
+    return {
+      message: "Your Response Sent Successfully ✅",
+      createdAt: new Date(),
+    };
+  } catch (err) {
+    console.error("MySQL Error:", err);
+    throw new Error("Your Response not Sent ❌");
+  }
+};
+
+
 exports.getAllCont=()=>{
     return new Promise((resolve, reject)=>{
           db.query("select * from contact_us ",(err,result)=>{

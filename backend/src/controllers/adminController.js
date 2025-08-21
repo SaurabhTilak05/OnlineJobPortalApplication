@@ -120,14 +120,15 @@ exports.viewallapplicant = async (req, res) => {
 // ----------------- CONTACT -----------------
 exports.contactUs = async (req, res) => {
   try {
-    let { full_name, email, message } = req.body;
-    let result = await adminCtrl.contUs(full_name, email, message);
+    const { full_name, email, message } = req.body;
+    const result = await adminCtrl.contUs(full_name, email, message);
     res.status(201).json({ message: "Message saved successfully", result });
   } catch (err) {
     console.error("Error saving contact:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err.message || "Internal Server Error" });
   }
 };
+
 
 exports.getcontact = async (req, res) => {
   try {
