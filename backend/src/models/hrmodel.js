@@ -153,3 +153,24 @@ exports.getSched=()=>{
         })
      })
 }
+
+
+// ------------ adminhome page---------------------
+
+// Count HRs
+exports.getCountHr = async () => {
+  const [rows] = await db.query("SELECT COUNT(*) AS total FROM hr");
+  return rows[0]; // { total: X }
+};
+
+// Count Students
+exports.getCountStudents = async () => {
+  const [rows] = await db.query("SELECT COUNT(*) AS total FROM job_seekers");
+  return rows[0];
+};
+
+// Count Applications
+exports.getCountApplications = async () => {
+  const [rows] = await db.query("SELECT COUNT(*) AS total FROM applications");
+  return rows[0];
+};

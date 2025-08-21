@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
@@ -14,6 +14,8 @@ import AddHR from "./components/AddHR.jsx";
 import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 import UserProfile from "./components/userprofile.jsx";
+import AdminDashboard from "./components/admindashboard.jsx";
+
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -136,7 +138,7 @@ export default function App() {
             <Route path="/addjob" element={<AddJob />} />
             <Route path="/view-applicants" element={<ViewJobApplicants />} />
             <Route path="/userProfile" element={<UserProfile />} />
-
+           
             {/* Admin routes */}
             <Route
               path="/adminhome"
@@ -145,7 +147,9 @@ export default function App() {
                   <Adminhome />
                 </PrivateRoute>
               }
-            >
+            > 
+             <Route index element={<Navigate to="admindashboard" replace />} />
+             <Route path="admindashboard" element={<AdminDashboard/>} />
               <Route path="addhr" element={<AddHR />} />
               <Route path="viewshr" element={<ViewHR />} />
               <Route path="application" element={<ViewJobApplicants />} />

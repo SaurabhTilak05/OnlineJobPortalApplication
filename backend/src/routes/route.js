@@ -54,9 +54,11 @@ router.get("/getallcontact", verifyToken, verifyAdmin, adCtrl.getcontact);
 
 
 
+//admin homepage sathi kahi logic 
 
-
-
+router.get("/count/hr", hrCtrl.countHr);
+router.get("/count/students", hrCtrl.countStudents);
+router.get("/count/applications", hrCtrl.countApplications);
 
 // Contact Up 
 router.post("/contact",adCtrl.contactUs);
