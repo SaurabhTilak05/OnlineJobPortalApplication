@@ -15,24 +15,30 @@ export default function AddHR() {
   };
 
   // handle form submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ // handle form submit
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      await AddJObService.AddHR(formData); // ✅ use service
-      alert("HR Added Successfully ✅");
+  try {
+    // Call backend via service
+    await AddJObService.AddHR(formData);
 
-      setFormData({
-        hr_name: "",
-        company_name: "",
-        email: "",
-        phone: "",
-      });
-    } catch (err) {
-      console.error("Error adding HR:", err);
-      alert("Failed to add HR ❌");
-    }
-  };
+    // Notify success & email sent
+    alert(`HR Added Successfully ✅\nEmail sent to ${formData.email}`);
+
+    // Reset form
+    setFormData({
+      hr_name: "",
+      company_name: "",
+      email: "",
+      phone: "",
+    });
+  } catch (err) {
+    console.error("Error adding HR:", err);
+    alert("Failed to add HR ❌");
+  }
+};
+
 
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
