@@ -180,7 +180,7 @@ exports.deleteHRByID = (req, res) => {
 // for the delete student by hr
 exports.DeleteStudByID = (req, res) => {
     let {seeker_id } = req.params;
-    hrctrl.deleteStudById(seeker_id)
+    hrModel.deleteStudById(seeker_id)
         .then((result) => res.send(result))
         .catch((err) => res.send(err));
 };
@@ -188,7 +188,7 @@ exports.DeleteStudByID = (req, res) => {
 // Scheduling the job interview
 exports.getSchedules=(req,res)=>{
     let { job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks}=req.body;
-    hrctrl.getSchedule(job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks)
+    hrModel.getSchedule(job_id, seeker_id, hr_id, interview_mode, interview_date, interview_time,interview_link, location, status, remarks)
     .then((result)=>{
         res.send(result);
     }).catch((err)=>{
@@ -198,10 +198,40 @@ exports.getSchedules=(req,res)=>{
 
 // Get Schedule 
 exports.getshed=(req,res)=>{
-    let Promice=hrctrl.getSched();
+    let Promice=hrModel.getSched();
     Promice.then((result)=>{
        res.send(result);
     }).catch((err)=>{
         res.send(err);
     });
 }
+
+// -------------- admin home page-------------------------
+
+
+exports.countHr = async (req, res) => {
+  try {
+    const result = await hrModel.getCountHr();
+    res.json(result); // { total: X }
+  } catch (err) {
+    res.status(500).json({ error: err.message || err });
+  }
+};
+
+exports.countStudents = async (req, res) => {
+  try {
+    const result = await hrModel.getCountStudents();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message || err });
+  }
+};
+
+exports.countApplications = async (req, res) => {
+  try {
+    const result = await hrModel.getCountApplications();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message || err });
+  }
+};
