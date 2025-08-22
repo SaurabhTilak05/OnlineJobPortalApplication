@@ -1,17 +1,31 @@
 let db = require("../../db.js");
 
 // ✅ Add hr in database
-exports.regSeeker = async (name, email, password, phone, address) => {
-  try {
-    await db.query(
-      "INSERT INTO job_seekers (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)",
-      [name, email, password, phone, address]
-    );
-    return "Job seeker saved successfully";
-  } catch (err) {
-    throw new Error("Job seeker not saved");
-  }
+exports.create = async (name, email, hashedPassword, phone, address) => {
+  await db.query(
+    "INSERT INTO job_seekers (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)",
+    [name, email, hashedPassword, phone, address]
+  );
 };
+
+
+
+exports.findByEmail = async (email) => {
+  const [rows] = await db.query("SELECT * FROM job_seekers WHERE email = ?", [email]);
+  return rows[0];
+};
+
+exports.findById = async (id) => {
+  const [rows] = await db.query(
+    "SELECT seeker_id, name, email, phone, address, created_at FROM job_seekers WHERE seeker_id = ?",
+    [id]
+  );
+  return rows[0];
+};
+
+
+
+
 
 // ✅ Get all job seekers 
 exports.getAllSeekers = async () => {
