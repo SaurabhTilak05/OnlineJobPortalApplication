@@ -135,7 +135,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/addjob" element={<AddJob />} />
+         
             <Route path="/view-applicants" element={<ViewJobApplicants />} />
             <Route path="/userProfile" element={<UserProfile />} />
            
@@ -143,10 +143,7 @@ export default function App() {
             <Route
               path="/adminhome"
               element={
-                <PrivateRoute allowedRole="admin">
-                  <Adminhome />
-                </PrivateRoute>
-              }
+                <PrivateRoute allowedRole="admin"> <Adminhome /> </PrivateRoute> }
             > 
              <Route index element={<Navigate to="admindashboard" replace />} />
              <Route path="admindashboard" element={<AdminDashboard/>} />
@@ -157,14 +154,13 @@ export default function App() {
             </Route>
 
             {/* HR Dashboard */}
-            <Route
-              path="/hrdashboard"
-              element={
-                <PrivateRoute allowedRole="hr">
-                  <HRDashboard />
-                </PrivateRoute>
-              }
-            />
+           <Route
+  path="/hrdashboard"
+  element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}
+>
+  <Route path="addjob" element={<AddJob />} />
+</Route>
+
           </Routes>
         </main>
 
