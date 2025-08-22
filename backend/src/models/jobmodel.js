@@ -1,19 +1,37 @@
 let db = require("../../db.js");
 
 // Add Job
-exports.addJob = async (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) => {
+// models/jobmodel.js
+
+
+exports.addJob = async (data) => {
   try {
-    const [result] = await db.query(
-      `INSERT INTO jobs 
-        (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline]
-    );
-    return { message: "Job Added Successfully", insertId: result.insertId };
+    const sql = `
+      INSERT INTO jobs 
+        (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      data.hr_id,
+      data.title,
+      data.company,
+      data.opening,
+      data.experience_required,
+      data.location,
+      data.package,
+      data.skills_required,
+      data.description,
+      data.deadline,
+    ];
+
+    const [result] = await db.query(sql, values);
+    return { insertId: result.insertId };
   } catch (err) {
     throw err;
   }
 };
+
 
 //  Get All Jobs
 exports.getAllJob = async () => {
