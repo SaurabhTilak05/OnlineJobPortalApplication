@@ -63,12 +63,11 @@ exports.hrLogin = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({
-      message: "HR login successful",
-      role: hr.role,
-      hrId: hr.hr_id,
-      token
-    });
+   res.json({
+  token,
+  role: "hr",
+  hr_id: hr.hr_id   // 👈 must send this
+});
   } catch (err) {
     console.error("Error during HR login:", err);
     res.status(500).json({ message: "Server error" });
@@ -76,6 +75,23 @@ exports.hrLogin = async (req, res) => {
 };
 
 
+// ---------- new change -----------------------
+
+exports.addingJob = (req, res) => {
+  const { title, company, opening, experience_required, location, package, skills_required, description, deadline,hr_id } = req.body;
+  // const hr_id = req.user.hr_id;   // ✅ From token, not from body
+
+  if (!hr_id) {
+    return res.status(403).json({ message: "Access denied. Only HR can post jobs." });
+  }
+
+  hrModel.addJob({ title, company, opening, experience_required, location, package, skills_required, description, deadline, hr_id })
+    .then(() => res.status(201).json({ message: "Job saved successfully" }))
+    .catch(err => {
+      console.error("Job save error:", err);
+      res.status(500).json({ message: "Failed to save job" });
+    });
+};
 
 
 

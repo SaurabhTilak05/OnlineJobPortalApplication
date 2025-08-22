@@ -21,6 +21,14 @@ router.post("/hr/login", hrCtrl.hrLogin);
 // Protected
 router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
 
+
+
+router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
+
+
+
+
+
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
@@ -88,7 +96,7 @@ router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 router.get("/viewjobbylocation",jobctrl.jobbylocation);
 
 // Add data in job table 
-router.post("/AddJob",jobctrl.addingJob);
+// router.post("/AddJob", jobctrl.addingJob);
 // get all jobs 
 router.get("/viewAllJobs",jobctrl.getAllJobs);
 // get job by ID//viewAllJobs

@@ -8,12 +8,17 @@ class AdminAuthService {
   }
 
   
-  hrLogin(data) {
-    console.log(data);
-    
-    return axios.post("http://localhost:8080/hr/login", data)
-    .then(res => res.data);
-  }
+hrLogin(data) {
+  return axios.post("http://localhost:8080/hr/login", data)
+    .then(res => {
+      // Save HR info in localStorage for later
+      localStorage.setItem("hrId", res.data.hr_id); // store numeric hr_id
+      localStorage.setItem("role", "hr"); // store role
+      return res.data;
+    });
+}
+
+
 
 
   logout() {

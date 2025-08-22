@@ -1,18 +1,25 @@
 let jobctrl = require("../models/jobmodel.js");
 
-// ✅ Add job
-exports.addingJob = async (req, res) => {
-  try {
-    const {
-      hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline,  } = req.body;
 
-    const result = await jobctrl.addJob(  hr_id,  title,  company,  opening,  experience_required,  location,  package,  skills_required, description,  deadline );
-    res.status(200).json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Something went wrong", error: err });
+// Add Job
+exports.addingJob = (req, res) => {
+  const { title, company, opening, experience_required, location, package, skills_required, description, deadline,hr_id } = req.body;
+  // const hr_id = req.user.hr_id;   // ✅ From token, not from body
+
+  if (!hr_id) {
+    return res.status(403).json({ message: "Access denied. Only HR can post jobs." });
   }
+
+  jobctrl.addJob({ title, company, opening, experience_required, location, package, skills_required, description, deadline, hr_id })
+    .then(() => res.status(201).json({ message: "Job saved successfully" }))
+    .catch(err => {
+      console.error("Job save error:", err);
+      res.status(500).json({ message: "Failed to save job" });
+    });
 };
+
+
+
 
 // ✅ Get all jobs
 exports.getAllJobs = async (req, res) => {
