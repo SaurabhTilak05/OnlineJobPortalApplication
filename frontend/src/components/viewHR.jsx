@@ -24,7 +24,10 @@ export default function ViewHR() {
 
   // ✅ Delete HR by id
   const deleteHR = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this HR?")) return;
+    if (!window.confirm("Are you sure you want to delete this HR?"))
+      {
+        Navigate("/ViewHR");
+      } ;
 
     try {
       await HRService.deleteHR(id);

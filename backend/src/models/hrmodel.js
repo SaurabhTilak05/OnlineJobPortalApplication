@@ -11,7 +11,7 @@ exports.findByEmail = async (email) => {
   return rows;
 };
 
-// Add HR
+// Add HR 
 
 
 exports.createHR = async (hr_name, company_name, email, phone, hashedPassword, role) => {
@@ -102,20 +102,18 @@ exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>
 
 
 //delete hr using its id 
-exports.delHrById = (hr_id) => {
-  return new Promise((resolve, reject) => {
-    db.query("DELETE FROM hr WHERE hr_id = ?", [hr_id], (err, result) => {
-      if (err) {
-        return reject("Hr Not Deleted...");
-      }
-      if (result.affectedRows === 0) {
-        return reject("HR not found");
-      }
-      return resolve("HR deleted successfully");
-    });
-  });
-};
+exports.delHrById = async (hr_id) => {
+  try {
+    const [result] = await db.query("DELETE FROM hr WHERE hr_id = ?", [hr_id]);
 
+    if (result.affectedRows === 0) {
+      throw "HR not found";
+    }
+    return "HR deleted successfully";
+  } catch (err) {
+    throw "Hr Not Deleted...";
+  }
+};
 
 // for the delete student by hr
 exports.deleteStudById = (seeker_id) => {
