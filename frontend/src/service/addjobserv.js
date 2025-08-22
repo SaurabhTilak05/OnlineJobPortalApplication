@@ -1,13 +1,13 @@
 import axios from "axios";
 class AddJObService {
-   addJob(jobdata) {
-      return axios.post("http://localhost:8080/AddJob", jobdata ,{
-        });
-    } 
+   addJob(jobData) {
+    return axios.post("http://localhost:8080/AddJob", jobData); // Ensure this matches backend
+  }
 
-      getAllJobs() {
-         return axios.get("http://localhost:8080/viewAllJobs");
-      }
+  // getAllJobs() {
+  //   return axios.get("http://localhost:8080/GetJobs"); // Example
+  // }
+
 
 
     

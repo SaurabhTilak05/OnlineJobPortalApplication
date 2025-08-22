@@ -22,7 +22,7 @@ router.post("/hr/login", hrCtrl.hrLogin);
 router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
 
 
-
+router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
 
 
 
@@ -100,7 +100,7 @@ router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 router.get("/viewjobbylocation",jobctrl.jobbylocation);
 
 // Add data in job table 
-router.post("/AddJob",jobctrl.addingJob);
+// router.post("/AddJob", jobctrl.addingJob);
 // get all jobs 
 router.get("/viewAllJobs",jobctrl.getAllJobs);
 // get job by ID//viewAllJobs

@@ -64,6 +64,37 @@ exports.addHr = (hr_name, company_name, email, phone) => {
     });
 };
 
+
+// --------------- new change ------------------------
+
+exports.addJob = async (data) => {
+  try {
+    const sql = `
+      INSERT INTO jobs 
+        (hr_id, title, company, opening, experience_required, location, package, skills_required, description, deadline)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      data.hr_id,
+      data.title,
+      data.company,
+      data.opening,
+      data.experience_required,
+      data.location,
+      data.package,
+      data.skills_required,
+      data.description,
+      data.deadline,
+    ];
+
+    const [result] = await db.query(sql, values);
+    return { insertId: result.insertId };
+  } catch (err) {
+    throw err;
+  }
+};
+
 // getAll hr in the table 
 exports.getHr = async () => {
   try {
