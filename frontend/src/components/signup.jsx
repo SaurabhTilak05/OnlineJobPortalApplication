@@ -36,7 +36,7 @@ export default function Sign() {
       } else if (role === "hr") {
         // ✅ HR login → backend also expects username + password
         res = await AdminAuthService.hrLogin({
-          username,
+          email: username,
           password,
         });
       } else {

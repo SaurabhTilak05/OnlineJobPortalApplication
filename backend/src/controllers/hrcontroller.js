@@ -38,12 +38,12 @@ exports.addHR1 = async (req, res) => {
 
 exports.hrLogin = async (req, res) => {
   try {
-    const { username, password } = req.body; // username = email, password = phone
-    console.log("username"+username+" password"+password);
-    console.log(req.body);
-    // Find HR by email
-    const result = await hrModel.findByEmail(username);
-    console.log("result is"+result);
+    const { email, password } = req.body; // must match frontend key
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and Password are required" });
+    }
+
+    const result = await hrModel.findByEmail(email); // send email to model
 
     if (result.length === 0) {
       return res.status(401).json({ message: "Invalid Email or Password" });
@@ -51,15 +51,15 @@ exports.hrLogin = async (req, res) => {
 
     const hr = result[0];
 
-    // phone number check (no bcrypt, direct match)
+    // phone check
     if (hr.phone.toString() !== password.toString()) {
       return res.status(401).json({ message: "Invalid Email or Password" });
     }
 
-    // Generate JWT
+    // JWT
     const token = jwt.sign(
       { id: hr.hr_id, email: hr.email, role: hr.role },
-      "mySecretKey",
+      process.env.JWT_SECRET || "mySecretKey",
       { expiresIn: "1h" }
     );
 
