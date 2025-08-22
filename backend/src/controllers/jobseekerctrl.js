@@ -1,15 +1,32 @@
 let jobsctrl = require("../models/jobseekermodel.js");
 
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 //  Register Seeker
+
 exports.regSeekers = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
-    const result = await jobsctrl.regSeeker(name, email, password, phone, address);
-    res.json(result);
+
+    const existingUser = await jobsctrl.findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await jobsctrl.create(name, email, hashedPassword, phone, address);
+
+    res.status(201).json({ message: "Job seeker registered successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message || "Error registering seeker" });
+    res.status(500).json({ message: "Error registering seeker", error: err.message });
   }
 };
+
+
+
+
+
 
 //  Get All Seekers
 exports.getSeeker = async (req, res) => {
@@ -22,15 +39,41 @@ exports.getSeeker = async (req, res) => {
 };
 
 //  Login Job Seeker
+
 exports.getLogJobSeeker = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const result = await jobsctrl.loginSeeker(email, password);
-    res.json(result);
+
+    const user = await jobsctrl.findByEmail(email);
+    if (!user) return res.status(401).json({ message: "Invalid email or password" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
+
+    const token = jwt.sign(
+      { id: user.seeker_id, email: user.email, role: "user" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ message: "Login successful", token });
   } catch (err) {
-    res.status(401).json({ error: err.message || "Invalid credentials" });
+    res.status(500).json({ message: "Error logging in", error: err.message });
   }
 };
+
+
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await jobsctrl.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching profile", error: err.message });
+  }
+};
+
+
 
 //  Get User by ID
 exports.getUserById = async (req, res) => {

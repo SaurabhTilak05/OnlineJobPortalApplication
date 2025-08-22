@@ -9,40 +9,23 @@ let email=require("../controllers/emailctrl.js");
 let router = express.Router();
 
 
+
  //hr authentication 
 const verifyToken1=require("../middlewares/Hrauthmiddleware.js");
+
+//user auth
+const { verifyUser } = require("../middlewares/userauthmiddleware.js");
+
 router.post("/addHr", hrCtrl.addHR1);
-
-
 router.post("/hr/login", hrCtrl.hrLogin);
- 
-
-
 // Protected
 router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
-
-
-
-
-
-
 
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
 router.post("/adminLogin",adCtrl.adminLogin);
 
-// // view all contacts
-// router.get("/getallcontact",adCtrl.getcontact);
-
-// //view all job  list to student
-// router.get("/viewAlljobforAdmin",adCtrl.viewAlljobforAdmin);
-
-// //search hr to admin
-// router.get("/SearchHRById",adCtrl.searchHrByid);
-
-// //veiw all application for the admin
-// router.get("/viewallapplications",adCtrl.viewallapplicant);
 
 
 // Protect admin-only APIs
@@ -93,6 +76,8 @@ router.post("/regJobSeeker",jobskrctrl.regSeekers);
 router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
+router.get("/profile", verifyUser, jobskrctrl.getProfile);
+
 // get job seeker by id
 router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 
