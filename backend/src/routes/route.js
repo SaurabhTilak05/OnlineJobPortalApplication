@@ -73,7 +73,7 @@ router.post("/AddHr", hrCtrl.registerHr);
 // view all Hr 
 router.get("/viewHr", hrCtrl.getHrs);
 //hr login with email and password
-router.post("/hrLogin",hrCtrl.loginHr);
+// router.post("/hrLogin",hrCtrl.loginHr);
 // update all fields 
 router.put("/UpdateHr",hrCtrl.updateHr);
 // Delete hr by Id

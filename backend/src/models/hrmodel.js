@@ -5,11 +5,11 @@ const db = require("../../db.js");
 
 // Find HR by email
 
-exports.findByEmail = async (email) => {
-  const sql = "SELECT * FROM hr WHERE email = ?";
-  const [rows] = await db.query(sql, [email]);
-  return rows;
-};
+// exports.findByEmail = async (email) => {
+//   const sql = "SELECT * FROM hr WHERE email = ?";
+//   const [rows] = await db.query(sql, [email]);
+//   return rows;
+// };
 
 // Add HR 
 
@@ -23,9 +23,14 @@ exports.createHR = async (hr_name, company_name, email, phone, hashedPassword, r
   return result;
 };
 
-exports.findByEmail = (email) => {
-  const sql = `SELECT * FROM hr WHERE email = ?`;
-  return db.promise().query(sql, [email]).then(([rows]) => rows);
+exports.findByEmail = async (email) => {
+  try {
+    const [rows] = await db.execute("SELECT * FROM hr WHERE email = ?", [email]);
+    return rows; // returns an array of HRs (0 or 1)
+  } catch (err) {
+    console.error("DB Error:", err);
+    throw err;
+  }
 };
 
 // Get HR by ID (without password)
@@ -72,19 +77,19 @@ exports.getHr = async () => {
 
 
 // login the hr with email and password
-exports.hrLogin=(email,password)=>{
-    return new Promise((resolve,reject)=>{
-        db.query("select *from hr where email=? and password=?",[email,password],(err,result)=>{
-               if( err || result.length === 0)
-            {
-                return reject("Invalid HR ..... ");
-            }
-            else{
-                return resolve("Hr Login Successfull.....");
-            }
-        })
-    })
-}
+// exports.hrLogin=(email,password)=>{
+//     return new Promise((resolve,reject)=>{
+//         db.query("select *from hr where email=? and password=?",[email,password],(err,result)=>{
+//                if( err || result.length === 0)
+//             {
+//                 return reject("Invalid HR ..... ");
+//             }
+//             else{
+//                 return resolve("Hr Login Successfull.....");
+//             }
+//         })
+//     })
+// }
 
 // update the hr data 
 exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>{
