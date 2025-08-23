@@ -100,7 +100,7 @@ export default function HRDashboard() {
               <div className="col-12 col-md-4">
                 <div className="card shadow-sm text-center border-0 rounded-4 bg-success text-white p-3">
                   <h6>Applicants</h6>
-                  <p className="fs-3">{jobs.reduce((sum, job) => sum + (job.applicants_count || 0), 0)}</p>
+                  <p className="fs-3">{jobs.reduce((sum, job) => sum + (job.applicant_count || 0), 0)}</p>
                 </div>
               </div>
               <div className="col-12 col-md-4">
@@ -131,7 +131,7 @@ export default function HRDashboard() {
                         <td>{index + 1}</td>
                         <td>{job.title}</td>
                         <td>{job.company}</td>
-                        <td>{job.applicants_count || 0}</td>
+                        <td>{job.applicant_count || 0}</td>
                         <td>{new Date(job.deadline).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })}</td>
                       </tr>
                     ))
