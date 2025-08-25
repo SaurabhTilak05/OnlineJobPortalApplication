@@ -79,7 +79,6 @@ exports.hrLogin = async (req, res) => {
 
 exports.addingJob = (req, res) => {
   const { title, company, opening, experience_required, location, package, skills_required, description, deadline,hr_id } = req.body;
-  // const hr_id = req.user.hr_id;   // ✅ From token, not from body
 
   if (!hr_id) {
     return res.status(403).json({ message: "Access denied. Only HR can post jobs." });

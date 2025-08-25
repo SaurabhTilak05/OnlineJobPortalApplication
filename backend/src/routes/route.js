@@ -22,7 +22,7 @@ router.post("/hr/login", hrCtrl.hrLogin);
 router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
 
 
-
+router.get("/viewAllJobs",verifyToken1,jobctrl.getAllJobs);
 router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
 
 
@@ -57,7 +57,7 @@ router.post("/contact",adCtrl.contactUs);
 
 // Hr routes
 router.post("/AddHr", hrCtrl.registerHr);
-router.get("/viewAllJobs",jobctrl.getAllJobs);
+
 
 
 

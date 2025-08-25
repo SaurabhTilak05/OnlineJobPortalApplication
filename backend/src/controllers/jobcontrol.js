@@ -24,8 +24,10 @@ exports.addingJob = (req, res) => {
 // ✅ Get all jobs
 exports.getAllJobs = async (req, res) => {
   try {
-    // const hrId = req.user.hr_id; 
-    const result = await jobctrl.getAllJob();
+    const hrId = req.user.id; // ✅ use `id` from token
+    if (!hrId) return res.status(400).json({ message: "HR ID missing in token" });
+
+    const result = await jobctrl.getAllJobByHR(hrId);
     res.status(200).json(result);
   } catch (err) {
     console.error(err);

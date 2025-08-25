@@ -13,13 +13,12 @@ class AddJObService {
 
 
    getAllJobs() {
-    const token = localStorage.getItem("token");
-    return axios.get("http://localhost:8080/viewAllJobs", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
+  const token = localStorage.getItem("token");
+  return axios.get("http://localhost:8080/viewAllJobs", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
 
     
     contactUs(cont){

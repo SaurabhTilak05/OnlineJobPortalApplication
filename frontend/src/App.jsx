@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
@@ -153,6 +154,17 @@ export default function App() {
           </Route>
          
         </Routes>
+         {/* ✅ Global toast container */}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}   // 5 sec
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        />
       </LayoutWithNavbar>
     </BrowserRouter>
   );

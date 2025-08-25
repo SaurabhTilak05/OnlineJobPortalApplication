@@ -34,16 +34,20 @@ exports.addJob = async (data) => {
 
 
 //  Get All Jobs
-exports.getAllJob = async (hrId) => {
+exports.getAllJobByHR = async (hrId) => {
   try {
-    const [rows] = await db.query(`
+    const [rows] = await db.query(
+      `
       SELECT j.*, 
              COUNT(a.application_id) AS applicant_count
       FROM jobs j
       LEFT JOIN applications a ON j.job_id = a.job_id
+      WHERE j.hr_id = ?
       GROUP BY j.job_id
       ORDER BY j.created_at ASC
-    `);  // pass hrId as parameter
+      `,
+      [hrId]
+    );
     return rows;
   } catch (err) {
     throw err;
