@@ -86,6 +86,9 @@ router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
 router.get("/profile", verifyUser, jobskrctrl.getProfile);
 
+
+
+
 // get job seeker by id
 router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 

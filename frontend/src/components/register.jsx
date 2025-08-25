@@ -192,10 +192,13 @@ export default function RegisterJobSeeker() {
                   </p>
                 </form>
 
+
+
                 <hr className="my-4" />
                 <div className="small text-muted">
                 
                 </div>
+
               </div>
             </div>
           </div>
