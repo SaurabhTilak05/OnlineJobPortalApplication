@@ -1,13 +1,13 @@
-import axios from "axios";
+  import axios from "axios";
 
-class AdminAuthService {
-  login(credentials) {
-    return axios
-      .post("http://localhost:8080/adminLogin", credentials)
-      .then((res) => res.data); // returns {message, token, role, username}
-  }
+  class AdminAuthService {
+    login(credentials) {
+      return axios
+        .post("http://localhost:8080/adminLogin", credentials)
+        .then((res) => res.data); // returns {message, token, role, username}
+    }
 
-  
+    
 hrLogin(data) {
   return axios.post("http://localhost:8080/hr/login", data)
     .then(res => {

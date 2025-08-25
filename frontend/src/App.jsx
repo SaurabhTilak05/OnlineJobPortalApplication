@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
+// Components
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
 import Register from "./components/register.jsx";
 import About from "./components/about.jsx";
 import Contact from "./components/contact.jsx";
-
-
 import PrivateRoute from "./components/PrivateRoute";
 import HRHome from "./components/HRHome.jsx";
 import HRDashboard from "./components/hrdashbord.jsx";
@@ -20,15 +18,15 @@ import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 import UserProfile from "./components/userprofile.jsx";
 import AdminDashboard from "./components/admindashboard.jsx";
+import ViewStudProfile from "./components/viewstudprofile.jsx";  
 
-
-
+// Navbar Layout
 function LayoutWithNavbar({ children }) {
   const location = useLocation();
   const hideNavbar =
     location.pathname.startsWith("/adminhome") ||
     location.pathname.startsWith("/hrdashboard") ||
-    location.pathname.startsWith("/userProfile");
+    location.pathname.startsWith("/userprofile");
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => setIsOpen(!isOpen);
@@ -36,7 +34,6 @@ function LayoutWithNavbar({ children }) {
 
   return (
     <div className="app-layout d-flex flex-column min-vh-100">
-      {/* ✅ Show Navbar only if not dashboard */}
       {!hideNavbar && (
         <>
           <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
@@ -85,7 +82,6 @@ function LayoutWithNavbar({ children }) {
             </ul>
           </div>
 
-          {/* Overlay */}
           {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
         </>
       )}
@@ -132,26 +128,38 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/userProfile" element={<UserProfile />} />
 
           {/* Admin routes */}
-          <Route path="/adminhome" element={<PrivateRoute allowedRole="admin"><Adminhome /></PrivateRoute>}>
+          <Route
+            path="/adminhome"
+            element={<PrivateRoute allowedRole="admin"><Adminhome /></PrivateRoute>}
+          >
             <Route index element={<Navigate to="admindashboard" replace />} />
             <Route path="admindashboard" element={<AdminDashboard />} />
             <Route path="addhr" element={<AddHR />} />
             <Route path="viewshr" element={<ViewHR />} />
-      
             <Route path="register-student" element={<Register />} />
           </Route>
 
           {/* HR Dashboard */}
-        <Route path="/hrdashboard" element={   <PrivateRoute allowedRole="hr"> <HRDashboard /></PrivateRoute> }  >
-            {/* index -> dashboard home */}
+          <Route
+            path="/hrdashboard"
+            element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}
+          >
             <Route index element={<HRHome />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="view-applicants" element={<ViewJobApplicants />} />
           </Route>
-         
+
+          {/* Student Routes */}
+          <Route
+            path="/userprofile"
+            element={<PrivateRoute allowedRole="user"><UserProfile /></PrivateRoute>}
+          />
+          <Route
+            path="/viewstudprofile"
+            element={<PrivateRoute allowedRole="user"><ViewStudProfile /></PrivateRoute>}
+          />
         </Routes>
       </LayoutWithNavbar>
     </BrowserRouter>
