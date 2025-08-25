@@ -192,12 +192,6 @@ export default function RegisterJobSeeker() {
                   </p>
                 </form>
 
-                <hr className="my-4" />
-                <div className="small text-muted">
-                  <strong>Security note:</strong> The password must be hashed
-                  (e.g., bcrypt) before storing into{" "}
-                  <code>job_seekers.password</code>.
-                </div>
               </div>
             </div>
           </div>
