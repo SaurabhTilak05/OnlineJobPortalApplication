@@ -17,8 +17,22 @@ hrLogin(data) {
       return res.data;
     });
 }
+UserLogin(udata){
+  return axios.post("http://localhost:8080/loginseeker", udata)
+    .then(res => {
+      console.log("Full response:", res);   // 👀 check what backend is sending
 
+      localStorage.setItem("seeker_id", res.data.seeker_id);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", "user");
 
+      return res.data;
+    })
+    .catch(err => {
+      console.error("Axios error:", err.response ? err.response.data : err.message);
+      throw err;
+    });
+}
 
 
   logout() {

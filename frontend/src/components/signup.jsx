@@ -16,58 +16,70 @@ export default function Sign() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { username, password, role } = form;
-    console.log("Form data on submit:", form);
 
-    if (!username || !password || !role) {
-      alert("Please fill in all fields");
-      return;
+  
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const { username, password, role } = form;
+  console.log("Form data on submit:", form);
+
+  if (!username || !password || !role) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    let res;
+
+    if (role === "admin") {
+      // ✅ Admin login
+      res = await AdminAuthService.login({ username, password });
+    } else if (role === "hr") {
+      // ✅ HR login
+      res = await AdminAuthService.hrLogin({ email: username, password });
+    } else {
+      // ✅ User login
+      res = await AdminAuthService.UserLogin({ email: username, password });
     }
 
-    try {
-      setLoading(true);
-      let res;
+    console.log("Login response:", res);
 
-      if (role === "admin") {
-        // ✅ Admin login → backend expects username + password
-        res = await AdminAuthService.login({ username, password });
-      } else if (role === "hr") {
-        // ✅ HR login → backend also expects username + password
-        res = await AdminAuthService.hrLogin({
-          email: username,
-          password,
-        });
-      } else {
-        alert("User login not implemented yet");
-        return;
-      }
+    // ✅ Save token & role for PrivateRoute check
+    if (res.token) {
+      localStorage.setItem("token", res.token);
 
-      // ✅ Save token & role for PrivateRoute check
-      if (res.token && res.role) {
-        localStorage.setItem("token", res.token);
+      // for admin/hr backend already sends role, for user we set it manually
+      if (res.role) {
         localStorage.setItem("role", res.role);
       } else {
-        throw new Error("Invalid response from server");
+        localStorage.setItem("role", role); // "user" in this case
       }
 
-      // ✅ Redirect based on role
-      if (res.role === "admin") {
-        navigate("/adminhome");
-      } else if (res.role === "hr") {
-        navigate("/hrdashboard");
-      } else if (res.role === "user") {
-        navigate("/user-dashboard");
+      // also save seeker_id if present
+      if (res.seeker_id) {
+        localStorage.setItem("seeker_id", res.seeker_id);
       }
-
-    } catch (err) {
-      console.error("Login error:", err);
-      alert(err.response?.data?.message || err.message || "Login failed");
-    } finally {
-      setLoading(false);
+    } else {
+      throw new Error("Invalid response from server");
     }
-  };
+
+    // ✅ Redirect based on role
+    if (role === "admin") {
+      navigate("/adminhome");
+    } else if (role === "hr") {
+      navigate("/hrdashboard");
+    } else if (role === "user") {
+      navigate("/userProfile");
+    }
+
+  } catch (err) {
+    console.error("Login error:", err);
+    alert(err.response?.data?.message || err.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="py-5">
