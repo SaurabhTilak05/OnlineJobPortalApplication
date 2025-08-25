@@ -19,29 +19,11 @@ exports.addAdmin = (username, password, role) => {
 //wrfergtgrtgre
 
 
-exports.adminLogin = async (username) => {
-  try {
-    console.log("in repo " + username);
+// exports.adminLogin = async (username) => {
+//   try {
+//     console.log("in repo " + username);
 
 
-// exports.adminLogin = (username) => {
-
-//     console.log("in repo " +username
-//     )
-//   return new Promise((resolve, reject) => {
-//     db.query("SELECT * FROM admin WHERE username = ?", [username], (err, result) => {
-//         console.log(result)
-//       if (err || result.length === 0) {
-
-//         console.log("in if ")
-//         return reject("Invalid Admin Credentials.. ");
-//       } else {
-//         console.log("result is "+result)
-//         return resolve(result);
-//       }
-//     });
-//   });
-// };
 exports.adminLogin = async (username) => {
   try {
     console.log("in repo " + username);
@@ -60,22 +42,7 @@ exports.adminLogin = async (username) => {
   }
 };
 
-    const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [username]);
-    console.log("result is ", rows);
-
-
-    if (rows.length === 0) {
-      console.log("in if");
-      throw new Error("Invalid Admin Credentials.. ");
-    }
-
-    return rows; // single admin
-  } catch (err) {
-    throw err;
-  }
-};
-
-
+      
 //for the view all job for admin
 exports.viewalljobAdmin=()=>{
     return new Promise((resolve,reject)=>{
