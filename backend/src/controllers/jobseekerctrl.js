@@ -43,11 +43,16 @@ exports.getSeeker = async (req, res) => {
 exports.getLogJobSeeker = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body);
 
     const user = await jobsctrl.findByEmail(email);
+    console.log(user);
+
     if (!user) return res.status(401).json({ message: "Invalid email or password" });
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
+
     if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
 
     const token = jwt.sign(
@@ -56,7 +61,7 @@ exports.getLogJobSeeker = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token , seeker_id: user.seeker_id});
   } catch (err) {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }
