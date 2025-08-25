@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
 import Register from "./components/register.jsx";
