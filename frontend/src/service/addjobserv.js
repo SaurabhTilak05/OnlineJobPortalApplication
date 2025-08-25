@@ -1,14 +1,25 @@
 import axios from "axios";
 class AddJObService {
-   addJob(jobData) {
-    return axios.post("http://localhost:8080/AddJob", jobData); // Ensure this matches backend
+  //
+    addJob(jobData) {
+    const token = localStorage.getItem("token");
+    return axios.post("http://localhost:8080/AddJob", jobData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
-  getAllJobs() {
-    return axios.get("http://localhost:8080/viewAllJobs"); // Example
+
+
+   getAllJobs() {
+    const token = localStorage.getItem("token");
+    return axios.get("http://localhost:8080/viewAllJobs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
-
-
 
     
     contactUs(cont){
@@ -24,6 +35,7 @@ class AddJObService {
       
     }
 
+    
 
 
 }
