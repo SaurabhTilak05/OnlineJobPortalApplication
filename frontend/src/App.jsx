@@ -136,7 +136,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
          
-            <Route path="/view-applicants" element={<ViewJobApplicants />} />
+            
             <Route path="/userProfile" element={<UserProfile />} />
            
             {/* Admin routes */}
@@ -154,12 +154,10 @@ export default function App() {
             </Route>
 
             {/* HR Dashboard */}
-           <Route
-  path="/hrdashboard"
-  element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}
->
-  <Route path="addjob" element={<AddJob />} />
-</Route>
+           <Route path="/hrdashboard"  element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}>
+            <Route path="addjob" element={<AddJob />} />
+           
+            </Route>
 
           </Routes>
            

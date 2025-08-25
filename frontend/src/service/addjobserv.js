@@ -4,9 +4,9 @@ class AddJObService {
     return axios.post("http://localhost:8080/AddJob", jobData); // Ensure this matches backend
   }
 
-  // getAllJobs() {
-  //   return axios.get("http://localhost:8080/GetJobs"); // Example
-  // }
+  getAllJobs() {
+    return axios.get("http://localhost:8080/viewAllJobs"); // Example
+  }
 
 
 

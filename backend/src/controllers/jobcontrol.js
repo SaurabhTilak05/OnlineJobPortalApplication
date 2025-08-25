@@ -24,6 +24,7 @@ exports.addingJob = (req, res) => {
 // ✅ Get all jobs
 exports.getAllJobs = async (req, res) => {
   try {
+    // const hrId = req.user.hr_id; 
     const result = await jobctrl.getAllJob();
     res.status(200).json(result);
   } catch (err) {

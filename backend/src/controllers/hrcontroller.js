@@ -66,7 +66,7 @@ exports.hrLogin = async (req, res) => {
    res.json({
   token,
   role: "hr",
-  hr_id: hr.hr_id   // 👈 must send this
+  hr_id: hr.hr_id   
 });
   } catch (err) {
     console.error("Error during HR login:", err);
