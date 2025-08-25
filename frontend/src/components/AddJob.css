@@ -1,0 +1,188 @@
+/* Page background */
+.addjob-page {
+  background: linear-gradient(135deg, #1d2b64 0%, #f8cdda 100%);
+  overflow: hidden;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Form container with glass effect */
+.addjob-container {
+  max-width: 900px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.addjob-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Headings */
+.addjob-container h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #222;
+}
+
+/* Labels */
+.addjob-container .form-label {
+  color: #111;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+/* Inputs & Textarea */
+.addjob-container .form-control {
+  border-radius: 10px;/* Page background */
+.addjob-page {
+  background: linear-gradient(135deg, #1d2b64 0%, #f8cdda 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Form container with glassmorphism effect */
+.addjob-page .p-4 {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #fff;
+}
+
+.addjob-page .p-4:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Form heading */
+.addjob-page h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Form labels */
+.addjob-page .form-label {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Inputs and textareas */
+.addjob-page .form-control {
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.addjob-page .form-control::placeholder {
+  color: #e0e0e0;
+}
+
+.addjob-page .form-control:focus {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* Submit button */
+.addjob-page .btn {
+  border-radius: 12px;
+  font-size: 18px;
+  background: linear-gradient(90deg, #1d2b64, #3a47d5);
+  color: #fff;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.addjob-page .btn:hover {
+  background: linear-gradient(90deg, #3a47d5, #1d2b64);
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(29, 43, 100, 0.3);
+}
+
+.addjob-page .btn:active {
+  transform: scale(0.98);
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+  min-width: 250px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .addjob-page .p-4 {
+    padding: 25px 20px;
+  }
+
+  .addjob-page h2 {
+    font-size: 22px;
+  }
+}
+
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.addjob-container .form-control:focus {
+  border-color: #1d2b64;
+  box-shadow: 0 0 0 0.2rem rgba(29, 43, 100, 0.25);
+}
+
+/* Submit Button */
+.post-job-btn {
+  border-radius: 12px;
+  font-size: 18px;
+  background: linear-gradient(90deg, #1d2b64, #3a47d5);
+  color: #fff;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.post-job-btn:hover {
+  background: linear-gradient(90deg, #3a47d5, #1d2b64);
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(29, 43, 100, 0.3);
+}
+
+.post-job-btn:active {
+  transform: scale(0.98);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .addjob-container {
+    padding: 20px !important;
+  }
+
+  .addjob-container h2 {
+    font-size: 22px;
+  }
+}

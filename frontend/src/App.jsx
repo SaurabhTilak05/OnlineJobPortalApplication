@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "re
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Components
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
 import Register from "./components/register.jsx";
@@ -161,6 +165,17 @@ export default function App() {
             element={<PrivateRoute allowedRole="user"><ViewStudProfile /></PrivateRoute>}
           />
         </Routes>
+         {/* ✅ Global toast container */}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}   // 5 sec
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        />
       </LayoutWithNavbar>
     </BrowserRouter>
   );

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AddJobService from "../service/addjobserv.js";
+import { toast } from "react-toastify";
+import "./AddJob.css";
 
 export default function AddJob() {
   const [formData, setFormData] = useState({
@@ -14,9 +16,6 @@ export default function AddJob() {
     deadline: "",
   });
 
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -26,16 +25,16 @@ export default function AddJob() {
     try {
       const hrId = localStorage.getItem("hrId");
       if (!hrId) {
-        setErrorMsg("❌ You must be logged in as HR to post a job.");
+        toast.error("❌ You must be logged in as HR to post a job.");
         return;
       }
 
       const jobData = { ...formData, hr_id: Number(hrId) };
       await AddJobService.addJob(jobData);
 
-      setSuccessMsg("✅ Job posted successfully!");
-      setErrorMsg("");
+      toast.success("✅ Job posted successfully!");
 
+      // Reset form after successful submission
       setFormData({
         title: "",
         company: "",
@@ -49,43 +48,20 @@ export default function AddJob() {
       });
     } catch (err) {
       console.error("Error saving job:", err.response?.data || err.message);
-      setErrorMsg("❌ Failed to save job. Try again!");
+      toast.error("❌ Failed to save job. Try again!");
     }
   };
-
-  useEffect(() => {
-    if (successMsg || errorMsg) {
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-        setErrorMsg("");
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMsg, errorMsg]);
 
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center min-vh-100 px-3"
       style={{
-        background: "linear-gradient(135deg, #1d2b64 0%, #f8cdda 100%)",
+        background: "linear-gradient(135deg, #f6f7faff 0%, #fef9faff 100%)",
         overflow: "hidden",
         paddingTop: "20px",
         paddingBottom: "20px",
       }}
     >
-      {/* Alerts */}
-      {successMsg && (
-        <div className="alert alert-success text-center w-100 fade show mb-3">
-          {successMsg}
-        </div>
-      )}
-      {errorMsg && (
-        <div className="alert alert-danger text-center w-100 fade show mb-3">
-          {errorMsg}
-        </div>
-      )}
-
-      {/* Form Container */}
       <div
         className="p-4 p-md-5 shadow-lg w-100"
         style={{
@@ -96,10 +72,10 @@ export default function AddJob() {
           color: "#fff",
         }}
       >
-        <h2 className="text-center mb-4 fw-bold">🚀 Add New Job</h2>
+        <h2 className="text-center mb-4 text-dark fw-bold"> Add New Job</h2>
 
         <form onSubmit={handleSubmit}>
-          <div className="row">
+          <div className="row text-dark">
             <div className="col-12 col-md-6 mb-3">
               <label className="form-label fw-bold">Job Title</label>
               <input
@@ -112,7 +88,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-6 mb-3">
               <label className="form-label fw-bold">Company</label>
               <input
@@ -125,7 +100,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-4 mb-3">
               <label className="form-label fw-bold">Openings</label>
               <input
@@ -138,7 +112,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-4 mb-3">
               <label className="form-label fw-bold">Experience</label>
               <input
@@ -151,7 +124,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-4 mb-3">
               <label className="form-label fw-bold">Location</label>
               <input
@@ -164,7 +136,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-6 mb-3">
               <label className="form-label fw-bold">Package</label>
               <input
@@ -177,7 +148,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 col-md-6 mb-3">
               <label className="form-label fw-bold">Skills Required</label>
               <input
@@ -190,7 +160,6 @@ export default function AddJob() {
                 required
               />
             </div>
-
             <div className="col-12 mb-3">
               <label className="form-label fw-bold">Job Description</label>
               <textarea
@@ -203,7 +172,6 @@ export default function AddJob() {
                 required
               ></textarea>
             </div>
-
             <div className="col-12 mb-4">
               <label className="form-label fw-bold">Application Deadline</label>
               <input

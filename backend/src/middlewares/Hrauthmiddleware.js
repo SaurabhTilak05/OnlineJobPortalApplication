@@ -9,6 +9,7 @@ function verifyToken1(req, res, next) {
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
+    
     req.user = user;
     next();
   });
