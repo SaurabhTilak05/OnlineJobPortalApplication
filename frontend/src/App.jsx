@@ -2,37 +2,9 @@
   import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
   import "bootstrap/dist/css/bootstrap.min.css";
 
-
-// Components
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import Home from "./components/home.jsx";
-import Sign from "./components/signup.jsx";
-import Register from "./components/register.jsx";
-import About from "./components/about.jsx";
-import Contact from "./components/contact.jsx";
-import PrivateRoute from "./components/PrivateRoute";
-import HRHome from "./components/HRHome.jsx";
-import HRDashboard from "./components/hrdashbord.jsx";
-import ViewJobApplicants from "./components/ViewJobApplicent.jsx";
-import AddJob from "./components/AddJob.jsx";
-import AddHR from "./components/AddHR.jsx";
-import ViewHR from "./components/viewHR.jsx";
-import Adminhome from "./components/adminhome.jsx";
-import UserProfile from "./components/userprofile.jsx";
-import AdminDashboard from "./components/admindashboard.jsx";
-
-import ViewStudProfile from "./components/viewstudprofile.jsx";  
-import Userdashboard from "./components/userdashbord.jsx";
-
-
-import ViewAllJob from "./components/viewalljob.jsx";
-import HRProfile from "./components/hrProfile.jsx";
   // Components
   import { ToastContainer } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
-
 
 
   import Home from "./components/home.jsx";
@@ -179,15 +151,8 @@ import HRProfile from "./components/hrProfile.jsx";
 
 
 
-
-          {/* HR Dashboard */}
-
-          <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>} />
-
-
             {/* HR Dashboard */}
        {/* HR Dashboard */}
-
           <Route
             path="/hrdashboard"
             element={
