@@ -4,6 +4,7 @@ let db = require("../../db.js");
 // models/jobmodel.js
 
 
+
 exports.addJob = async (data) => {
   try {
     const sql = `
@@ -115,4 +116,13 @@ exports.jobbyLocation = async (location) => {
   } catch (err) {
     throw err;
   }
+};
+
+
+
+exports.getAllJobs = async () => {
+  const [rows] = await db.query("SELECT * FROM jobs ORDER BY created_at DESC");
+  //console.log(rows);
+
+  return rows;
 };
