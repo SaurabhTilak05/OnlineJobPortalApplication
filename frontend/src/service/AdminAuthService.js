@@ -17,6 +17,8 @@ hrLogin(data) {
       return res.data;
     });
 }
+
+
 UserLogin(udata){
   return axios.post("http://localhost:8080/loginseeker", udata)
     .then(res => {
@@ -33,6 +35,26 @@ UserLogin(udata){
       throw err;
     });
 }
+
+
+getProfile() {
+  const token = this.getToken(); // ✅ use instance method instead of AdminAuthService.getToken()
+  return axios
+    .get("http://localhost:8080/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => {
+      console.error(
+        "Error fetching profile:",
+        err.response ? err.response.data : err.message
+      );
+      throw err;
+    });
+}
+
 
 
   logout() {

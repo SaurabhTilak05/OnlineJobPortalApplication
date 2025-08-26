@@ -1,4 +1,4 @@
-// src/components/StudentDashboard.jsx
+// src/components/UserProfile.jsx
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
@@ -13,15 +13,17 @@ import {
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-export default function StudentDashboard() {
+export default function UserProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const profilePhoto = localStorage.getItem("profilePhoto") || "/images/default-profile.png";
+  const studentName = localStorage.getItem("username") || "Student Name";
 
   const navItems = [
-    { to: "studentdashboard", icon: <FaTachometerAlt />, label: "Dashboard", exact: true },
-    { to: "viewstudprofile", icon: <FaUser />, label: "View Profile" },
+    { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Dashboard" }, // index route
+    { to: "view-profile", icon: <FaUser />, label: "View Profile" },
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
     { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
@@ -33,17 +35,14 @@ export default function StudentDashboard() {
     navigate("/signup");
   };
 
-  if (!token) {
-    return <h1 className="text-center mt-5">Invalid Access</h1>;
-  }
+  if (!token) return <h1 className="text-center mt-5">Invalid Access</h1>;
 
   return (
     <div className="student-page d-flex flex-column vh-100">
-      {/* Header */}
       <header
         className="d-flex justify-content-center align-items-center position-relative shadow py-3"
         style={{
-          background: "linear-gradient(270deg, #198754, #0dcaf0, #6610f2, #198754)", // green + blue + purple
+          background: "linear-gradient(270deg, #198754, #0dcaf0, #6610f2, #198754)",
           backgroundSize: "800% 800%",
           color: "#fff",
           animation: "gradientAnimation 15s ease infinite",
@@ -52,19 +51,13 @@ export default function StudentDashboard() {
         <h2 className="m-0 fw-bold d-flex align-items-center" style={{ gap: "10px" }}>
           🎓 Student Dashboard
         </h2>
-
-        {/* Mobile toggle */}
         <button
           type="button"
           className="btn btn-light d-md-none position-absolute top-50 start-0 translate-middle-y ms-3"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          style={{ transition: "transform 0.3s" }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         >
           {sidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
-
         <style>{`
           @keyframes gradientAnimation {
             0% {background-position: 0% 50%;}
@@ -77,11 +70,12 @@ export default function StudentDashboard() {
       <div className="d-flex flex-grow-1">
         {/* Sidebar */}
         <aside
-          className={`p-3 text-white shadow d-flex flex-column flex-shrink-0
-            ${sidebarOpen ? "position-fixed start-0 top-0 vh-100" : "d-none d-md-flex"}`}
+          className={`p-3 text-white shadow d-flex flex-column flex-shrink-0 ${
+            sidebarOpen ? "position-fixed start-0 top-0 vh-100" : "d-none d-md-flex"
+          }`}
           style={{
             width: "220px",
-            background: "rgba(25,135,84,0.95)", // Bootstrap green shade
+            background: "rgba(25,135,84,0.95)",
             backdropFilter: "blur(8px)",
             zIndex: 1050,
             transition: "all 0.25s ease",
@@ -91,14 +85,27 @@ export default function StudentDashboard() {
             overflowY: "auto",
           }}
         >
-          <h5 className="mb-4 text-center border-bottom pb-2">Student Menu</h5>
+          {/* Profile Photo */}
+          <div className="text-center mb-4">
+            <img
+              src={profilePhoto}
+              alt="Profile"
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #fff",
+              }}
+            />
+            <h6 className="mt-2">{studentName}</h6>
+          </div>
 
           <nav className="d-flex flex-column">
             {navItems.map((item, i) => (
               <NavLink
                 key={i}
                 to={item.to}
-                end={item.exact}
                 className="d-flex align-items-center mb-3 p-2 rounded text-decoration-none text-white"
                 style={({ isActive }) => ({
                   background: isActive ? "linear-gradient(90deg,#198754,#0dcaf0)" : "transparent",
@@ -111,7 +118,6 @@ export default function StudentDashboard() {
             ))}
           </nav>
 
-          {/* Logout */}
           <button
             type="button"
             className="d-flex align-items-center mt-auto btn btn-outline-light p-2 rounded text-white fw-semibold"
@@ -122,7 +128,6 @@ export default function StudentDashboard() {
           </button>
         </aside>
 
-        {/* Overlay for mobile */}
         {sidebarOpen && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100"

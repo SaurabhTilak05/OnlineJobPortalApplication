@@ -28,9 +28,14 @@ import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 import UserProfile from "./components/userprofile.jsx";
 import AdminDashboard from "./components/admindashboard.jsx";
+
+import ViewStudProfile from "./components/viewstudprofile.jsx";  
+import Userdashboard from "./components/userdashbord.jsx";
+
 import ViewStudProfile from "./components/viewstudprofile.jsx";
 import ViewAllJob from "./components/viewalljob.jsx";
 import HRProfile from "./components/hrProfile.jsx";
+
 
 // Navbar Layout
 function LayoutWithNavbar({ children }) {
@@ -226,7 +231,12 @@ export default function App() {
             <Route path="register-student" element={<Register />} />
           </Route>
 
+
+
           {/* HR Dashboard */}
+
+          <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>} >
+
           <Route
             path="/hrdashboard"
             element={
@@ -235,6 +245,7 @@ export default function App() {
               </PrivateRoute>
             }
           >
+
             <Route index element={<HRHome />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="view-applicants" element={<ViewJobApplicants />} />
@@ -242,7 +253,20 @@ export default function App() {
             <Route path="profile" element={<HRProfile />} />
           </Route>
 
+
+
+
           {/* Student Routes */}
+
+          <Route path="/userprofile" element={<PrivateRoute allowedRole="user"><UserProfile /></PrivateRoute>}>
+            <Route path="user-dashboard" element={<Userdashboard/>}/>
+
+            <Route path="view-profile" element={<ViewStudProfile/>} />
+          
+          
+          </Route>
+  
+
           <Route
             path="/userprofile"
             element={
@@ -259,6 +283,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
         </Routes>
         {/* ✅ Global toast container */}
         <ToastContainer

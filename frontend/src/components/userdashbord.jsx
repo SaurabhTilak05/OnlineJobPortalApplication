@@ -1,94 +1,105 @@
+// src/components/StudentDashboard.jsx
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { FaHome, FaBriefcase, FaFileAlt, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaBriefcase, FaBookmark, FaClipboardCheck } from "react-icons/fa";
 
-// Example service call (replace URL with your API endpoint)
-const fetchJobs = async () => {
-  const res = await fetch("http://localhost:8080/viewAllJobs"); //  adjust API
-  return res.json();
-};
-
-export default function UserDashboard() {
-  const [jobs, setJobs] = useState([]);
+export default function userdashbord() {
+  const [stats, setStats] = useState({
+    applied: 0,
+    saved: 0,
+    openings: 0,
+    profileComplete: 0,
+  });
 
   useEffect(() => {
-    fetchJobs()
-      .then((data) => {
-        setJobs(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching jobs:", err);
-      });
+    async function fetchStats() {
+      try {
+        const [appliedRes, savedRes, openingsRes, profileRes] = await Promise.all([
+          fetch("http://localhost:8080/student/appliedCount"),
+          fetch("http://localhost:8080/student/savedCount"),
+          fetch("http://localhost:8080/student/openingsCount"),
+          fetch("http://localhost:8080/student/profileStatus"),
+        ]);
+
+        const applied = await appliedRes.json();
+        const saved = await savedRes.json();
+        const openings = await openingsRes.json();
+        const profile = await profileRes.json();
+
+        setStats({
+          applied: applied.total || 0,
+          saved: saved.total || 0,
+          openings: openings.total || 0,
+          profileComplete: profile.percent || 0,
+        });
+      } catch (err) {
+        console.error("Error fetching student stats:", err);
+      }
+    }
+    fetchStats();
   }, []);
 
-  return (
-    <div className="container-fluid">
-      <div className="row">
-        {/* Sidebar */}
-        <div className="col-md-3 col-lg-2 bg-dark text-white vh-100 p-3">
-          <h4 className="text-center mb-4">User Dashboard</h4>
-          <ul className="nav flex-column">
-            <li className="nav-item mb-2">
-              <NavLink className="nav-link text-white" to="/user/home">
-                <FaHome className="me-2" /> Home
-              </NavLink>
-            </li>
-            <li className="nav-item mb-2">
-              <NavLink className="nav-link text-white" to="/user/jobs">
-                <FaBriefcase className="me-2" /> View Jobs
-              </NavLink>
-            </li>
-            <li className="nav-item mb-2">
-              <NavLink className="nav-link text-white" to="/user/applications">
-                <FaFileAlt className="me-2" /> My Applications
-              </NavLink>
-            </li>
-            <li className="nav-item mb-2">
-              <NavLink className="nav-link text-white" to="/user/profile">
-                <FaUser className="me-2" /> Profile
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link text-white" to="/logout">
-                <FaSignOutAlt className="me-2" /> Logout
-              </NavLink>
-            </li>
-          </ul>
-        </div>
+  const cardStyle = {
+    borderRadius: "15px",
+    padding: "2rem",
+    color: "#fff",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "150px",
+    transition: "transform 0.3s ease",
+    cursor: "pointer",
+  };
 
-        {/* Main Content */}
-        <div className="col-md-9 col-lg-10 p-4">
-          <h2>Available Jobs</h2>
-          <div className="row">
-            {jobs.length > 0 ? (
-              jobs.map((job) => (
-                <div key={job.job_id} className="col-md-4 mb-4">
-                  <div className="card h-100 shadow-sm">
-                    <div className="card-body">
-                      <h5 className="card-title">{job.title}</h5>
-                      <h6 className="card-subtitle mb-2 text-muted">
-                        {job.company}
-                      </h6>
-                      <p className="card-text">
-                        <strong>Location:</strong> {job.location} <br />
-                        <strong>Experience:</strong> {job.experience_required} yrs <br />
-                        <strong>Package:</strong> {job.package} LPA <br />
-                        <strong>Deadline:</strong>{" "}
-                        {new Date(job.deadline).toLocaleDateString()}
-                      </p>
-                      <button className="btn btn-primary w-100">
-                        Apply Now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No jobs available at the moment.</p>
-            )}
+  const cards = [
+    {
+      title: "Profile Completion",
+      count: stats.profileComplete + "%",
+      icon: <FaUser size={40} />,
+      bg: "linear-gradient(135deg, #0d6efd, #6610f2)",
+    },
+    {
+      title: "Applied Jobs",
+      count: stats.applied,
+      icon: <FaBriefcase size={40} />,
+      bg: "linear-gradient(135deg, #20c997, #0dcaf0)",
+    },
+    {
+      title: "Saved Jobs",
+      count: stats.saved,
+      icon: <FaBookmark size={40} />,
+      bg: "linear-gradient(135deg, #fd7e14, #ffc107)",
+    },
+    {
+      title: "New Openings",
+      count: stats.openings,
+      icon: <FaClipboardCheck size={40} />,
+      bg: "linear-gradient(135deg, #198754, #28a745)",
+    },
+  ];
+
+  return (
+    <div className="container-fluid mt-4">
+      <h2 className="fw-bold mb-4 text-center text-success">🎓 Student Dashboard</h2>
+      <p className="text-center text-muted mb-5 fs-5">
+        Track your applications, saved jobs, and profile progress here.
+      </p>
+
+      <div className="row g-4 justify-content-center">
+        {cards.map((card, i) => (
+          <div className="col-md-3" key={i}>
+            <div
+              style={{ ...cardStyle, background: card.bg }}
+              className="text-center"
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
+              <div className="mb-3">{card.icon}</div>
+              <h4 className="fw-bold">{card.count}</h4>
+              <p className="mb-0">{card.title}</p>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
