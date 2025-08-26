@@ -35,6 +35,21 @@ class AddJObService {
     }
 
     
+// 🔍 Search by Location
+searchJobsByLocation(location) {
+  const token = localStorage.getItem("token");
+  return axios.get(`http://localhost:8080/viewjobbylocation?location=${location}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+// 🔍 Search by Title
+searchJobsByTitle(title) {
+  const token = localStorage.getItem("token");
+  return axios.get(`http://localhost:8080/searchByTitle?title=${title}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
 
 
 }
