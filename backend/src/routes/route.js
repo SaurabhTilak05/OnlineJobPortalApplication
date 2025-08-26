@@ -19,8 +19,8 @@ const { verifyUser } = require("../middlewares/userauthmiddleware.js");
 router.post("/addHr", hrCtrl.addHR1);
 router.post("/hr/login", hrCtrl.hrLogin);
 // Protected
-router.get("/hr/profile", verifyToken1, hrCtrl.getProfile);
-
+router.get("/hrprofile", verifyToken1, hrCtrl.getProfile);
+router.get("/hr/jobs",verifyToken1,jobctrl.getAllJobs);
 
 router.get("/viewAllJobs",verifyToken1,jobctrl.getAllJobs);
 router.post("/AddJob", verifyToken1, hrCtrl.addingJob);

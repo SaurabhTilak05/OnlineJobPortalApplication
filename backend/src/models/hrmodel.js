@@ -192,6 +192,14 @@ exports.getSched=()=>{
      })
 }
 
+exports.getById = async (hrId) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM hr WHERE hr_id = ?", [hrId]);
+    return rows[0]; // return first row
+  } catch (err) {
+    throw err;
+  }
+};
 
 // ------------ adminhome page---------------------
 
