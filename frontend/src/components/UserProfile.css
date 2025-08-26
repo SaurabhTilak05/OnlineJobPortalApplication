@@ -1,0 +1,89 @@
+/* src/components/UserProfile.css */
+
+/* Header */
+.dashboard-header {
+  height: 65px;
+  background: linear-gradient(90deg, #198754, #0dcaf0, #6610f2);
+  background-size: 300% 300%;
+  color: white;
+  animation: gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  width: 230px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: sticky;
+  top: 65px;
+  height: calc(100vh - 65px);
+  overflow-y: auto;
+}
+
+.dashboard-sidebar.show {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1050;
+}
+
+/* Links */
+.sidebar-link {
+  color: #212529;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.sidebar-link:hover {
+  background: linear-gradient(90deg, #198754, #0dcaf0);
+  color: #fff !important;
+  transform: translateX(4px);
+}
+
+.sidebar-link.active {
+  background: linear-gradient(90deg, #198754, #0dcaf0);
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* Overlay for mobile sidebar */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+/* Main Content */
+.dashboard-content {
+  background: linear-gradient(180deg, #f9fafb, #e9ecef);
+  min-height: 100vh;
+  overflow-y: auto;
+}

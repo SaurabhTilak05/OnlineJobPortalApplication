@@ -26,6 +26,8 @@ export default function JobforUsers() {
   return (
     <div className="container mt-4">
       <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
+      
+
       <div className="row g-4">
         {jobs.length === 0 ? (
           <p className="text-center">No jobs available</p>
