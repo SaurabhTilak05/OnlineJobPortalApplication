@@ -1,6 +1,22 @@
 let jobctrl = require("../models/jobmodel.js");
 
 
+
+
+exports.fetchAllJobs = async (req, res) => {
+  //console.log(req.data);
+
+  try {
+    const jobs = await jobctrl.getAllJobs();
+    res.json(jobs);
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({ message: "Server error while fetching jobs" });
+  }
+};
+
+
+
 // Add Job
 exports.addingJob = (req, res) => {
   const { title, company, opening, experience_required, location, package, skills_required, description, deadline,hr_id } = req.body;

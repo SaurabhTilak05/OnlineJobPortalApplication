@@ -7,7 +7,7 @@ export default function Sign() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     username: "",
-    password: "",
+    password: "", 
     role: "",
   });
   const [loading, setLoading] = useState(false);

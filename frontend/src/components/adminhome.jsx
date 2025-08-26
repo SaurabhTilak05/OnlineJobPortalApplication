@@ -24,7 +24,7 @@ export default function Adminhome() {
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
     { to: "viewshr", icon: <FaUsers />, label: "View HR" },
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
-    { to: "register-student", icon: <FaUserGraduate />, label: "Register Student" },
+
   ];
 
   const handleLogout = () => {
