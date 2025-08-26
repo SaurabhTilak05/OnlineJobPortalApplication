@@ -45,7 +45,7 @@ exports.getAllJobByHR = async (hrId) => {
       LEFT JOIN applications a ON j.job_id = a.job_id
       WHERE j.hr_id = ?
       GROUP BY j.job_id
-      ORDER BY j.created_at ASC
+      ORDER BY j.created_at DESC
       `,
       [hrId]
     );

@@ -187,7 +187,7 @@ export default function AddJob() {
 
           <button
             type="submit"
-            className="btn btn-light fw-bold w-100 py-2"
+            className="btn btn-dark fw-bold w-100 py-2"
             style={{ borderRadius: "10px", fontSize: "18px" }}
           >
             ➕ Post Job
