@@ -1,69 +1,59 @@
 import React, { useEffect, useState } from "react";
+import AdminAuthService from "../service/AdminAuthService"; // adjust path if needed
 
-export default function ViewProfile() {
+export default function ViewStudProfile() {
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const mockProfile = {
-      name: "Kishor Wankhede",
-      email: "kishor@example.com",
-      contact: "9876543210",
-      address: "Pune, Maharashtra",
-      education: "B.Tech in Computer Science",
-      skills: "Java, Spring Boot, React, SQL",
+    const fetchProfile = async () => {
+      try {
+        const data = await AdminAuthService.getProfile(); // ✅ call service method
+        console.log(data);
+
+        setProfile(data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message || "Failed to load profile. Try again."
+        );
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setTimeout(() => setProfile(mockProfile), 1000); // simulate API delay
+    fetchProfile();
   }, []);
 
-  if (!profile) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-success" role="status"></div>
-        <p className="mt-2">Loading profile...</p>
-      </div>
-    );
-  }
+  if (loading) return <h3 className="text-center mt-5">Loading profile...</h3>;
+  if (error) return <h3 className="text-danger text-center mt-5">{error}</h3>;
 
   return (
     <div className="container mt-4">
-      <div className="card shadow-lg p-4 rounded-3">
-        <div className="text-center mb-4">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-            alt="Student Avatar"
-            className="rounded-circle border border-3 border-success"
-            width="120"
-            height="120"
-          />
-          <h3 className="mt-3 fw-bold text-success">{profile.name}</h3>
-          <p className="text-muted">{profile.email}</p>
-        </div>
-
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <h6 className="text-secondary">📞 Contact</h6>
-            <p className="fw-semibold">{profile.contact}</p>
-          </div>
-          <div className="col-md-6 mb-3">
-            <h6 className="text-secondary">📍 Address</h6>
-            <p className="fw-semibold">{profile.address}</p>
-          </div>
-          <div className="col-md-6 mb-3">
-            <h6 className="text-secondary">🎓 Education</h6>
-            <p className="fw-semibold">{profile.education}</p>
-          </div>
-          <div className="col-md-6 mb-3">
-            <h6 className="text-secondary">💡 Skills</h6>
-            <p className="fw-semibold">{profile.skills}</p>
+      <h2 className="mb-4">👤 My Profile</h2>
+      {profile ? (
+        <div className="card shadow p-3">
+          <div className="row">
+            <div className="col-md-3 text-center">
+              <img
+                src={profile.photoUrl || "/images/default-profile.png"}
+                alt="Profile"
+                className="rounded-circle border"
+                style={{ width: "120px", height: "120px", objectFit: "cover" }}
+              />
+            </div>
+            <div className="col-md-9">
+              <h4>{profile.name}</h4>
+              <p><strong>Email:</strong> {profile.email}</p>
+              <p><strong>Contact:</strong> {profile.phone}</p>
+              <p><strong>Address:</strong> {profile.address}</p>
+          
+            </div>
           </div>
         </div>
-
-        <div className="text-center mt-4">
-          <button className="btn btn-success me-2">Update Profile</button>
-          <button className="btn btn-outline-primary">Upload Resume</button>
-        </div>
-      </div>
+      ) : (
+        <h4 className="text-muted">No profile found.</h4>
+      )}
     </div>
   );
 }
