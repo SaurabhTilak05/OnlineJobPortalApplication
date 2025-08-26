@@ -45,7 +45,7 @@ export default function ViewApplicants() {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Applied Job</th>
-                    <th>Resume</th>
+                   
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -57,16 +57,7 @@ export default function ViewApplicants() {
                       <td>{app.email}</td>
                       <td>{app.phone}</td>
                       <td>{app.title}</td>
-                      <td>
-                        <a
-                          href={app.resume_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-sm btn-primary"
-                        >
-                          View Resume
-                        </a>
-                      </td>
+                     
                       <td>
                         <span
                           className={`badge ${

@@ -109,9 +109,11 @@ exports.applyJob = async (req, res) => {
 };
 
 //  Get All Applicants
+
 exports.getApplicants = async (req, res) => {
   try {
-    const result = await jobsctrl.getAllApplicant();
+    const hrId = req.user.id; // ✅ comes from JWT
+    const result = await jobsctrl.getAllApplicant(hrId);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message || "Error fetching applicants" });

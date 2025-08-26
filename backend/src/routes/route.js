@@ -24,7 +24,7 @@ router.get("/hr/jobs",verifyToken1,jobctrl.getAllJobs);
 
 router.get("/viewAllJobs",verifyToken1,jobctrl.getAllJobs);
 router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
-
+router.get("/view-applicants",verifyToken1,jobskrctrl.getApplicants);
 
 
 
@@ -110,7 +110,7 @@ router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
 //View Applicant for jobs
-router.get("/view-applicants",jobskrctrl.getApplicants);
+
 
 
 // Send mail testing 

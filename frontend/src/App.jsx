@@ -32,7 +32,7 @@ import AdminDashboard from "./components/admindashboard.jsx";
 import ViewStudProfile from "./components/viewstudprofile.jsx";  
 import Userdashboard from "./components/userdashbord.jsx";
 
-import ViewStudProfile from "./components/viewstudprofile.jsx";
+
 import ViewAllJob from "./components/viewalljob.jsx";
 import HRProfile from "./components/hrProfile.jsx";
 
@@ -235,7 +235,7 @@ export default function App() {
 
           {/* HR Dashboard */}
 
-          <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>} >
+          <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>} />
 
           <Route
             path="/hrdashboard"

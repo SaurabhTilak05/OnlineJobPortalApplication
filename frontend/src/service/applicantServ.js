@@ -1,8 +1,13 @@
 import axios from "axios";
 
 class ApplicantService {
-  getApplicants() {
-    return axios.get("http://localhost:8080/view-applicants").then((res) => res.data);
+ getApplicants() {
+    const token = localStorage.getItem("token"); // assuming you stored it
+    return axios
+      .get("http://localhost:8080/view-applicants", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data);
   }
   
 }

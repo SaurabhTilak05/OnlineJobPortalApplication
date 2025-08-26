@@ -82,12 +82,16 @@ exports.applyJobs = async (job_id, seeker_id) => {
 };
 
 // ✅ Get all applicants
-exports.getAllApplicant = async () => {
+exports.getAllApplicant = async (hrId) => {
   try {
-    const [rows] = await db.query(`  SELECT s.name, s.email, s.phone, j.title, a.status  FROM job_seekers s 
-      INNER JOIN applications a ON s.seeker_id = a.seeker_id 
-      INNER JOIN jobs j ON a.job_id = j.job_id
-    `);
+    const [rows] = await db.query(
+      `SELECT s.name, s.email, s.phone, j.title, a.status, a.application_id
+       FROM job_seekers s
+       INNER JOIN applications a ON s.seeker_id = a.seeker_id
+       INNER JOIN jobs j ON a.job_id = j.job_id
+       WHERE j.hr_id = ?`,  
+      [hrId]
+    );
     return rows;
   } catch (err) {
     throw err;
