@@ -31,7 +31,7 @@ export default function HRDashboard() {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div style={{ "--hr-topnav": "64px" }}>
+    <div style={{ "--hr-topnav": "80px" }}>
       {/* Top Navbar (fixed) */}
       <nav
         className="navbar navbar-dark bg-dark shadow-sm fixed-top"

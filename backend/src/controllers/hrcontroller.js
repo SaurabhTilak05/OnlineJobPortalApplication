@@ -95,22 +95,26 @@ exports.addingJob = (req, res) => {
 
 
 // Get HR profile (protected)
-exports.getProfile = async (req, res) => {
+  exports.getProfile = async (req, res) => {
   try {
-    const [rows] = await conn.query("SELECT id, hr_name, email, company_name FROM hr WHERE id = ?", [req.user.id]);
+    const hr = await hrModel.getById(req.user.id);
 
-    if (rows.length === 0) {
+    if (!hr) {
       return res.status(404).json({ message: "HR not found" });
     }
 
     res.json({
       message: "HR profile fetched successfully",
-      hr: rows[0]   // return HR details
+      hr: hr, // return HR details
     });
   } catch (err) {
-    res.status(500).json({ message: "Error fetching profile", error: err.message });
+    res.status(500).json({
+      message: "Error fetching profile",
+      error: err.message,
+    });
   }
 };
+
 
 
 

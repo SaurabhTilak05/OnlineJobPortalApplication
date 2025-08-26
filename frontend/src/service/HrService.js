@@ -11,12 +11,40 @@ const HRService = {
     }
   },
 
-
   
     deleteHR: async (hr_id) => {
     const res = await axios.delete(`http://localhost:8080/deleteHR/${hr_id}`);
     return res.data;
-  }
+  },
+
+
+   getHRDetails: async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/hrprofile", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // your JWT
+        },
+      });
+      return response.data.hr; // because backend returns { message, hr }
+    } catch (error) {
+      console.error("Error fetching HR details:", error);
+      throw error;
+    }
+  },
+
+  getJobsByHR: async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/hr/jobs", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data.jobs; // assuming backend returns jobs array
+    } catch (error) {
+      console.error("Error fetching jobs for HR:", error);
+      throw error;
+    }
+  },
 };
 
 export default HRService;

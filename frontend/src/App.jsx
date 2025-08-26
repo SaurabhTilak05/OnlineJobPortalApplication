@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  NavLink,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Components
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 import Home from "./components/home.jsx";
 import Sign from "./components/signup.jsx";
@@ -22,7 +28,9 @@ import ViewHR from "./components/viewHR.jsx";
 import Adminhome from "./components/adminhome.jsx";
 import UserProfile from "./components/userprofile.jsx";
 import AdminDashboard from "./components/admindashboard.jsx";
-import ViewStudProfile from "./components/viewstudprofile.jsx";  
+import ViewStudProfile from "./components/viewstudprofile.jsx";
+import ViewAllJob from "./components/viewalljob.jsx";
+import HRProfile from "./components/hrProfile.jsx";
 
 // Navbar Layout
 function LayoutWithNavbar({ children }) {
@@ -59,34 +67,103 @@ function LayoutWithNavbar({ children }) {
 
               {/* Desktop Menu */}
               <div className="d-none d-lg-flex align-items-center gap-4">
-                <NavLink className="nav-link" to="/" onClick={closeNavbar}> Home </NavLink>
-                <NavLink className="nav-link" to="/about" onClick={closeNavbar}> About Us </NavLink>
-                <NavLink className="nav-link" to="/contact" onClick={closeNavbar}> Contact </NavLink>
-                <NavLink className="btn btn-outline-danger ms-3" to="/register" onClick={closeNavbar}> Register </NavLink>
-                <NavLink className="btn btn-danger ms-2" to="/signup" onClick={closeNavbar}> Sign Up </NavLink>
+                <NavLink className="nav-link" to="/" onClick={closeNavbar}>
+                  {" "}
+                  Home{" "}
+                </NavLink>
+                <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
+                  {" "}
+                  About Us{" "}
+                </NavLink>
+                <NavLink
+                  className="nav-link"
+                  to="/contact"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Contact{" "}
+                </NavLink>
+                <NavLink
+                  className="btn btn-outline-danger ms-3"
+                  to="/register"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Register{" "}
+                </NavLink>
+                <NavLink
+                  className="btn btn-danger ms-2"
+                  to="/signup"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Sign Up{" "}
+                </NavLink>
               </div>
 
               {/* Mobile Toggle */}
-              <button className="navbar-toggler d-lg-none" type="button" onClick={toggleNavbar}>
+              <button
+                className="navbar-toggler d-lg-none"
+                type="button"
+                onClick={toggleNavbar}
+              >
                 <span className="navbar-toggler-icon"></span>
               </button>
             </div>
           </nav>
 
           {/* Mobile Side Drawer */}
-          <div className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`} onClick={closeNavbar}>
+          <div
+            className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
+            onClick={closeNavbar}
+          >
             <ul className="list-unstyled p-4">
-              <li><NavLink className="nav-link" to="/" onClick={closeNavbar}> Home </NavLink></li>
-              <li><NavLink className="nav-link" to="/about" onClick={closeNavbar}> About Us </NavLink></li>
-              <li><NavLink className="nav-link" to="/contact" onClick={closeNavbar}> Contact </NavLink></li>
+              <li>
+                <NavLink className="nav-link" to="/" onClick={closeNavbar}>
+                  {" "}
+                  Home{" "}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
+                  {" "}
+                  About Us{" "}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  className="nav-link"
+                  to="/contact"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Contact{" "}
+                </NavLink>
+              </li>
               <li className="mt-3">
-                <NavLink className="btn btn-outline-danger w-100 mb-2" to="/register" onClick={closeNavbar}> Register </NavLink>
-                <NavLink className="btn btn-danger w-100" to="/signup" onClick={closeNavbar}> Sign Up </NavLink>
+                <NavLink
+                  className="btn btn-outline-danger w-100 mb-2"
+                  to="/register"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Register{" "}
+                </NavLink>
+                <NavLink
+                  className="btn btn-danger w-100"
+                  to="/signup"
+                  onClick={closeNavbar}
+                >
+                  {" "}
+                  Sign Up{" "}
+                </NavLink>
               </li>
             </ul>
           </div>
 
-          {isOpen && <div className="overlay d-lg-none" onClick={closeNavbar}></div>}
+          {isOpen && (
+            <div className="overlay d-lg-none" onClick={closeNavbar}></div>
+          )}
         </>
       )}
 
@@ -136,7 +213,11 @@ export default function App() {
           {/* Admin routes */}
           <Route
             path="/adminhome"
-            element={<PrivateRoute allowedRole="admin"><Adminhome /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRole="admin">
+                <Adminhome />
+              </PrivateRoute>
+            }
           >
             <Route index element={<Navigate to="admindashboard" replace />} />
             <Route path="admindashboard" element={<AdminDashboard />} />
@@ -148,27 +229,41 @@ export default function App() {
           {/* HR Dashboard */}
           <Route
             path="/hrdashboard"
-            element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRole="hr">
+                <HRDashboard />
+              </PrivateRoute>
+            }
           >
             <Route index element={<HRHome />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="view-applicants" element={<ViewJobApplicants />} />
+            <Route path="job-history" element={<ViewAllJob />} />
+            <Route path="profile" element={<HRProfile />} />
           </Route>
 
           {/* Student Routes */}
           <Route
             path="/userprofile"
-            element={<PrivateRoute allowedRole="user"><UserProfile /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRole="user">
+                <UserProfile />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/viewstudprofile"
-            element={<PrivateRoute allowedRole="user"><ViewStudProfile /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRole="user">
+                <ViewStudProfile />
+              </PrivateRoute>
+            }
           />
         </Routes>
-         {/* ✅ Global toast container */}
+        {/* ✅ Global toast container */}
         <ToastContainer
           position="top-right"
-          autoClose={5000}   // 5 sec
+          autoClose={5000} // 5 sec
           hideProgressBar={false}
           newestOnTop
           closeOnClick
