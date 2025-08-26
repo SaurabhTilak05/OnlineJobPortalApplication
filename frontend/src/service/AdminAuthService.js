@@ -56,6 +56,10 @@ getProfile() {
 }
 
 
+getAllJobs() {
+  return axios.get("http://localhost:8080/alljob");  
+}
+
 
   logout() {
     localStorage.removeItem("token");
