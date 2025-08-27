@@ -116,21 +116,21 @@ exports.addingJob = (req, res) => {
 };
 
 
+//  Get all jobs
+exports.getJobHrDash = async (req, res) => {
+  try {
+  
+    const hrId = req.user.id;
+    if (!hrId) return res.status(400).json({ message: "HR ID missing in token" });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const result = await hrModel.getResentJob(hrId);
+   // ✅ debug DB result
+    return res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
+  }
+};
 
 
 

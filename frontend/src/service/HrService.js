@@ -32,19 +32,20 @@ const HRService = {
     }
   },
 
-  getJobsByHR: async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/hr/jobs", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      return response.data.jobs; // assuming backend returns jobs array
-    } catch (error) {
-      console.error("Error fetching jobs for HR:", error);
-      throw error;
-    }
-  },
+  getRecentJobsByHR: async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/hr/jobs", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response;  // ✅ must return full response, not response.data
+  } catch (error) {
+    console.error("Error fetching jobs for HR:", error);
+    throw error;
+  }
+},
+
 };
 
 export default HRService;

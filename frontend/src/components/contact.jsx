@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddJObService from "../service/addjobserv.js";
+import Jobservice from "../service/Jobservice.js";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -24,7 +24,7 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    AddJObService.contactUs(formData)
+    Jobservice.contactUs(formData)
       .then(() => {
         setMsg("Message sent successfully!");
         setFormData({

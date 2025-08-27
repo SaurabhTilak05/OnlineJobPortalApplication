@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddJobService from "../service/addjobserv.js";
+import Jobservice from "../service/Jobservice.js";
 import { toast } from "react-toastify";
 import "./AddJob.css";
 
@@ -30,7 +30,7 @@ export default function AddJob() {
       }
 
       const jobData = { ...formData, hr_id: Number(hrId) };
-      await AddJobService.addJob(jobData);
+      await Jobservice.addJob(jobData);
 
       toast.success("✅ Job posted successfully!");
 

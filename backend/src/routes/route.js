@@ -20,11 +20,11 @@ router.post("/addHr", hrCtrl.addHR1);
 router.post("/hr/login", hrCtrl.hrLogin);
 // Protected
 router.get("/hrprofile", verifyToken1, hrCtrl.getProfile);
-router.get("/hr/jobs",verifyToken1,jobctrl.getAllJobs);
+router.get("/hr/jobs",verifyToken1,hrCtrl.getJobHrDash);
 router.get("/viewAllJobs",verifyToken1,jobctrl.getAllJobs);
 router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
 router.get("/view-applicants",verifyToken1,jobskrctrl.getApplicants);
-
+router.put("/updateJob/:job_id",verifyToken1,jobctrl.UpdateJobById);
 
 
 
@@ -103,7 +103,7 @@ router.get("/viewjobbylocation",jobctrl.jobbylocation);
 // get job by ID//viewAllJobs
 router.get("/getJobById",jobctrl.getJobById);
 // uodate the job 
-router.put("/updateJob",jobctrl.UpdateJobById);
+
 // delete job by id 
 router.delete("/deleteJob",jobctrl.getDeleteJob);
 // search job by title 

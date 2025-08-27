@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import AddJObService  from "../service/addjobserv";
+import AdminAuthService  from "../service/AdminAuthService.js";
 export default function AddHR() {
   const [formData, setFormData] = useState({
     hr_name: "",
@@ -21,7 +21,7 @@ const handleSubmit = async (e) => {
 
   try {
     // Call backend via service
-    await AddJObService.AddHR(formData);
+    await AdminAuthService.AddHR(formData);
 
     // Notify success & email sent
     alert(`HR Added Successfully ✅\nEmail sent to ${formData.email}`);

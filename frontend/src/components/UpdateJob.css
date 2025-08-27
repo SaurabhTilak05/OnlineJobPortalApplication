@@ -1,0 +1,45 @@
+.update-job-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8fafc;
+  padding: 30px;
+}
+
+.update-job-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 800px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.update-job-card:hover {
+  transform: translateY(-4px);
+}
+
+.form-label {
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.form-control {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border: none;
+  border-radius: 10px;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+}
+
+.btn-outline-secondary {
+  border-radius: 10px;
+}

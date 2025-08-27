@@ -69,18 +69,15 @@ exports.getJobById = async (job_id) => {
 
 //  Update Job
 exports.updateJob = async (title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id) => {
-  try {
-    const [result] = await db.query(
-      `UPDATE jobs 
-       SET title=?, company=?, opening=?, experience_required=?, location=?, package=?, skills_required=?, description=?, deadline=? 
-       WHERE job_id=?`,
-      [title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id]
-    );
-    return { message: "Job Updated Successfully", affectedRows: result.affectedRows };
-  } catch (err) {
-    throw err;
-  }
+  const [result] = await db.query(
+    `UPDATE jobs 
+     SET title=?, company=?, opening=?, experience_required=?, location=?, package=?, skills_required=?, description=?, deadline=? 
+     WHERE job_id=?`,
+    [title, company, opening, experience_required, location, package, skills_required, description, deadline, job_id]
+  );
+  return { message: "Job Updated Successfully", affectedRows: result.affectedRows };
 };
+
 
 //  Delete Job
 exports.deleteJob = async (job_id) => {

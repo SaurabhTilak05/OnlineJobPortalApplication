@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
-import AddJobService from "../service/addjobserv.js";
+import { useState, useEffect } from "react";
+
+import Jobservice from "../service/Jobservice.js";
+import UpdateJob from "./updateJob.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./ViewAllJob.css"; // custom styles
+import "./ViewAllJob.css";
 
 export default function ViewAllJob() {
   const [jobs, setJobs] = useState([]);
   const [msg, setMsg] = useState("");
   const [expanded, setExpanded] = useState({});
+  const [selectedJob, setSelectedJob] = useState(null); //  modal state
 
   useEffect(() => {
-    AddJobService.getAllJobs()
+    Jobservice.getAllJobs()
       .then((result) => setJobs(result.data))
       .catch((err) => {
         setMsg("Failed to fetch jobs");
@@ -21,14 +24,19 @@ export default function ViewAllJob() {
     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  const limit = 20; 
+  const handleJobUpdated = (updatedJob) => {
+    setJobs((prev) =>
+      prev.map((job) => (job.job_id === updatedJob.job_id ? updatedJob : job))
+    );
+  };
+
+  const limit = 20;
 
   return (
     <div className="job-container container py-5">
       <h2 className="text-center fw-bold text-primary mb-5">📌 Posted Jobs</h2>
       {msg && <div className="alert alert-danger text-center">{msg}</div>}
 
-      {/* align-items-start prevents columns from stretching to the tallest */}
       <div className="row g-4 align-items-start">
         {jobs.length > 0 ? (
           jobs.map((job, index) => {
@@ -46,7 +54,6 @@ export default function ViewAllJob() {
                 key={job.job_id ?? index}
               >
                 <div className="job-card card shadow-sm border-0 rounded-4">
-                  {/* keep flex-column so mt-auto will push deadline+button to bottom of this card only */}
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title text-dark fw-bold mb-2">
                       {job.title}
@@ -69,9 +76,21 @@ export default function ViewAllJob() {
                         Package {job.package}L
                       </span>
                     </p>
-
+                    {/* ✅ Show skills */}
                     <p className="card-text small">
-                      <strong>Skills:</strong> {job.skills_required}
+                      <strong>Skills:</strong>{" "}
+                      {job.skills_required ? (
+                        job.skills_required.split(",").map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="badge bg-light text-dark border me-1 mb-1"
+                          >
+                            {skill.trim()}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-muted">Not specified</span>
+                      )}
                     </p>
 
                     <p className="card-text small">
@@ -87,7 +106,6 @@ export default function ViewAllJob() {
                       )}
                     </p>
 
-                    {/* mt-auto keeps these at the bottom of THIS card only */}
                     <div className="mt-auto">
                       <p className="deadline-text fw-semibold small mb-2">
                         <i className="bi bi-calendar-event me-2"></i>
@@ -99,8 +117,12 @@ export default function ViewAllJob() {
                         })}
                       </p>
 
-                      <button className="btn btn-primary w-100 rounded-3">
-                        ✏️ Update Job
+                      {/* FIX: open inline modal instead of navigating */}
+                      <button
+                        className="btn btn-primary w-100 rounded-3"
+                        onClick={() => setSelectedJob(job)}
+                      >
+                         Update Job
                       </button>
                     </div>
                   </div>
@@ -112,6 +134,36 @@ export default function ViewAllJob() {
           <p className="text-center text-muted">No jobs found</p>
         )}
       </div>
+
+      {/* ✅ Bootstrap Modal for Update Job */}
+      {selectedJob && (
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          role="dialog"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content rounded-4 shadow-lg">
+              <div className="modal-header">
+                <h5 className="modal-title">✏️ Update Job</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setSelectedJob(null)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <UpdateJob
+                  job={selectedJob}
+                  onClose={() => setSelectedJob(null)}
+                  onUpdated={handleJobUpdated}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

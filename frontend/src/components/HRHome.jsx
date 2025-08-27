@@ -1,6 +1,6 @@
 // src/components/HRHome.jsx
 import React, { useEffect, useState } from "react";
-import AddJObService from "../service/addjobserv.js";
+import HRService from "../service/HrService.js";
 import { FaBriefcase, FaUsers, FaCalendarCheck } from "react-icons/fa";
 
 export default function HRHome() {
@@ -8,13 +8,14 @@ export default function HRHome() {
   const [msg, setMsg] = useState("");
 
   const fetchJobs = async () => {
-    try {
-      const res = await AddJObService.getAllJobs();
-      setJobs(res.data || []);
-    } catch (err) {
-      setMsg("Failed to fetch jobs");
-    }
-  };
+  try {
+    const res = await HRService.getRecentJobsByHR();
+    setJobs(res.data || []);   // ✅ works because backend returns array
+  } catch (err) {
+    setMsg("Failed to fetch jobs");
+  }
+};
+
 
   useEffect(() => {
     fetchJobs();

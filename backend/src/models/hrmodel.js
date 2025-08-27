@@ -98,7 +98,7 @@ exports.addJob = async (data) => {
 // getAll hr in the table 
 exports.getHr = async () => {
   try {
-    const [rows] = await db.query("SELECT * FROM hr");
+    const [rows] = await db.query("SELECT * FROM hr order by hr_id DESC");
     return rows;
   } catch (err) {
     throw err;
@@ -107,20 +107,26 @@ exports.getHr = async () => {
 
 
 
-// login the hr with email and password
-// exports.hrLogin=(email,password)=>{
-//     return new Promise((resolve,reject)=>{
-//         db.query("select *from hr where email=? and password=?",[email,password],(err,result)=>{
-//                if( err || result.length === 0)
-//             {
-//                 return reject("Invalid HR ..... ");
-//             }
-//             else{
-//                 return resolve("Hr Login Successfull.....");
-//             }
-//         })
-//     })
-// }
+//  Get All Jobs
+exports.getResentJob = async (hrId) => {
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT j.*, 
+             COUNT(a.application_id) AS applicant_count
+      FROM jobs j
+      LEFT JOIN applications a ON j.job_id = a.job_id
+      WHERE j.hr_id = ?
+      GROUP BY j.job_id
+      ORDER BY j.created_at ASC
+      `,
+      [hrId]
+    );
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
 
 // update the hr data 
 exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>{

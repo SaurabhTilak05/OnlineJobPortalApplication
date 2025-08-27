@@ -1,3 +1,4 @@
+// src/components/HRProfile.jsx
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,9 +13,13 @@ import {
   FaEdit,
 } from "react-icons/fa";
 
+import UpdateHRProfile from "./UpdateHrProfile.jsx";
+
 export default function HRProfile() {
   const [hr, setHR] = useState({});
+  const [showUpdate, setShowUpdate] = useState(false);
 
+  // ✅ Fetch HR profile details
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,8 +32,15 @@ export default function HRProfile() {
     fetchData();
   }, []);
 
+  // ✅ Open modal
   const handleUpdate = () => {
-    toast.info("Update button clicked! (Open modal here)");
+    setShowUpdate(true);
+  };
+
+  // ✅ Update state after saving changes
+  const handleUpdated = (updatedData) => {
+    setHR(updatedData);
+    toast.success("Profile updated successfully ✅");
   };
 
   return (
@@ -93,6 +105,15 @@ export default function HRProfile() {
         </div>
 
       </div>
+
+      {/* ✅ Update Profile Modal */}
+      {showUpdate && (
+        <UpdateHRProfile
+          hr={hr}
+          onUpdated={handleUpdated}
+          onClose={() => setShowUpdate(false)}
+        />
+      )}
     </div>
   );
 }

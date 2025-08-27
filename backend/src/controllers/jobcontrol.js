@@ -66,30 +66,15 @@ exports.getJobById = async (req, res) => {
 // ✅ Update job by ID
 exports.UpdateJobById = async (req, res) => {
   try {
+    const { job_id } = req.params;
     const {
-      title,
-      company,
-      opening,
-      experience_required,
-      location,
-      package,
-      skills_required,
-      description,
-      deadline,
-      job_id,
+      title, company, opening, experience_required,
+      location, package, skills_required, description, deadline
     } = req.body;
 
     const result = await jobctrl.updateJob(
-      title,
-      company,
-      opening,
-      experience_required,
-      location,
-      package,
-      skills_required,
-      description,
-      deadline,
-      job_id
+      title, company, opening, experience_required,
+      location, package, skills_required, description, deadline, job_id
     );
 
     res.status(200).json(result);
@@ -98,6 +83,8 @@ exports.UpdateJobById = async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error: err });
   }
 };
+
+
 
 // ✅ Delete job by ID
 exports.getDeleteJob = async (req, res) => {
