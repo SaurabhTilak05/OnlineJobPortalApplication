@@ -1,41 +1,128 @@
+/* UpdateHrProfile.css */
+
+/* Container */
 .update-hr-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.55);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  padding: 20px;
 }
 
+/* Card */
 .update-hr-card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
   width: 100%;
-  max-width: 700px;
-  animation: fadeIn 0.3s ease-in-out;
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Title */
+.update-hr-card .form-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1e293b;
 }
 
-.form-control {
+.update-hr-card .form-subtitle {
+  font-size: 0.95rem;
+  text-align: center;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+/* Inputs */
+.update-hr-card .form-label {
+  font-weight: 500;
+  color: #334155;
+}
+
+.update-hr-card input {
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  width: 100%;
 }
 
-.btn-primary {
+/* Buttons */
+.update-hr-card .btn {
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.update-hr-card .btn-primary {
   background: #2563eb;
   border: none;
-  border-radius: 10px;
 }
 
-.btn-primary:hover {
-  background: #1e40af;
+.update-hr-card .btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.update-hr-card .btn-outline-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 992px) {
+  .update-hr-card {
+    padding: 20px;
+  }
+
+  .update-hr-card .form-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .update-hr-card {
+    padding: 20px;
+  }
+
+  .update-hr-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .update-hr-card .col-md-6 {
+    width: 100% !important;
+  }
+
+  .update-hr-card .form-title {
+    font-size: 1.5rem;
+  }
+
+  .update-hr-card .form-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .update-hr-card .btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .update-hr-card .d-flex.justify-content-end {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .update-hr-card {
+    max-width: 900px;
+    padding: 40px;
+  }
+
+  .update-hr-card .form-title {
+    font-size: 2rem;
+  }
 }

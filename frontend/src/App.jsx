@@ -156,25 +156,26 @@ import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 
             {/* HR Dashboard */}
        {/* HR Dashboard */}
-          <Route
-            path="/hrdashboard"
-            element={
-              <PrivateRoute allowedRole="hr">
-                <HRDashboard />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<HRHome />} />
-            <Route path="addjob" element={<AddJob />} />
-            <Route path="view-applicants" element={<ViewJobApplicants />} />
-            <Route path="job-history" element={<ViewAllJob />} >
-            <Route path="update-job/:id" element={<UpdateJob />} />
+        <Route
+              path="/hrdashboard"
+              element={
+                <PrivateRoute allowedRole="hr">
+                  <HRDashboard />
+                </PrivateRoute>
+              }
+            >
+              <Route index element={<HRHome />} />
+              <Route path="addjob" element={<AddJob />} />
+              <Route path="view-applicants" element={<ViewJobApplicants />} />
+              <Route path="job-history" element={<ViewAllJob />} >
+                <Route path="update-job/:id" element={<UpdateJob />} />
+              </Route>
+
+              {/* Profile section */}
+              <Route path="profile" element={<HRProfile />} />
+              <Route path="profile/update" element={<UpdateHRProfile />} />
             </Route>
-            <Route path="profile" element={<HRProfile />} >
-            <Route path="updateHrProfile" element={< UpdateHRProfile/>} />
-            </Route>
-             
-          </Route>
+
 
 
 

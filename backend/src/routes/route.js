@@ -25,7 +25,7 @@ router.get("/viewAllJobs",verifyToken1,jobctrl.getAllJobs);
 router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
 router.get("/view-applicants",verifyToken1,jobskrctrl.getApplicants);
 router.put("/updateJob/:job_id",verifyToken1,jobctrl.UpdateJobById);
-
+router.put("/updatehrProfile/:hr_id", verifyToken1, hrCtrl.updateHRProfile);
 
 
 // Admin routes
@@ -65,7 +65,7 @@ router.get("/viewHr", hrCtrl.getHrs);
 //hr login with email and password
 // router.post("/hrLogin",hrCtrl.loginHr);
 // update all fields 
-router.put("/UpdateHr",hrCtrl.updateHr);
+
 // Delete hr by Id
 router.delete("/deleteHR/:hr_id", hrCtrl.deleteHRByID);
 // for the delete student by hr

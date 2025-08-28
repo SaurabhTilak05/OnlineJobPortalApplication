@@ -129,18 +129,8 @@ exports.getResentJob = async (hrId) => {
 };
 
 // update the hr data 
-exports.UpdateHr=(hr_id,hr_name, company_name, email, password, phone, status)=>{
-    return new Promise((resolve, reject)=>{
-        db.query("update hr set hr_name=?, company_name=?, email=?, password=?, phone=?, status=? where hr_id=?",[hr_name, company_name, email, password, phone, status,hr_id],(err,result)=>{
-          if(err){
-            return reject("Not Update.");
-          }  
-          else{
-           return resolve("Update SuccessFully..... ");
-          }
-        });
-    }) 
-}
+
+
 
 
 //delete hr using its id 
@@ -225,4 +215,23 @@ exports.getCountStudents = async () => {
 exports.getCountApplications = async () => {
   const [rows] = await db.query("SELECT COUNT(*) AS total FROM applications");
   return rows[0];
+};
+
+
+// Update HR profile (only name, email, phone)
+exports.updateHR = (hr_id, hr_name, company_name, email, phone) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE hr 
+      SET hr_name = ?, company_name = ?, email = ?, phone = ?
+      WHERE hr_id = ?
+    `;
+
+    db.query(sql, [hr_name, company_name, email, phone, hr_id], (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(result);
+    });
+  });
 };

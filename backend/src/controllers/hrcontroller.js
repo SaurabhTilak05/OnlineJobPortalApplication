@@ -176,16 +176,28 @@ exports.loginHr=(req, res)=>{
     })
 }
 
+exports.updateHRProfile = async (req, res) => {
+  try {
+    const { hr_id } = req.params;
+    const { hr_name, company_name, email, phone } = req.body;
 
-exports.updateHr=(req,res)=>{
-    let {hr_id,hr_name, company_name, email, password, phone, status}=req.body;
-    let Promise=hrctrl.UpdateHr(hr_id,hr_name, company_name, email, password, phone, status);
-    Promise.then((result)=>{
-        res.send(result);
-    }).catch((err)=>{
-        res.send(err);
-    })
-}
+    if (!hr_id || !hr_name || !company_name || !email || !phone) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const result = await hrModel.updateHR(hr_id, hr_name, company_name, email, phone);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "HR not found" });
+    }
+
+    res.status(200).json({ message: "HR Profile updated successfully" });
+  } catch (error) {
+    console.error("Error updating HR profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 exports.deleteHRByID = async (req, res) => {
   try {
