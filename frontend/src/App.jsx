@@ -29,7 +29,9 @@
   import JobforUsers from "./components/JobforUsers.jsx";
 import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
-  
+import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
+
+
   // Navbar Layout
   function LayoutWithNavbar({ children }) {
     const location = useLocation();
@@ -185,6 +187,8 @@ import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
               
             <Route path="view-profile" element={<ViewStudProfile/>} />
             <Route path="view-jobs" element={<JobforUsers/>}/>
+            <Route path="Applied-jobs" element={<Jobappliedstudent/>}/>
+
 
              </Route>
     

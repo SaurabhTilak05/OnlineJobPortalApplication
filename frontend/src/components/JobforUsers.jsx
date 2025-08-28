@@ -1,6 +1,7 @@
-// src/components/ViewJobs.jsx
 import React, { useEffect, useState } from "react";
-import  AdminAuthService from "../service/AdminAuthService.js";
+import Jobservice from "../service/Jobservice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function JobforUsers() {
   const [jobs, setJobs] = useState([]);
@@ -8,17 +9,52 @@ export default function JobforUsers() {
   const [error, setError] = useState("");
   const [expandedJob, setExpandedJob] = useState(null);
 
+  const seekerId = localStorage.getItem("seeker_id"); // stored at login
+  console.log("Seeker ID from localStorage:", seekerId);
+
+  // 🔹 Fetch all jobs
   useEffect(() => {
-    AdminAuthService.getAllJobs()
+    Jobservice.getAllJobs()
       .then((res) => {
+        console.log("Jobs fetched:", res.data);
         setJobs(res.data);
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message || "Failed to fetch jobs");
+        console.error("Error fetching jobs:", err);
+        setError("Failed to fetch jobs");
         setLoading(false);
       });
   }, []);
+
+  // 🚀 Apply for job
+  const handleApply = (jobId, title) => {
+    if (!seekerId) {
+      toast.error("⚠️ Please login as a student first!");
+      return;
+    }
+
+    Jobservice.applyJob(jobId, seekerId)
+      .then((res) => {
+        console.log("Apply response:", res.data);
+
+        if (typeof res.data === "string") {
+          if (res.data.toLowerCase().includes("success")) {
+            toast.success(`✅ ${res.data}`);
+          } else if (res.data.toLowerCase().includes("already")) {
+            toast.warning(`⚠️ ${res.data}`);
+          } else {
+            toast.info(res.data);
+          }
+        } else {
+          toast.info("ℹ️ Unexpected response from server");
+        }
+      })
+      .catch((err) => {
+        console.error("Error applying job:", err);
+        toast.error("❌ Something went wrong. Try again!");
+      });
+  };
 
   if (loading) return <p className="text-center mt-5">⏳ Loading jobs...</p>;
   if (error) return <p className="text-center text-danger mt-5">❌ {error}</p>;
@@ -26,7 +62,6 @@ export default function JobforUsers() {
   return (
     <div className="container mt-4">
       <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
-      
 
       <div className="row g-4">
         {jobs.length === 0 ? (
@@ -37,17 +72,18 @@ export default function JobforUsers() {
               <div className="card shadow-lg border-0 h-100">
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title fw-bold">{job.title}</h5>
-                  <h6 className="card-subtitle mb-2 text-muted">{job.company}</h6>
+                  <h6 className="card-subtitle mb-2 text-muted">
+                    {job.company}
+                  </h6>
                   <p className="card-text flex-grow-1">
                     📍 <strong>Location:</strong> {job.location} <br />
                     🏢 <strong>Openings:</strong> {job.opening || "N/A"} <br />
                     ⏳ <strong>Experience:</strong>{" "}
-                    {job.experience_required
-                      ? `${job.experience_required} years`
-                      : "Fresher"}{" "}
-                    <br />
-                    💰 <strong>Package:</strong> {job.package || "Not Disclosed"} <br />
-                    🛠 <strong>Skills:</strong> {job.skills_required || "Not Specified"} <br />
+                    {job.experience_required || "Fresher"} <br />
+                    💰 <strong>Package:</strong>{" "}
+                    {job.package || "Not Disclosed"} <br />
+                    🛠 <strong>Skills:</strong>{" "}
+                    {job.skills_required || "Not Specified"} <br />
                     📝 <strong>Description:</strong>{" "}
                     {expandedJob === job.job_id ? (
                       <>
@@ -73,7 +109,12 @@ export default function JobforUsers() {
                     <br />
                     📅 <strong>Deadline:</strong> {job.deadline}
                   </p>
-                  <button className="btn btn-success w-100 mt-auto">
+
+                  {/* 🚀 Apply Button */}
+                  <button
+                    className="btn btn-success w-100 mt-auto"
+                    onClick={() => handleApply(job.job_id, job.title)}
+                  >
                     🚀 Apply Now
                   </button>
                 </div>
@@ -82,6 +123,9 @@ export default function JobforUsers() {
           ))
         )}
       </div>
+
+      {/* ✅ Toast container */}
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }

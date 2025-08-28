@@ -14,7 +14,7 @@ class Jobservice {
 
    getAllJobs() {
   const token = localStorage.getItem("token");
-  return axios.get("http://localhost:8080/viewAllJobs", {
+  return axios.get("http://localhost:8080/allJob", {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
@@ -54,5 +54,33 @@ searchJobsByTitle(title) {
 }
 
 
+// Apply for a Job
+// Apply for a Job
+applyJob( job_id, seeker_id) {
+  const token = localStorage.getItem("token");
+  return axios.post(
+    "http://localhost:8080/applyedJob",
+    {  job_id, seeker_id },   // ✅ send camelCase keys for Node.js
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 }
+
+getAppliedJobs(seekerId) {
+    const token = localStorage.getItem("token"); // optional, if auth required
+    return axios.get(`http://localhost:8080/appliedJobs/${seekerId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+  }
+
+
+
+}
+
+
 export default new Jobservice();

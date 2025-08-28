@@ -68,18 +68,18 @@ exports.loginSeeker = async (email, password) => {
   }
 };
 
-// ✅ Apply for Job
-exports.applyJobs = async (job_id, seeker_id) => {
-  try {
-    await db.query(
-      "INSERT INTO applications (job_id, seeker_id) VALUES (?, ?)",
-      [job_id, seeker_id]
-    );
-    return "Applied successfully";
-  } catch (err) {
-    throw new Error("Not applied for job");
-  }
-};
+// // ✅ Apply for Job
+// exports.applyJobs = async (job_id, seeker_id) => {
+//   try {
+//     await db.query(
+//       "INSERT INTO applications (job_id, seeker_id) VALUES (?, ?)",
+//       [job_id, seeker_id]
+//     );
+//     return "Applied successfully";
+//   } catch (err) {
+//     throw new Error("Not applied for job");
+//   }
+// };
 
 // ✅ Get all applicants
 exports.getAllApplicant = async (hrId) => {
@@ -96,4 +96,50 @@ exports.getAllApplicant = async (hrId) => {
   } catch (err) {
     throw err;
   }
+};
+
+
+
+
+
+// ✅ Apply for Job
+exports.applyJobs = async (job_id, seeker_id) => {
+  try {
+    // Prevent duplicate applications
+    const [check] = await db.query(
+      "SELECT * FROM applications WHERE job_id = ? AND seeker_id = ?",
+      [job_id, seeker_id]
+    );
+
+    if (check.length > 0) {
+      return "You have already applied for this job";
+    }
+
+    // Insert application
+    await db.query(
+      "INSERT INTO applications (job_id, seeker_id, status) VALUES (?, ?, 'applied')",
+      [job_id, seeker_id]
+    );
+
+    return "Applied successfully";
+  } catch (err) {
+    throw new Error("Failed to apply for job: " + err.message);
+  }
+};
+
+
+
+
+exports.getAppliedJobs = async (seekerId) => {
+  const [rows] = await db.query(
+    `SELECT a.application_id, a.status, a.applied_at,
+            j.job_id, j.title, j.company, j.location, j.package, 
+            j.skills_required, j.experience_required, j.deadline
+     FROM applications a
+     JOIN jobs j ON a.job_id = j.job_id
+     WHERE a.seeker_id = ?
+     ORDER BY a.applied_at DESC`,
+    [seekerId]
+  );
+  return rows;
 };
