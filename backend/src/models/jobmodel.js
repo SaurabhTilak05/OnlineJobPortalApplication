@@ -123,3 +123,19 @@ exports.getAllJobs = async () => {
 
   return rows;
 };
+
+
+
+exports.getAppliedJobs = async (seekerId) => {
+  const [rows] = await db.query(
+    `SELECT a.application_id, a.status, a.applied_at,
+            j.job_id, j.title, j.company, j.location, j.package, 
+            j.skills_required, j.experience_required, j.deadline
+     FROM applications a
+     JOIN jobs j ON a.job_id = j.job_id
+     WHERE a.seeker_id = ?
+     ORDER BY a.applied_at DESC`,
+    [seekerId]
+  );
+  return rows;
+};

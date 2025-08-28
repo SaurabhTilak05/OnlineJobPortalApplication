@@ -96,7 +96,7 @@ export default function RegisterJobSeeker() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label">Email</label>
+                    <label className="form-label">Email   Address</label>
                     <input
                       type="email"
                       name="email"

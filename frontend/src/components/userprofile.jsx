@@ -26,10 +26,10 @@ export default function UserProfile() {
     { to: "view-profile", icon: <FaUser />, label: "View Profile" },
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
-    { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
+    { to: "Applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = () => {  
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     navigate("/signup");

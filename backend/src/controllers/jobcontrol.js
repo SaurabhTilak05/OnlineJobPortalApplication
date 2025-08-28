@@ -121,3 +121,21 @@ exports.jobbylocation = async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error: err });
   }
 };
+
+
+// ✅ Get applied jobs for a student
+exports.getallJobs = async (req, res) => {
+  try {
+    const seekerId = req.params.seekerId;
+    const jobs = await jobctrl.getAppliedJobs(seekerId);
+
+    if (!jobs || jobs.length === 0) {
+      return res.json({ message: "No applied jobs found" });
+    }
+
+    res.json(jobs);
+  } catch (err) {
+    console.error("Error fetching applied jobs:", err);
+    res.status(500).json({ error: "Failed to fetch applied jobs" });
+  }
+};
