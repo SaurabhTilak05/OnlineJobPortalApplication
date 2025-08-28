@@ -9,6 +9,7 @@ import {
   FaUserCog,
   FaHistory,
   FaEnvelope,
+  FaUserCircle,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -31,181 +32,214 @@ export default function HRDashboard() {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div style={{ "--hr-topnav": "80px" }}>
-      {/* Top Navbar (fixed) */}
+    <div style={{ "--hr-topnav": "70px" }}>
+      {/* ✅ Top Navbar */}
       <nav
-        className="navbar navbar-dark bg-dark shadow-sm fixed-top"
-        style={{ height: "var(--hr-topnav)", zIndex: 1030 }}
+        className="navbar shadow-sm fixed-top"
+        style={{
+          height: "var(--hr-topnav)",
+          zIndex: 1030,
+          background: "linear-gradient(90deg, #1e3a8a, #2563eb)", // 🔹 Blue gradient
+        }}
       >
         <div className="container-fluid">
           {/* Mobile: toggle sidebar */}
           <button
-            className="btn btn-dark d-lg-none"
+            className="btn btn-light d-lg-none"
             onClick={() => setSidebarOpen((s) => !s)}
             aria-label="Toggle sidebar"
           >
             <FaBars />
           </button>
 
-          <NavLink to="/hrdashboard" className="navbar-brand fw-bold">
-            QuickStart <span className="text-danger">Career</span>
+          <NavLink
+            to="/hrdashboard"
+            className="navbar-brand fw-bold text-white"
+          >
+            QuickStart <span className="text-warning">Career</span>
           </NavLink>
 
-          {/* Right side (desktop) */}
-          <div className="d-none d-md-flex align-items-center gap-2">
+          {/* ✅ Right side (desktop only) */}
+          <div className="d-none d-lg-flex align-items-center gap-3">
             <NavLink end to="." className="btn btn-outline-light btn-sm">
               Dashboard
             </NavLink>
-            <button className="btn btn-danger btn-sm" onClick={handleLogout}>
-              <FaSignOutAlt className="me-1" />
-              Logout
-            </button>
+
+            {/* Profile icon only visible in Navbar on desktop */}
+            <NavLink to="profile" className="text-white fs-1 mr-3">
+              <FaUserCircle />
+            </NavLink>
           </div>
         </div>
       </nav>
 
-      {/* Sidebar (fixed) */}
+      {/* ✅ Sidebar */}
       <aside
-        className={`bg-dark text-white position-fixed start-0 h-100 px-3 py-3 hr-sidebar ${
+        className={`bg-dark text-white position-fixed start-0 h-100 px-3 py-4 hr-sidebar ${
           sidebarOpen ? "open" : ""
         }`}
-        style={{ top: "var(--hr-topnav)", width: 250, zIndex: 1040 }}
       >
-        <div className="mb-3 text-uppercase small text-secondary px-2">
+        <h6 className="text-uppercase text-secondary mb-4 px-2 fw-bold">
           HR Panel
-        </div>
+        </h6>
 
-        <ul className="nav flex-column">
-          <li className="nav-item mb-1">
+        <ul className="nav flex-column gap-2">
+          <li>
             <NavLink
               end
               to="."
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaUsers className="me-2" />
-              Dashboard
+              <FaUsers className="me-2" /> Dashboard
             </NavLink>
           </li>
-
-          <li className="nav-item mb-1">
+          <li>
             <NavLink
               to="addjob"
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaBriefcase className="me-2" />
-              Post Job
+              <FaBriefcase className="me-2" /> Post Job
             </NavLink>
           </li>
-
-          <li className="nav-item mb-1">
+          <li>
             <NavLink
               to="view-applicants"
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaUserPlus className="me-2" />
-              View Applicants
+              <FaUserPlus className="me-2" /> View Applicants
             </NavLink>
           </li>
 
-          {/* Optional pages — add routes or remove these links */}
-          <li className="nav-item mb-1">
+          {/* ✅ Profile only visible in Sidebar on mobile */}
+          <li className="d-lg-none">
             <NavLink
               to="profile"
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaUserCog className="me-2" />
-              Profile
+              <FaUserCog className="me-2" /> Profile
             </NavLink>
           </li>
-          <li className="nav-item mb-1">
+
+          <li>
             <NavLink
               to="job-history"
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaHistory className="me-2" />
-              Job History
+              <FaHistory className="me-2" /> Job History
             </NavLink>
           </li>
-          <li className="nav-item mb-3">
+          <li>
             <NavLink
               to="messages"
               className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "active" : ""}`
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
               }
               onClick={closeSidebar}
             >
-              <FaEnvelope className="me-2" />
-              Messages
+              <FaEnvelope className="me-2" /> Messages
             </NavLink>
           </li>
-
         </ul>
 
-        <div className="mt-auto pb-2">
-          <button className="btn btn-danger w-100" onClick={handleLogout}>
-            <FaSignOutAlt className="me-1" />
+        {/* ✅ Logout Button */}
+        <div className="mt-auto pt-4">
+          <button
+            className="btn btn-danger w-100 fw-bold"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt className="me-2" />
             Logout
           </button>
         </div>
       </aside>
 
-      {/* Dark overlay for mobile when sidebar is open */}
+      {/* ✅ Overlay for Mobile */}
       {sidebarOpen && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100"
-          style={{ background: "rgba(0,0,0,.4)", zIndex: 1035 }}
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
           onClick={closeSidebar}
+          style={{ zIndex: 1035 }}
         />
       )}
 
-      {/* Main content */}
-      <main className="hr-main p-3 p-md-4 mt-5">
+      {/* ✅ Main Content */}
+      <main className="hr-main">
         <Outlet />
       </main>
 
-      {/* Scoped styles */}
+      {/* ✅ Scoped Styles */}
       <style>{`
-        /* Main pushes down below fixed top navbar */
+        .hr-topbar {
+          height: var(--hr-topnav);
+          z-index: 1030;
+        }
         .hr-main {
-          padding-top: calc(var(--hr-topnav) + 8px);
+          margin-top: var(--hr-topnav);
+          padding: 20px;
           min-height: 100vh;
-          background: #f8f9fa;
+          background: linear-gradient(135deg, #e0f2fe, #f8fafc); 
+          transition: margin-left 0.3s ease;
         }
-
-        /* Sidebar behavior */
-        .hr-sidebar { 
+        .hr-sidebar {
+          width: 250px;
+          top: var(--hr-topnav);
+          left: 0;
           transform: translateX(-100%);
-          transition: transform .3s ease;
+          transition: transform 0.3s ease-in-out;
+          z-index: 1040;
         }
-        .hr-sidebar.open { 
+        .hr-sidebar.open {
           transform: translateX(0);
         }
-
-        /* Desktop: sidebar always visible + content shifted */
-        @media (min-width: 992px){
-          .hr-sidebar { transform: translateX(0); }
-          .hr-main { margin-left: 250px; }
+        @media (min-width: 992px) {
+          .hr-sidebar {
+            transform: translateX(0);
+          }
+          .hr-main {
+            margin-left: 250px;
+          }
         }
-
-        /* Active link style */
-        .nav-link.active {
-          font-weight: 700;
+        .nav-link {
+          padding: 10px 15px;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          transition: background 0.3s, color 0.3s;
+        }
+        .nav-link:hover {
+          background: rgba(255,255,255,0.1);
           color: #ffc107 !important;
+        }
+        .nav-link.active {
+          background: #ffc107;
+          color: #000 !important;
+          font-weight: bold;
         }
       `}</style>
     </div>
