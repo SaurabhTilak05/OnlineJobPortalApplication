@@ -101,6 +101,8 @@ exports.getUserById = async (req, res) => {
 exports.applyJob = async (req, res) => {
   try {
     const { job_id, seeker_id } = req.body;
+
+
     console.log("ids are",req.body);
     const result = await jobsctrl.applyJobs(job_id, seeker_id);
     res.json(result);
