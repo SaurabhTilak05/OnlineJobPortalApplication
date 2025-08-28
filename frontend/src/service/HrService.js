@@ -46,6 +46,24 @@ const HRService = {
   }
 },
 
+   updateHRProfile: async (id, hrData) => {
+    try {
+      const token = localStorage.getItem("token"); // get JWT
+      const response = await axios.put(`http://localhost:8080/updatehrProfile/${id}`,
+        hrData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Important
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating profile for HR:", error);
+      throw error;
+    }
+  },
+
 };
 
 export default HRService;
