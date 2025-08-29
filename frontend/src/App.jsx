@@ -152,6 +152,8 @@ import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
               <Route path="addhr" element={<AddHR />} />
               <Route path="viewshr" element={<ViewHR />} />
               <Route path="register-student" element={<Register />} />
+                 <Route path="view-jobs" element={<JobforUsers/>}/>
+         
             </Route>
 
 
