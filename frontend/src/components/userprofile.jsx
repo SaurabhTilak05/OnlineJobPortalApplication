@@ -18,14 +18,18 @@ export default function UserProfile() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const studentName = localStorage.getItem("username") || "Student";
+  const studentName = localStorage.getItem("username") || "user";
 
   const navItems = [
     { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "view-profile", icon: <FaUser />, label: "View Profile" },
+  
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
     { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
+
+     
+
   ];
 
   const handleLogout = () => {
