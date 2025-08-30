@@ -83,11 +83,13 @@ exports.updateJob = async (title, company, opening, experience_required, locatio
 exports.deleteJob = async (job_id) => {
   try {
     const [result] = await db.query("DELETE FROM jobs WHERE job_id = ?", [job_id]);
-    return { message: "Job Deleted Successfully", affectedRows: result.affectedRows };
+    return result; // return actual result to check affectedRows
   } catch (err) {
     throw err;
   }
 };
+
+
 
 //  Search by Title
 exports.searchByTitle = async (title) => {
@@ -136,6 +138,21 @@ exports.getAppliedJobs = async (seekerId) => {
      WHERE a.seeker_id = ?
      ORDER BY a.applied_at DESC`,
     [seekerId]
+  );
+  return rows;
+};
+
+
+
+exports.getApplicantsByJob = async (jobId) => {
+  const [rows] = await db.query(
+    `
+    SELECT s.seeker_id, s.name, s.email, s.phone, a.status
+    FROM applications a
+    INNER JOIN job_seekers s ON a.seeker_id = s.seeker_id
+    WHERE a.job_id = ?
+    `,
+    [jobId]
   );
   return rows;
 };

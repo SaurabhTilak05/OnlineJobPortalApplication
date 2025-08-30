@@ -30,6 +30,7 @@
 import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
+import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
 
 
   // Navbar Layout
@@ -173,6 +174,7 @@ import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
               <Route path="view-applicants" element={<ViewJobApplicants />} />
               <Route path="job-history" element={<ViewAllJob />} >
                 <Route path="update-job/:id" element={<UpdateJob />} />
+                 <Route path="job-history/applicants/:jobId" element={<JobApplicantsBYJob />} />
               </Route>
 
               {/* Profile section */}

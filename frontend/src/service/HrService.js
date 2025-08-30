@@ -53,7 +53,7 @@ const HRService = {
         hrData,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Important
+            Authorization: `Bearer ${token}`, //  Important
           },
         }
       );

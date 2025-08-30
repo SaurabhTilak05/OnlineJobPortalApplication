@@ -14,7 +14,7 @@ class Jobservice {
 
    getAllJobs() {
   const token = localStorage.getItem("token");
-  return axios.get("http://localhost:8080/allJob", {
+  return axios.get("http://localhost:8080/viewAllJobs", {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
@@ -77,6 +77,19 @@ getAppliedJobs(seekerId) {
       },
     });
   }
+
+  deleteJob = (jobId) => {
+  return axios.delete(`http://localhost:8080/deleteJob/${jobId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ if using JWT
+    },
+  });
+};
+
+   getApplicantsByJob(jobId) {
+  return axios.get(`http://localhost:8080/getapplicant/${jobId}/applicants`);//getapplicant/:id/applicants
+}
+
 
 
 
