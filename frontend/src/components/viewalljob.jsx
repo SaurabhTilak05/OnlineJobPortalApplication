@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Jobservice from "../service/Jobservice.js";
 import UpdateJob from "./updateJob.jsx";
+import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -145,7 +146,7 @@ export default function ViewAllJob() {
                           })}
                         </p>
                         <p><Link
-                            to={`/applicants/${job.job_id}`}
+                            to={`applicants/${job.job_id}`}
                             className=" btn-outline-success rounded-3"
                            >
                             👥 View Applicants
@@ -207,6 +208,10 @@ export default function ViewAllJob() {
           </div>
         </div>
       )}
+         <div>
+      {/* existing job list UI */}
+      <Outlet />   {/* 👈 required for nested routes */}
+    </div>
     </div>
   );
 }
