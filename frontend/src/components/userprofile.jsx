@@ -27,7 +27,9 @@ export default function UserProfile() {
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
     { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
+
      
+
   ];
 
   const handleLogout = () => {

@@ -89,14 +89,20 @@ exports.UpdateJobById = async (req, res) => {
 // ✅ Delete job by ID
 exports.getDeleteJob = async (req, res) => {
   try {
-    const { job_id } = req.body;
-    const result = await jobctrl.deleteJob(job_id);
-    res.status(200).json(result);
+    const { id } = req.params;   // ✅ get from params instead of body
+    const result = await jobctrl.deleteJob(id);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.status(200).json({ message: "Job deleted successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Something went wrong", error: err });
   }
 };
+
 
 // ✅ Search job by title
 exports.searchJobByTitle = async (req, res) => {
@@ -137,5 +143,22 @@ exports.getallJobs = async (req, res) => {
   } catch (err) {
     console.error("Error fetching applied jobs:", err);
     res.status(500).json({ error: "Failed to fetch applied jobs" });
+  }
+};
+
+exports.getApplicantsByJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+
+    if (!jobId) {
+      return res.status(400).json({ error: "Job ID is required" });
+    }
+
+    const applicants = await jobctrl.getApplicantsByJob(jobId);
+
+    res.json(applicants);
+  } catch (err) {
+    console.error("Error fetching applicants:", err);
+    res.status(500).json({ error: err.message || "Error fetching applicants" });
   }
 };
