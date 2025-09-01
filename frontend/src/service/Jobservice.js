@@ -55,19 +55,7 @@ searchJobsByTitle(title) {
 
 
 // Apply for a Job
-// Apply for a Job
-applyJob( job_id, seeker_id) {
-  const token = localStorage.getItem("token");
-  return axios.post(
-    "http://localhost:8080/applyedJob",
-    {  job_id, seeker_id },   // ✅ send camelCase keys for Node.js
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-}
+
 
 getAppliedJobs(seekerId) {
     const token = localStorage.getItem("token"); // optional, if auth required
@@ -90,9 +78,11 @@ getAppliedJobs(seekerId) {
   return axios.get(`http://localhost:8080/getapplicant/${jobId}/applicants`);//getapplicant/:id/applicants
 }
 
+  // search job for hr by title location company skills 
  searchJobs(query) {
     return axios.get(`http://localhost:8080/searchJob?query=${query}`);
   }
+
 
 
 }

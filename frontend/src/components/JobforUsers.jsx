@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Jobservice from "../service/Jobservice";
+import UserJobservice from "../service/userJobServ.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,7 +14,7 @@ export default function JobforUsers() {
 
   // 🔹 Fetch all jobs
   useEffect(() => {
-    Jobservice.getAllJobs()
+    UserJobservice.getAllJobsuser()
       .then((res) => {
         setJobs(res.data);
         setLoading(false);
@@ -33,7 +33,7 @@ export default function JobforUsers() {
       return;
     }
 
-    Jobservice.applyJob(jobId, seekerId)
+    UserJobservice.applyJob(jobId, seekerId)
       .then((res) => {
         if (typeof res.data === "string") {
           if (res.data.toLowerCase().includes("success")) {
