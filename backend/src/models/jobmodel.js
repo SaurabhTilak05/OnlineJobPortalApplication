@@ -108,14 +108,22 @@ exports.searchByTitle = async (title) => {
 };
 
 //  Search by Location
-exports.jobbyLocation = async (location) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM jobs WHERE location = ?", [location]);
-    return rows;
-  } catch (err) {
-    throw err;
-  }
+
+exports.searchJobHr = async (query) => {
+  const searchTerm = `%${query}%`;
+
+  const [rows] = await db.query(
+    `SELECT * FROM jobs 
+     WHERE title LIKE ? 
+        OR company LIKE ? 
+        OR location LIKE ? 
+        OR skills_required LIKE ?`,
+    [searchTerm, searchTerm, searchTerm, searchTerm]
+  );
+
+  return rows;
 };
+
 
 
 
@@ -153,6 +161,19 @@ exports.getApplicantsByJob = async (jobId) => {
     WHERE a.job_id = ?
     `,
     [jobId]
+  );
+  return rows;
+};
+
+exports.searchJobsModel = async (query) => {
+  const searchTerm = `%${query}%`;
+  const [rows] = await db.query(
+    `SELECT * FROM jobs 
+     WHERE title LIKE ? 
+        OR company LIKE ? 
+        OR location LIKE ? 
+        OR skills_required LIKE ?`,
+    [searchTerm, searchTerm, searchTerm, searchTerm]
   );
   return rows;
 };
