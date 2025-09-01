@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import Jobservice from "../service/Jobservice.js";
 import UpdateJob from "./updateJob.jsx";
-import { Outlet } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ViewAllJob.css";
@@ -12,6 +11,7 @@ export default function ViewAllJob() {
   const [msg, setMsg] = useState("");
   const [expanded, setExpanded] = useState({});
   const [selectedJob, setSelectedJob] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchJobs();
@@ -49,14 +49,51 @@ export default function ViewAllJob() {
     }
   };
 
+  // ✅ Search handler (calls backend)
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.trim() === "") {
+      fetchJobs(); // Reload all jobs if cleared
+    } else {
+      Jobservice.searchJobs(value)
+        .then((result) => setJobs(result.data))
+        .catch((err) => {
+          console.error(err);
+          toast.error("Search failed!");
+        });
+    }
+  };
+
   const limit = 20;
 
   return (
-    <div className="job-container py-5" style={{ background: "linear-gradient(135deg, #f8fafc, #e2e8f0)" }}>
+    <div
+      className="job-container py-5"
+      style={{ background: "linear-gradient(135deg, #f8fafc, #e2e8f0)" }}
+    >
       <div className="container">
-        <h2 className="text-center fw-bold text-dark mb-5">
-          <span role="img" aria-label="pin">📌</span> Posted Jobs
+        <h2 className="text-center fw-bold text-dark mb-4">
+          <span role="img" aria-label="pin">
+            📌
+          </span>{" "}
+          Posted Jobs
         </h2>
+
+        {/* ✅ Search Box */}
+        <div className="row justify-content-center mb-5">
+          <div className="col-md-6">
+            <input
+              type="text"
+              className="form-control rounded-3 shadow-sm"
+              placeholder="🔍 Search by title, company, location, or skills..."
+              value={searchTerm}
+              onChange={handleSearch} // ✅ calls backend search
+            />
+          </div>
+        </div>
+
         {msg && <div className="alert alert-danger text-center">{msg}</div>}
 
         <div className="row g-4">
@@ -75,15 +112,21 @@ export default function ViewAllJob() {
                   className="col-12 col-md-6 col-lg-4"
                   key={job.job_id ?? index}
                 >
-                  <div className="card job-card shadow-lg border-0 rounded-4 h-100"
-                       style={{ background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(10px)" }}>
+                  <div
+                    className="card job-card shadow-lg border-0 rounded-4 h-100"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.9)",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title fw-bold text-primary mb-2">
                         {job.title}
                       </h5>
 
                       <p className="text-muted small mb-2">
-                        <i className="bi bi-building me-1"></i> {job.company} <br />
+                        <i className="bi bi-building me-1"></i> {job.company}{" "}
+                        <br />
                         <i className="bi bi-geo-alt me-1"></i> {job.location}
                       </p>
 
@@ -145,28 +188,29 @@ export default function ViewAllJob() {
                             year: "numeric",
                           })}
                         </p>
-                        <p><Link
+                        <p>
+                          <Link
                             to={`applicants/${job.job_id}`}
-                            className=" btn-outline-success rounded-3"
-                           >
+                            className="btn-outline-success rounded-3"
+                          >
                             👥 View Applicants
-                          </Link></p>
+                          </Link>
+                        </p>
 
                         <div className="d-flex gap-2">
                           <button
                             className="btn btn-outline-primary flex-fill rounded-3"
                             onClick={() => setSelectedJob(job)}
                           >
-                            ✏️ Update
+                            Update
                           </button>
                           <button
                             className="btn btn-outline-danger flex-fill rounded-3"
                             onClick={() => handleDelete(job.job_id)}
                           >
-                            🗑️ Delete
+                            Delete
                           </button>
                         </div>
-                         
                       </div>
                     </div>
                   </div>
@@ -208,10 +252,10 @@ export default function ViewAllJob() {
           </div>
         </div>
       )}
-         <div>
-      {/* existing job list UI */}
-      <Outlet />   {/* 👈 required for nested routes */}
-    </div>
+
+      <div>
+        <Outlet /> {/* 👈 required for nested routes */}
+      </div>
     </div>
   );
 }
