@@ -90,7 +90,9 @@ getAppliedJobs(seekerId) {
   return axios.get(`http://localhost:8080/getapplicant/${jobId}/applicants`);//getapplicant/:id/applicants
 }
 
-
+ searchJobs(query) {
+    return axios.get(`http://localhost:8080/searchJob?query=${query}`);
+  }
 
 
 }
