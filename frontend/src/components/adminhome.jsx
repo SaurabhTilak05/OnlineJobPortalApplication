@@ -1,123 +1,68 @@
-// src/components/Adminhome.jsx
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  FaUserPlus,
-  FaUsers,
-  FaClipboardList,
-  FaBars,
-  FaTimes,
-  FaSignOutAlt,
-  FaTachometerAlt,
-  FaBell,
-  FaUserCircle,
-  FaCog,
+  FaUserPlus, FaUsers, FaClipboardList,
+  FaBars, FaTimes, FaSignOutAlt,
+  FaTachometerAlt, FaBell, FaUserCircle, FaCog
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./Adminhome.css";
 
 export default function Adminhome() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-
   const token = localStorage.getItem("token");
 
+  if (!token) return <h1 className="text-center mt-5 text-danger">Invalid Session</h1>;
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/signup");
+  };
+
   const navItems = [
-    { to: "admindashboard", icon: <FaTachometerAlt />, label: "Dashboard", exact: true },
+    { to: "admindashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
     { to: "viewshr", icon: <FaUsers />, label: "View HR" },
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
     { to: "view-jobs", icon: <FaClipboardList />, label: "View Jobs" },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/signup");
-  };
-
-  if (!token) {
-    return <h1 className="text-center mt-5 text-danger">Invalid Session</h1>;
-  }
-
-  
   return (
-    
-    <div className="admin-page d-flex flex-column vh-100 m-0 p-0 ">
-      {/* ===== Navbar ===== */}
-      <nav
-        className="d-flex justify-content-between align-items-center p-3 shadow"
-        style={{
-          background: "#1e293b", // modern dark navy
-          color: "#fff",
-        }}
-      >
-        {/* Left: Sidebar Toggle for mobile */}
+    <div className="d-flex flex-column vh-100">
+      {/* Sticky Navbar */}
+      <nav className="navbar navbar-dark bg-primary shadow p-3 fixed-top px-3">
         <button
-          type="button"
-          className="btn btn-outline-light d-md-none"
+          className="btn btn-outline-light d-md-none me-2"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           {sidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
-
-        {/* Center: Title */}
-        <h4 className="m-0 fw-bold" style={{ letterSpacing: "1px", color: "#38bdf8" }}>
-          Admin Panel
-        </h4>
-
-        {/* Right: Navbar Items */}
-        <div className="d-flex align-items-center" style={{ gap: "12px" }}>
-          <button className="btn btn-light btn-sm rounded-circle shadow-sm">
-            <FaBell className="text-dark" />
-          </button>
-          <button className="btn btn-light btn-sm rounded-circle shadow-sm">
-            <FaCog className="text-dark" />
-          </button>
-
-          {/* Profile Icon */}
-          <FaUserCircle className="fs-4 text-light" />
-
-          {/* 🔴 Direct Logout Button */}
-          <button
-            className="btn btn-danger btn-sm ms-2 rounded-pill px-3"
-            onClick={handleLogout}
-          >
-            <FaSignOutAlt className="me-2" /> Logout
-          </button>
+           QuickStart <span className="text-danger p-1">Career</span>   
+        <div className="d-flex align-items-center ms-auto">
+          <FaBell className="me-3 text-light fs-5 cursor-pointer" />
+          <FaCog className="me-3 text-light fs-5 cursor-pointer" />
+          <FaUserCircle className="text-light fs-4 cursor-pointer" />
         </div>
       </nav>
 
-      {/* ===== Main Layout ===== */}
+      {/* Layout */}
       <div className="d-flex flex-grow-1">
         {/* Sidebar */}
         <aside
-          className={`p-3 text-white shadow d-flex flex-column flex-shrink-0
-            ${sidebarOpen ? "position-fixed start-0 top-0 vh-100" : "d-none d-md-flex"}`}
-          style={{
-            width: "240px",
-            background: "linear-gradient(180deg,#0f172a,#1e293b)", // sleek gradient
-            zIndex: 1050,
-            transition: "all 0.3s ease",
-            position: sidebarOpen ? "fixed" : "sticky",
-            top: 0,
-            height: "100vh",
-            overflowY: "auto",
-          }}
+          className={`sidebar bg-dark text-white p-3 d-flex flex-column ${sidebarOpen ? "open" : ""}`}
         >
-          <h5 className="mb-4 text-center border-bottom pb-2 text-info">Menu</h5>
-
-          <nav className="d-flex flex-column">
-            {navItems.map((item, i) => (
+          <h4 className="text-info mb-4 text-center">Menu</h4>
+          <nav className="flex-grow-1">
+            {navItems.map((item, idx) => (
               <NavLink
-                key={i}
+                key={idx}
                 to={item.to}
-                end={item.exact}
-                className="d-flex align-items-center mb-3 p-2 rounded text-decoration-none text-white fw-semibold"
-                style={({ isActive }) => ({
-                  background: isActive ? "#38bdf8" : "transparent",
-                  color: isActive ? "#0f172a" : "#fff",
-                  transition: "0.3s",
-                })}
+                className={({ isActive }) =>
+                  `d-flex align-items-center mb-3 p-2 rounded text-decoration-none sidebar-link ${
+                    isActive ? "active-link" : ""
+                  }`
+                }
                 onClick={() => setSidebarOpen(false)}
               >
                 <span className="me-2 fs-5">{item.icon}</span>
@@ -125,22 +70,18 @@ export default function Adminhome() {
               </NavLink>
             ))}
           </nav>
+          <div className="pt-3 border-top">
+            <button
+              className="btn btn-danger w-100 d-flex align-items-center justify-content-center"
+              onClick={handleLogout}
+            >
+              <FaSignOutAlt className="me-2" /> Logout
+            </button>
+          </div>
         </aside>
 
-        {/* Overlay for mobile */}
-        {sidebarOpen && (
-          <div
-            className="position-fixed top-0 start-0 w-100 h-100"
-            style={{ background: "rgba(0,0,0,0.5)", zIndex: 1040 }}
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-
         {/* Main Content */}
-        <main
-          className="flex-grow-1 p-3 p-md-4"
-          style={{ background: "#f1f5f9", minHeight: "100vh", overflowY: "auto" }}
-        >
+        <main className="flex-grow-1 p-4 mt-5 content-area">
           <Outlet />
         </main>
       </div>
