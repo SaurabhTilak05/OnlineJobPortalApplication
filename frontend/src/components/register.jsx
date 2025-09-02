@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import RegisterServ from "../service/registerserv.js";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function RegisterJobSeeker() {
   const [form, setForm] = useState({
@@ -132,8 +133,9 @@ export default function RegisterJobSeeker() {
                   </div>
 
                   {/* Password with show/hide */}
-                  <div className="mb-3 position-relative">
-                    <label className="form-label">Password</label>
+                  <div className="mb-3">
+                  <label className="form-label">Password</label>
+                  <div className="input-group">
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
@@ -143,21 +145,20 @@ export default function RegisterJobSeeker() {
                       placeholder="Create a password"
                     />
                     <span
+                      className="input-group-text"
                       onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: "absolute",
-                        right: "15px",
-                        top: "38px",
-                        cursor: "pointer",
-                      }}
+                      style={{ cursor: "pointer" }}
                     >
-                      {showPassword ? "🙈" : "👁️"}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </span>
                   </div>
+                </div>
+
 
                   {/* Confirm Password with show/hide */}
-                  <div className="mb-4 position-relative">
-                    <label className="form-label">Confirm Password</label>
+                 <div className="mb-4">
+                  <label className="form-label">Confirm Password</label>
+                  <div className="input-group">
                     <input
                       type={showConfirm ? "text" : "password"}
                       name="confirmPassword"
@@ -167,17 +168,14 @@ export default function RegisterJobSeeker() {
                       placeholder="Re-enter your password"
                     />
                     <span
+                      className="input-group-text"
                       onClick={() => setShowConfirm(!showConfirm)}
-                      style={{
-                        position: "absolute",
-                        right: "15px",
-                        top: "38px",
-                        cursor: "pointer",
-                      }}
+                      style={{ cursor: "pointer" }}
                     >
-                      {showConfirm ? "🙈" : "👁️"}
+                      {showConfirm ? <FaEyeSlash /> : <FaEye />}
                     </span>
                   </div>
+                </div>
 
                   <button
                     type="submit"

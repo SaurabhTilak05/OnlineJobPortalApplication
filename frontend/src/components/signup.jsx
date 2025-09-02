@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import AdminAuthService from "../service/AdminAuthService";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 export default function Sign() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -11,6 +11,7 @@ export default function Sign() {
     role: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -104,18 +105,30 @@ const handleSubmit = async (e) => {
                     />
                   </div>
 
-                  {/* Password */}
-                  <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      className="form-control"
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="Enter password"
-                    />
-                  </div>
+                 {/* Password */}
+                <div className="mb-3 position-relative">
+                  <label className="form-label">Password</label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className="form-control"
+                    value={form.password}
+                    onChange={handleChange}
+                    placeholder="Enter password"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      top: "38px",
+                      right: "10px",
+                      cursor: "pointer",
+                      color: "#555",
+                    }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
 
                   {/* Role Selection */}
                   <div className="mb-3">
@@ -135,12 +148,8 @@ const handleSubmit = async (e) => {
 
                   {/* Remember + Register */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                      <input type="checkbox" className="form-check-input me-1" /> Save password
-                    </div>
-                    <NavLink to="/register" className="text-danger fw-bold">
-                      Register
-                    </NavLink>
+                    
+                   
                   </div>
 
                   {/* Submit */}
