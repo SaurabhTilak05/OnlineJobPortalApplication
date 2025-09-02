@@ -1,69 +1,60 @@
-/* Gradient animated navbar like HR Dashboard */
-.gradient-navbar {
- background-color: black;
-  background-size: 800% 800%;
-  color: #fff;
-  animation: gradientAnimation 15s ease infinite;
-  position: relative;
-  text-align: center;
-}
-
-/* Rocket animation */
-.rocket {
-  animation: rocketAnimation 2s infinite;
-}
-
-@keyframes gradientAnimation {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-}
-
-@keyframes rocketAnimation {
-  0%, 100% { transform: translateY(0);}
-  50% { transform: translateY(-5px);}
-}
-
 /* Sidebar */
 .sidebar {
-  width: 220px;
-  height: 100%;
-  transition: all 0.3s;
-  z-index: 1050;
-  background-color: #1e1e2f;
+  width: 250px;
+  height: calc(100vh - 56px); /* Full height minus navbar */
+  position: sticky;
+  top: 56px; /* Navbar height */
+  flex-shrink: 0;
+  overflow-y: auto; /* जर items जास्त झाले तर फक्त sidebar मध्ये scroll */
+  transition: transform 0.3s ease-in-out;
 }
 
-.sidebar-open {
-  display: flex !important;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-}
-
-/* Sidebar link hover effect */
 .sidebar-link {
-  transition: all 0.3s;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
 }
 .sidebar-link:hover {
-  background: linear-gradient(90deg, #0d6efd, #6610f2);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+.active-link {
+  background: #0dcaf0 !important;
+  color: black !important;
+  font-weight: bold;
+}
+
+/* Responsive (mobile view) */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: calc(100% - 56px);
+    transform: translateX(-100%);
+    z-index: 1050;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Content Area */
+.content-area {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  min-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  border-radius: 20px;
+  padding: 30px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  min-height: 220px;
+}
+.dashboard-card:hover {
   transform: scale(1.05);
-}
-
-/* Overlay for mobile */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 1040;
-}
-
-/* Main content */
-.main-content {
-  background-color: #f1f3f6;
-  min-height: 100vh;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
