@@ -1,0 +1,108 @@
+.view-hr-container {
+  min-height: 90vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f0f4f8, #e0f7fa);
+}
+
+.view-hr-title {
+  text-align: center;
+  color: #0d6efd;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Grid layout */
+.hr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card styles */
+.hr-card {
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hr-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.hr-card-header {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  color: #fff;
+  text-align: center;
+  padding: 0.8rem;
+}
+
+.hr-card-header h5 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.hr-card-body {
+  padding: 1rem;
+}
+
+.hr-card-body p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.hr-card-footer {
+  padding: 0.8rem 1rem;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+}
+
+.hr-card-footer .btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 0.4rem 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.hr-card-footer .btn:hover {
+  background: #c82333;
+  transform: scale(1.05);
+}
+
+/* Pagination */
+.pagination-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #0d6efd;
+  background: #fff;
+  color: #0d6efd;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn.active,
+.pagination-btn:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* No HR Text */
+.no-hr {
+  font-size: 1.2rem;
+  color: #6c757d;
+}

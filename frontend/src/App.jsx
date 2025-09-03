@@ -31,6 +31,9 @@ import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
 import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
+import ViewRegStuToAdmin from "./components/ViewRegStuToAdmin.jsx"
+import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
+import Studentupdate from "./components/studentupdate.jsx";
 
 
   // Navbar Layout
@@ -46,10 +49,11 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
     const closeNavbar = () => setIsOpen(false);
 
     return (
-      <div className="app-layout d-flex flex-column min-vh-100">
+      <div className="app-layout d-flex flex-column p-2 min-vh-100">
         {!hideNavbar && (
           <>
-            <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+          <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top m-0 p-0">
+
               <div className="container-fluid d-flex justify-content-between align-items-center">
                 <NavLink
                   className="navbar-brand fw-bold d-flex align-items-center"
@@ -100,7 +104,7 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
         )}
 
         {/* Main Content */}
-        <main className="main-wrapper flex-grow-1 py-3">{children}</main>
+       <main className="main-wrapper flex-grow-1">{children}</main>
 
         {/* Custom CSS */}
         <style>{`
@@ -152,6 +156,10 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
               <Route path="admindashboard" element={<AdminDashboard />} />
               <Route path="addhr" element={<AddHR />} />
               <Route path="viewshr" element={<ViewHR />} />
+              <Route path="jobseekers" element={<ViewRegStuToAdmin />} />
+              <Route path="application" element={< ViewallapltoAdmin/>}/>
+
+
               <Route path="register-student" element={<Register />} />
                  <Route path="view-jobs" element={<JobforUsers/>}/>
          
@@ -186,7 +194,7 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
             <Route path="view-profile" element={<ViewStudProfile/>} />
             <Route path="view-jobs" element={<JobforUsers/>}/>
             <Route path="Applied-jobs" element={<Jobappliedstudent/>}/>
-
+            <Route path="update-profile" element={<Studentupdate/>}/>
 
              </Route>
     

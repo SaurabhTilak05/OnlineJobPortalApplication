@@ -56,7 +56,7 @@ exports.getLogJobSeeker = async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
 
     const token = jwt.sign(
-      { id: user.seeker_id, email: user.email, role: "user" },
+      { seeker_id: user.seeker_id, email: user.email, role: "user" },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -67,16 +67,16 @@ exports.getLogJobSeeker = async (req, res) => {
   }
 };
 
-
 exports.getProfile = async (req, res) => {
   try {
-    const user = await jobsctrl.findById(req.user.id);
+    const user = await jobsctrl.findById(req.user.seeker_id); // ✅ use seeker_id, not id
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Error fetching profile", error: err.message });
   }
 };
+
 
 
 
@@ -156,5 +156,40 @@ exports.getallJobs = async (req, res) => {
   } catch (err) {
     console.error("Error fetching applied jobs:", err);
     res.status(500).json({ error: "Failed to fetch applied jobs" });
+  }
+};
+
+// to see the applicant to admin
+  exports.getAppltoadmin = async (req, res) => {
+  try {
+    const apps = await jobsctrl.getAllApplications();
+    res.status(200).json(apps);
+  } catch (err) {
+    console.error("Error fetching applications:", err);
+    res.status(500).json({ error: "Failed to fetch applications" });
+  }
+};
+
+
+
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const seeker_id = req.user.seeker_id; // ✅ from JWT
+    console.log("seeker_id is:", seeker_id);
+
+    const profileData = req.body;
+
+    const result = await jobsctrl.update(seeker_id, profileData);
+
+    // MySQL returns affectedRows = 1 for INSERT, 2 for UPDATE in ON DUPLICATE
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: "Profile not created/updated" });
+    }
+
+    res.json({ message: "Profile saved successfully" });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Error updating profile", error: err.message });
   }
 };

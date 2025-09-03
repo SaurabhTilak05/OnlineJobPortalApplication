@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import HRService from "../service/HrService.js";
+import "./ViewHR.css";
 
 export default function ViewHR() {
   const [hrList, setHrList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     loadHRs();
@@ -22,13 +26,8 @@ export default function ViewHR() {
     }
   };
 
-  // ✅ Delete HR by id
   const deleteHR = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this HR?"))
-      {
-        Navigate("/ViewHR");
-      } ;
-
+    if (!window.confirm("Are you sure you want to delete this HR?")) return;
     try {
       await HRService.deleteHR(id);
       setHrList(hrList.filter((hr) => hr.hr_id !== id));
@@ -37,98 +36,82 @@ export default function ViewHR() {
     }
   };
 
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = hrList.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(hrList.length / itemsPerPage);
+
+  const goToPage = (page) => setCurrentPage(page);
+  const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1));
+  const nextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
+
   return (
-    <section className="py-5">
-      <div className="container">
-        <h2 className="text-center fw-bold mb-4 text-primary">
-          👥 All HRs
-        </h2>
+    <div className="view-hr-container">
+      <h2 className="view-hr-title">👥 All HRs</h2>
 
-        {loading && <p className="text-center text-muted">Loading...</p>}
-        {error && <p className="text-center text-danger">{error}</p>}
+      {loading && <p className="text-center text-muted">Loading...</p>}
+      {error && <p className="text-center text-danger">{error}</p>}
 
-        {!loading && !error && (
-          <>
-            {/* Table for large screens */}
-            <div className="table-responsive d-none d-md-block">
-              <table className="table table-hover table-striped shadow-sm rounded-3 overflow-hidden">
-                <thead className="table-dark">
-                  <tr>
-                    <th scope="col">Sr.No</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Company</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {hrList.length > 0 ? (
-                    hrList.map((hr,index) => (
-                      <tr key={hr.hr_id}>
-                        <td>{index+1}</td>
-                        <td>{hr.hr_name}</td>
-                        <td>{hr.email}</td>
-                        <td>{hr.company_name}</td>
-                        <td>{hr.phone}</td>
-                        <td>
-                          <button
-                            className="btn btn-sm btn-danger"
-                            onClick={() => deleteHR(hr.hr_id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No HRs found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Card Layout for Mobile Screens */}
-            <div className="d-md-none">
-              {hrList.length > 0 ? (
-                hrList.map((hr) => (
-                  <div
-                    key={hr.hr_id}
-                    className="card mb-3 shadow-sm border-0 rounded-3"
+      {!loading && !error && currentItems.length > 0 && (
+        <>
+          <div className="hr-grid">
+            {currentItems.map((hr, index) => (
+              <div key={hr.hr_id} className="hr-card">
+                <div className="hr-card-header">
+                  <h5>{hr.hr_name}</h5>
+                </div>
+                <div className="hr-card-body">
+                  <p><strong>Email:</strong> {hr.email}</p>
+                  <p><strong>Company:</strong> {hr.company_name}</p>
+                  <p><strong>Phone:</strong> {hr.phone}</p>
+                </div>
+                <div className="hr-card-footer">
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => deleteHR(hr.hr_id)}
                   >
-                    <div className="card-body">
-                      <h5 className="card-title fw-bold text-primary">
-                        {hr.hr_name}
-                      </h5>
-                      <p className="card-text mb-1">
-                        <strong>Email:</strong> {hr.email}
-                      </p>
-                      <p className="card-text mb-1">
-                        <strong>Company:</strong> {hr.company_name}
-                      </p>
-                      <p className="card-text">
-                        <strong>Contact:</strong> {hr.phone}
-                      </p>
-                      <button
-                        className="btn btn-sm btn-danger mt-2"
-                        onClick={() => deleteHR(hr.hr_id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center">No HRs found</p>
-              )}
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pagination-wrapper">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                &laquo; Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                <button
+                  key={num}
+                  onClick={() => goToPage(num)}
+                  className={`pagination-btn ${currentPage === num ? "active" : ""}`}
+                >
+                  {num}
+                </button>
+              ))}
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className="pagination-btn"
+              >
+                Next &raquo;
+              </button>
             </div>
-          </>
-        )}
-      </div>
-    </section>
+          )}
+        </>
+      )}
+
+      {!loading && !error && currentItems.length === 0 && (
+        <p className="text-center no-hr">No HRs found</p>
+      )}
+    </div>
   );
 }
