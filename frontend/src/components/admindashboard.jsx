@@ -31,8 +31,8 @@ export default function AdminDashboard() {
 
   const cards = [
     { title: "HRs Registered", count: counts.hrs, icon: <FaUsers size={50} />, bg: "primary", path: "viewshr" },
-    { title: "Students Enrolled", count: counts.students, icon: <FaUserGraduate size={50} />, bg: "success", path: "register-student" },
-    { title: "Applications Received", count: counts.applications, icon: <FaClipboardList size={50} />, bg: "warning", path: "view-jobs" },
+    { title: "Students Enrolled", count: counts.students, icon: <FaUserGraduate size={50} />, bg: "success", path: "" },
+    { title: "Applications Received", count: counts.applications, icon: <FaClipboardList size={50} />, bg: "warning", path: "application" },
   ];
 
   return (

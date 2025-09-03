@@ -3,7 +3,8 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   FaUserPlus, FaUsers, FaClipboardList,
   FaBars, FaTimes, FaSignOutAlt,
-  FaTachometerAlt, FaBell, FaUserCircle, FaCog
+  FaTachometerAlt, FaBell, FaUserCircle, FaCog,
+  FaUserGraduate
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Adminhome.css";
@@ -24,6 +25,7 @@ export default function Adminhome() {
     { to: "admindashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
     { to: "viewshr", icon: <FaUsers />, label: "View HR" },
+    { to: "jobseekers", icon: <FaUserGraduate />, label: "Job Seekers" }, // ✅ New menu
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
     { to: "view-jobs", icon: <FaClipboardList />, label: "View Jobs" },
   ];
@@ -38,7 +40,7 @@ export default function Adminhome() {
         >
           {sidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
-           QuickStart <span className="text-danger p-1">Career</span>   
+        QuickStart <span className="text-danger p-1">Career</span>
         <div className="d-flex align-items-center ms-auto">
           <FaBell className="me-3 text-light fs-5 cursor-pointer" />
           <FaCog className="me-3 text-light fs-5 cursor-pointer" />
@@ -50,7 +52,7 @@ export default function Adminhome() {
       <div className="d-flex flex-grow-1">
         {/* Sidebar */}
         <aside
-          className={`sidebar bg-dark text-white p-3 d-flex flex-column ${sidebarOpen ? "open" : ""}`}
+          className={`sidebar bg-dark text-white m-0 p-3 d-flex flex-column ${sidebarOpen ? "open" : ""}`}
         >
           <h4 className="text-info mb-4 text-center">Menu</h4>
           <nav className="flex-grow-1">

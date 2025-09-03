@@ -143,3 +143,14 @@ exports.getAppliedJobs = async (seekerId) => {
   );
   return rows;
 };
+
+exports.getAllApplications = async () => {
+  const [rows] = await db.query(
+    `SELECT a.application_id, s.name AS seeker_name, s.email, s.phone,
+            j.title AS job_title, a.status, a.applied_at
+     FROM applications a
+     JOIN job_seekers s ON a.seeker_id = s.seeker_id
+     JOIN jobs j ON a.job_id = j.job_id order by application_id desc`
+  );
+  return rows;
+};

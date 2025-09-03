@@ -85,6 +85,25 @@ getProfile() {
   getRole() {
     return localStorage.getItem("role");
   }
+
+   getAllSeekers() {
+  return axios.get("http://localhost:8080/getAllJobSeeker")
+    .then(res => res.data)
+    .catch(err => {
+      console.error("Error fetching job seekers:", err);
+      throw err;
+    });
+}
+
+getAllApplications() {
+      return axios.get(`http://localhost:8080/applications`)
+      .then(res => res.data)
+    .catch(err => {
+      console.error("Error fetching job seekers:", err);
+      throw err;
+    });
+  }
+
 }
 
 export default new AdminAuthService();

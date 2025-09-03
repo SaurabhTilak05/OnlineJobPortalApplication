@@ -158,3 +158,14 @@ exports.getallJobs = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch applied jobs" });
   }
 };
+
+// to see the applicant to admin
+  exports.getAppltoadmin = async (req, res) => {
+  try {
+    const apps = await jobsctrl.getAllApplications();
+    res.status(200).json(apps);
+  } catch (err) {
+    console.error("Error fetching applications:", err);
+    res.status(500).json({ error: "Failed to fetch applications" });
+  }
+};

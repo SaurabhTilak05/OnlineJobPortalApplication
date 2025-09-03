@@ -31,7 +31,8 @@ import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
 import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
-
+import ViewRegStuToAdmin from "./components/ViewRegStuToAdmin.jsx"
+import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
 
   // Navbar Layout
   function LayoutWithNavbar({ children }) {
@@ -153,6 +154,10 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
               <Route path="admindashboard" element={<AdminDashboard />} />
               <Route path="addhr" element={<AddHR />} />
               <Route path="viewshr" element={<ViewHR />} />
+              <Route path="jobseekers" element={<ViewRegStuToAdmin />} />
+              <Route path="application" element={< ViewallapltoAdmin/>}/>
+
+
               <Route path="register-student" element={<Register />} />
                  <Route path="view-jobs" element={<JobforUsers/>}/>
          
