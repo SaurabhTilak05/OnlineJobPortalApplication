@@ -89,7 +89,7 @@ exports.getAllApplicant = async (hrId) => {
        FROM job_seekers s
        INNER JOIN applications a ON s.seeker_id = a.seeker_id
        INNER JOIN jobs j ON a.job_id = j.job_id
-       WHERE j.hr_id = ?`,  
+       WHERE j.hr_id = ?  ORDER BY a.application_id DESC `,  
       [hrId]
     );
     return rows;

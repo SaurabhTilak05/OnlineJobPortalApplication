@@ -28,7 +28,7 @@ router.put("/updateJob/:job_id",verifyToken1,jobctrl.UpdateJobById);
 router.put("/updatehrProfile/:hr_id", verifyToken1, hrCtrl.updateHRProfile);
 router.delete("/deleteJob/:id",verifyToken1,jobctrl.getDeleteJob);
 router.get("/getapplicant/:id/applicants", jobctrl.getApplicantsByJob);
-
+router.get("/searchJob",jobctrl.searchJob);
 
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
@@ -96,7 +96,7 @@ router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 // for the search job by laction 
 
 router.get("/allJob", jobctrl.fetchAllJobs);
-router.get("/viewjobbylocation",jobctrl.jobbylocation);
+  
 
 // Add data in job table 
 // router.post("/AddJob", jobctrl.addingJob);

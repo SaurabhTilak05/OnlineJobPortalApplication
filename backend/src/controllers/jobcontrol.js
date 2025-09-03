@@ -116,17 +116,17 @@ exports.searchJobByTitle = async (req, res) => {
   }
 };
 
-// ✅ Search job by location (for students)
-exports.jobbylocation = async (req, res) => {
-  try {
-    const { location } = req.body;
-    const result = await jobctrl.jobbyLocation(location);
-    res.status(200).json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Something went wrong", error: err });
-  }
-};
+// ✅ Search job(for hr)
+// exports.searchJob = async (req, res) => {
+//   try {
+//     const { query } = req.body;
+//     const result = await jobctrl.searchJobHr(query);
+//     res.status(200).json(result);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Something went wrong", error: err });
+//   }
+// };
 
 
 // ✅ Get applied jobs for a student
@@ -160,5 +160,19 @@ exports.getApplicantsByJob = async (req, res) => {
   } catch (err) {
     console.error("Error fetching applicants:", err);
     res.status(500).json({ error: err.message || "Error fetching applicants" });
+  }
+};
+
+
+
+// controllers/jobController.js
+exports.searchJob = async (req, res) => {
+  try {
+    const { query } = req.query;  // ✅ GET param
+    const result = await jobctrl.searchJobsModel(query);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong", error: err });
   }
 };

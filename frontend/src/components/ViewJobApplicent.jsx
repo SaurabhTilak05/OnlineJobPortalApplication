@@ -5,6 +5,8 @@ export default function ViewApplicants() {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // ✅ Show 10 applicants per page
 
   useEffect(() => {
     ApplicantService.getApplicants()
@@ -17,6 +19,12 @@ export default function ViewApplicants() {
         setLoading(false);
       });
   }, []);
+
+  // ✅ Pagination Logic
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentApplicants = applicants.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(applicants.length / itemsPerPage);
 
   return (
     <section className="py-4 px-3">
@@ -45,19 +53,18 @@ export default function ViewApplicants() {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Applied Job</th>
-                   
                     <th>Status</th>
+                    <th>View Details</th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {applicants.map((app, index) => (
+                  {currentApplicants.map((app, index) => (
                     <tr key={app.id}>
-                      <td>{index + 1}</td>
+                      <td>{indexOfFirst + index + 1}</td>
                       <td>{app.name}</td>
                       <td>{app.email}</td>
                       <td>{app.phone}</td>
                       <td>{app.title}</td>
-                     
                       <td>
                         <span
                           className={`badge ${
@@ -71,6 +78,7 @@ export default function ViewApplicants() {
                           {app.status || "Pending"}
                         </span>
                       </td>
+                      <td>view details</td>
                     </tr>
                   ))}
                 </tbody>
@@ -79,14 +87,14 @@ export default function ViewApplicants() {
 
             {/* ✅ Card layout for mobile */}
             <div className="d-md-none">
-              {applicants.map((app, index) => (
+              {currentApplicants.map((app, index) => (
                 <div
                   key={app.id}
                   className="card shadow-sm mb-3 border-0 rounded-3"
                 >
                   <div className="card-body">
                     <h5 className="card-title fw-bold text-primary">
-                      {index + 1}. {app.name}
+                      {indexOfFirst + index + 1}. {app.name}
                     </h5>
                     <p className="mb-1">
                       <strong>Email:</strong> {app.email}
@@ -96,17 +104,6 @@ export default function ViewApplicants() {
                     </p>
                     <p className="mb-1">
                       <strong>Applied Job:</strong> {app.title}
-                    </p>
-                    <p className="mb-1">
-                      <strong>Resume:</strong>{" "}
-                      <a
-                        href={app.resume_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-outline-primary"
-                      >
-                        View Resume
-                      </a>
                     </p>
                     <p className="mb-0">
                       <strong>Status:</strong>{" "}
@@ -122,10 +119,58 @@ export default function ViewApplicants() {
                         {app.status || "Pending"}
                       </span>
                     </p>
+                    <p className="mb-1">View Details</p>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* ✅ Pagination Controls */}
+            {totalPages > 1 && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 && "disabled"}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    >
+                      Previous
+                    </button>
+                  </li>
+
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <li
+                      key={i + 1}
+                      className={`page-item ${
+                        currentPage === i + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => setCurrentPage(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === totalPages && "disabled"
+                    }`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(p + 1, totalPages))
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </>
         )}
       </div>
