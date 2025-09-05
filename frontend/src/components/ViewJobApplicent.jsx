@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import ApplicantService from "../service/applicantServ.js";
 
 export default function ViewApplicants() {
-  const [applicants, setApplicants] = useState([]);
+  const [allApplicants, setAllApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; 
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
     ApplicantService.getApplicants()
       .then((res) => {
-        setApplicants(res);
+        setAllApplicants(res); 
         setLoading(false);
       })
       .catch(() => {
@@ -22,10 +23,16 @@ export default function ViewApplicants() {
       });
   }, []);
 
+  // ✅ Filter by job title only
+  const filteredApplicants = allApplicants.filter((app) =>
+    app.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // ✅ Pagination logic
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentApplicants = applicants.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(applicants.length / itemsPerPage);
+  const currentApplicants = filteredApplicants.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
   return (
     <section className="py-4 px-3">
@@ -34,15 +41,29 @@ export default function ViewApplicants() {
           📋 View Applicants
         </h2>
 
+        {/* ✅ Search Box */}
+        <div className="d-flex justify-content-center mb-3">
+          <input
+            type="text"
+            className="form-control w-50"
+            placeholder="🔍 Search by job title"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
         {msg && <div className="alert alert-danger text-center">{msg}</div>}
 
         {loading ? (
           <div className="text-center">Loading applicants...</div>
-        ) : applicants.length === 0 ? (
+        ) : filteredApplicants.length === 0 ? (
           <div className="alert alert-info text-center">No applicants found</div>
         ) : (
           <>
-            {/* ✅ Table layout for laptop & tablet */}
+            {/* ✅ Table layout */}
             <div className="table-responsive d-none d-md-block">
               <table className="table table-striped table-hover align-middle shadow-sm rounded">
                 <thead className="table-dark text-center">
@@ -58,7 +79,7 @@ export default function ViewApplicants() {
                 </thead>
                 <tbody className="text-center">
                   {currentApplicants.map((app, index) => (
-                    <tr key={app.seeker_id}>
+                    <tr key={app.application_id}>
                       <td>{indexOfFirst + index + 1}</td>
                       <td>{app.name}</td>
                       <td>{app.email}</td>
@@ -93,21 +114,21 @@ export default function ViewApplicants() {
               </table>
             </div>
 
-            {/* ✅ Card layout for mobile */}
+            {/* ✅ Card layout (mobile) */}
             <div className="d-md-none">
               {currentApplicants.map((app, index) => (
                 <div
-                  key={app.seeker_id}
+                  key={app.application_id}
                   className="card shadow-sm mb-3 border-0 rounded-3"
                 >
                   <div className="card-body">
                     <h5 className="card-title fw-bold text-primary">
                       {indexOfFirst + index + 1}. {app.name}
                     </h5>
-                    <p className="mb-1"><strong>Email:</strong> {app.email}</p>
-                    <p className="mb-1"><strong>Phone:</strong> {app.phone}</p>
-                    <p className="mb-1"><strong>Applied Job:</strong> {app.title}</p>
-                    <p className="mb-0">
+                    <p><strong>Email:</strong> {app.email}</p>
+                    <p><strong>Phone:</strong> {app.phone}</p>
+                    <p><strong>Applied Job:</strong> {app.title}</p>
+                    <p>
                       <strong>Status:</strong>{" "}
                       <span
                         className={`badge ${
@@ -134,7 +155,7 @@ export default function ViewApplicants() {
               ))}
             </div>
 
-            {/* ✅ Pagination Controls */}
+            {/* ✅ Pagination */}
             {totalPages > 1 && (
               <nav className="mt-3">
                 <ul className="pagination justify-content-center">
@@ -161,9 +182,7 @@ export default function ViewApplicants() {
                     </li>
                   ))}
 
-                  <li
-                    className={`page-item ${currentPage === totalPages && "disabled"}`}
-                  >
+                  <li className={`page-item ${currentPage === totalPages && "disabled"}`}>
                     <button
                       className="page-link"
                       onClick={() =>

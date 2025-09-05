@@ -83,7 +83,7 @@ exports.getAllApplicant = async (hrId) => {
   try {
     const [rows] = await db.query(
       `SELECT 
-         s.seeker_id,   -- ✅ add this
+         s.seeker_id,   
          s.name, 
          s.email, 
          s.phone, 
@@ -94,7 +94,7 @@ exports.getAllApplicant = async (hrId) => {
        INNER JOIN applications a ON s.seeker_id = a.seeker_id
        INNER JOIN jobs j ON a.job_id = j.job_id
        WHERE j.hr_id = ?  
-       ORDER BY a.application_id DESC`,  
+       ORDER BY a.applied_at DESC`,  
       [hrId]
     );
     return rows;
