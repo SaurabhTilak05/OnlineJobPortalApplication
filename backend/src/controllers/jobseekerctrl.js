@@ -193,3 +193,21 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Error updating profile", error: err.message });
   }
 };
+
+// ✅ Get applicant profile by seekerId
+exports.getApplicantProfile = async (req, res) => {
+  const { seekerId } = req.params;
+
+  try {
+    const applicant = await jobsctrl.findApplicantById(seekerId);
+
+    if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found" });
+    }
+
+    res.json(applicant);
+  } catch (err) {
+    console.error("Error fetching applicant profile:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

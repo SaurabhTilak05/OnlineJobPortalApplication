@@ -82,11 +82,19 @@ exports.loginSeeker = async (email, password) => {
 exports.getAllApplicant = async (hrId) => {
   try {
     const [rows] = await db.query(
-      `SELECT s.name, s.email, s.phone, j.title, a.status, a.application_id
+      `SELECT 
+         s.seeker_id,   -- ✅ add this
+         s.name, 
+         s.email, 
+         s.phone, 
+         j.title, 
+         a.status, 
+         a.application_id
        FROM job_seekers s
        INNER JOIN applications a ON s.seeker_id = a.seeker_id
        INNER JOIN jobs j ON a.job_id = j.job_id
-       WHERE j.hr_id = ?  ORDER BY a.application_id DESC `,  
+       WHERE j.hr_id = ?  
+       ORDER BY a.application_id DESC`,  
       [hrId]
     );
     return rows;
@@ -94,6 +102,7 @@ exports.getAllApplicant = async (hrId) => {
     throw err;
   }
 };
+
 
 
 
@@ -191,4 +200,45 @@ exports.update = async (seeker_id, data) => {
 
   const [result] = await db.query(sql, values);
   return result;
+};
+
+
+exports.findApplicantById = async (seekerId) => {
+  const [rows] = await db.query(
+    `
+    SELECT 
+      js.seeker_id,
+      js.name,
+      js.email,
+      js.phone,
+
+      sp.profile_id,
+      sp.dob,
+      sp.gender,
+      sp.address,
+      sp.qualification,
+      sp.college_name,
+      sp.branch,
+      sp.graduation_year,
+      sp.percentage,
+      sp.skills,
+      sp.certifications,
+      sp.projects,
+      sp.experience,
+      sp.languages_known,
+      sp.resume_url,
+      sp.preferred_role,
+      sp.preferred_location,
+      sp.expected_salary,
+      sp.updated_at
+
+    FROM job_seekers js
+    LEFT JOIN student_profiles sp 
+      ON js.seeker_id = sp.seeker_id
+    WHERE js.seeker_id = ?
+    `,
+    [seekerId]
+  );
+
+  return rows[0]; // single profile
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Jobservice from "../service/Jobservice.js";
 
 export default function JobApplicantsBYJob() {
@@ -21,9 +21,7 @@ export default function JobApplicantsBYJob() {
     <div className="container py-5">
       <div className="card shadow-lg border-0 rounded-4">
         <div className="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
-          <h4 className="mb-0">
-            👥 Applicants for Job 
-          </h4>
+          <h4 className="mb-0">👥 Applicants for Job</h4>
           {/* ✅ Back button */}
           <button 
             className="btn btn-light btn-sm fw-bold"
@@ -46,6 +44,7 @@ export default function JobApplicantsBYJob() {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Status</th>
+                    <th>Action</th> {/* ✅ new column */}
                   </tr>
                 </thead>
                 <tbody>
@@ -66,6 +65,15 @@ export default function JobApplicantsBYJob() {
                         >
                           {app.status}
                         </span>
+                      </td>
+                      <td>
+                        <Link 
+                          to={`/hrdashboard/applicantProfile/${app.seeker_id}`} 
+                          className="btn btn-sm btn-outline-primary"
+                        >
+                          View Details
+                        </Link>
+
                       </td>
                     </tr>
                   ))}

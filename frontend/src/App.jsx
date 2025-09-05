@@ -34,6 +34,7 @@ import JobApplicantsBYJob from "./components/jobapplicantbyjob.jsx";
 import ViewRegStuToAdmin from "./components/ViewRegStuToAdmin.jsx"
 import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
 import Studentupdate from "./components/studentupdate.jsx";
+import ApplicantProfile from "./components/ApplicantProfile.jsx";
 
 
   // Navbar Layout
@@ -180,6 +181,8 @@ import Studentupdate from "./components/studentupdate.jsx";
             {/* Profile section */}
             <Route path="profile" element={<HRProfile />} />
             <Route path="profile/update" element={<UpdateHRProfile />} />
+            <Route path="applicantProfile/:seekerId" element={<ApplicantProfile />} />
+
       </Route>
 
 

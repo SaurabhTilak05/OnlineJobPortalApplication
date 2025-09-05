@@ -10,6 +10,13 @@ class ApplicantService {
       .then((res) => res.data);
   }
   
+  getApplicantsByJob(job_id)
+  {
+     return axios.get(`http://localhost:8080/getapplicant/${job_id}/applicants`);
+  }
+   getApplicantProfile(seekerId) {
+    return axios.get(`http://localhost:8080/applicantprofile/${seekerId}`);
+  }
 }
 
 export default new ApplicantService();

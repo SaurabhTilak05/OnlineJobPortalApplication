@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ApplicantService from "../service/applicantServ.js";
 
 export default function ViewApplicants() {
@@ -6,7 +7,8 @@ export default function ViewApplicants() {
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // ✅ Show 10 applicants per page
+  const itemsPerPage = 10; 
+  const navigate = useNavigate();
 
   useEffect(() => {
     ApplicantService.getApplicants()
@@ -20,7 +22,6 @@ export default function ViewApplicants() {
       });
   }, []);
 
-  // ✅ Pagination Logic
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentApplicants = applicants.slice(indexOfFirst, indexOfLast);
@@ -38,9 +39,7 @@ export default function ViewApplicants() {
         {loading ? (
           <div className="text-center">Loading applicants...</div>
         ) : applicants.length === 0 ? (
-          <div className="alert alert-info text-center">
-            No applicants found
-          </div>
+          <div className="alert alert-info text-center">No applicants found</div>
         ) : (
           <>
             {/* ✅ Table layout for laptop & tablet */}
@@ -59,7 +58,7 @@ export default function ViewApplicants() {
                 </thead>
                 <tbody className="text-center">
                   {currentApplicants.map((app, index) => (
-                    <tr key={app.id}>
+                    <tr key={app.seeker_id}>
                       <td>{indexOfFirst + index + 1}</td>
                       <td>{app.name}</td>
                       <td>{app.email}</td>
@@ -78,7 +77,16 @@ export default function ViewApplicants() {
                           {app.status || "Pending"}
                         </span>
                       </td>
-                      <td>view details</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={() =>
+                            navigate(`/hrdashboard/applicantProfile/${app.seeker_id}`)
+                          }
+                        >
+                          View Details
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -89,22 +97,16 @@ export default function ViewApplicants() {
             <div className="d-md-none">
               {currentApplicants.map((app, index) => (
                 <div
-                  key={app.id}
+                  key={app.seeker_id}
                   className="card shadow-sm mb-3 border-0 rounded-3"
                 >
                   <div className="card-body">
                     <h5 className="card-title fw-bold text-primary">
                       {indexOfFirst + index + 1}. {app.name}
                     </h5>
-                    <p className="mb-1">
-                      <strong>Email:</strong> {app.email}
-                    </p>
-                    <p className="mb-1">
-                      <strong>Phone:</strong> {app.phone}
-                    </p>
-                    <p className="mb-1">
-                      <strong>Applied Job:</strong> {app.title}
-                    </p>
+                    <p className="mb-1"><strong>Email:</strong> {app.email}</p>
+                    <p className="mb-1"><strong>Phone:</strong> {app.phone}</p>
+                    <p className="mb-1"><strong>Applied Job:</strong> {app.title}</p>
                     <p className="mb-0">
                       <strong>Status:</strong>{" "}
                       <span
@@ -119,7 +121,14 @@ export default function ViewApplicants() {
                         {app.status || "Pending"}
                       </span>
                     </p>
-                    <p className="mb-1">View Details</p>
+                    <button
+                      className="btn btn-sm btn-outline-primary mt-2"
+                      onClick={() =>
+                        navigate(`/hrdashboard/applicantProfile/${app.seeker_id}`)
+                      }
+                    >
+                      View Details
+                    </button>
                   </div>
                 </div>
               ))}
@@ -141,9 +150,7 @@ export default function ViewApplicants() {
                   {Array.from({ length: totalPages }, (_, i) => (
                     <li
                       key={i + 1}
-                      className={`page-item ${
-                        currentPage === i + 1 ? "active" : ""
-                      }`}
+                      className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
                     >
                       <button
                         className="page-link"
@@ -155,9 +162,7 @@ export default function ViewApplicants() {
                   ))}
 
                   <li
-                    className={`page-item ${
-                      currentPage === totalPages && "disabled"
-                    }`}
+                    className={`page-item ${currentPage === totalPages && "disabled"}`}
                   >
                     <button
                       className="page-link"
