@@ -29,7 +29,7 @@ router.put("/updatehrProfile/:hr_id", verifyToken1, hrCtrl.updateHRProfile);
 router.delete("/deleteJob/:id",verifyToken1,jobctrl.getDeleteJob);
 router.get("/getapplicant/:id/applicants", jobctrl.getApplicantsByJob);
 router.get("/searchJob",jobctrl.searchJob);
-
+router.get("/applicantprofile/:seekerId", jobskrctrl.getApplicantProfile);
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
