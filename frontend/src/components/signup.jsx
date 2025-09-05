@@ -3,84 +3,96 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import AdminAuthService from "../service/AdminAuthService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function Sign() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     username: "",
-    password: "", 
+    password: "",
     role: "",
   });
+
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" }); // clear error on typing
   };
 
-
-  
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const { username, password, role } = form;
-  console.log("Form data on submit:", form);
-
-  if (!username || !password || !role) {
-    alert("Please fill in all fields");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    let res;
-
-    if (role === "admin") {
-      // ✅ Admin login
-      res = await AdminAuthService.login({ username, password });
-    } else if (role === "hr") {
-      // ✅ HR login
-      res = await AdminAuthService.hrLogin({ email: username, password });
-    } else {
-      // ✅ User login
-      res = await AdminAuthService.UserLogin({ email: username, password });
+  // 🔹 Validate form
+  const validate = () => {
+    let temp = {};
+    if (!form.username) {
+      temp.username = "Username / Email is required";
+    } else if (
+      form.role !== "admin" && // only hr/user require email format
+      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.username)
+    ) {
+      temp.username = "Please enter a valid email";
     }
 
-    console.log("Login response:", res);
+    if (!form.password) {
+      temp.password = "Password is required";
+    } else if (form.password.length < 6) {
+      temp.password = "Password must be at least 6 characters";
+    }
 
-    // ✅ Save token & role for PrivateRoute check
-    if (res.token) {
-      localStorage.setItem("token", res.token);
+    if (!form.role) {
+      temp.role = "Please select a role";
+    }
 
-      // for admin/hr backend already sends role, for user we set it manually
-      if (res.role) {
-        localStorage.setItem("role", res.role);
+    setErrors(temp);
+    return Object.keys(temp).length === 0; // ✅ return true if no errors
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    const { username, password, role } = form;
+    console.log("Form data on submit:", form);
+
+    try {
+      setLoading(true);
+      let res;
+
+      if (role === "admin") {
+        res = await AdminAuthService.login({ username, password });
+      } else if (role === "hr") {
+        res = await AdminAuthService.hrLogin({ email: username, password });
       } else {
-        localStorage.setItem("role", role); // "user" in this case
+        res = await AdminAuthService.UserLogin({ email: username, password });
       }
 
-      // also save seeker_id if present
-      if (res.seeker_id) {
-        localStorage.setItem("seeker_id", res.seeker_id);
+      console.log("Login response:", res);
+
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("role", res.role || role);
+        if (res.seeker_id) {
+          localStorage.setItem("seeker_id", res.seeker_id);
+        }
+      } else {
+        throw new Error("Invalid response from server");
       }
-    } else {
-      throw new Error("Invalid response from server");
-    }
 
-    // ✅ Redirect based on role
-    if (role === "admin") {
-      navigate("/adminhome");
-    } else if (role === "hr") {
-      navigate("/hrdashboard");
-    } else if (role === "user") {
-      navigate("/userProfile");
+      if (role === "admin") {
+        navigate("/adminhome");
+      } else if (role === "hr") {
+        navigate("/hrdashboard");
+      } else {
+        navigate("/userProfile");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert(err.response?.data?.message || err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-
-  } catch (err) {
-    console.error("Login error:", err);
-    alert(err.response?.data?.message || err.message || "Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <section className="py-5">
@@ -98,44 +110,54 @@ const handleSubmit = async (e) => {
                     <input
                       type="text"
                       name="username"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.username ? "is-invalid" : ""
+                      }`}
                       value={form.username}
                       onChange={handleChange}
                       placeholder="Enter username or email"
                     />
+                    {errors.username && (
+                      <div className="invalid-feedback">{errors.username}</div>
+                    )}
                   </div>
 
-                 {/* Password */}
-                <div className="mb-3 position-relative">
-                  <label className="form-label">Password</label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    className="form-control"
-                    value={form.password}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      top: "38px",
-                      right: "10px",
-                      cursor: "pointer",
-                      color: "#555",
-                    }}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </span>
-                </div>
+                  {/* Password */}
+                  <div className="mb-3 position-relative">
+                    <label className="form-label">Password</label>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className={`form-control ${
+                        errors.password ? "is-invalid" : ""
+                      }`}
+                      value={form.password}
+                      onChange={handleChange}
+                      placeholder="Enter password"
+                    />
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        top: "38px",
+                        right: "10px",
+                        cursor: "pointer",
+                        color: "#555",
+                      }}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                    {errors.password && (
+                      <div className="invalid-feedback">{errors.password}</div>
+                    )}
+                  </div>
 
                   {/* Role Selection */}
                   <div className="mb-3">
                     <label className="form-label">Select Role</label>
                     <select
                       name="role"
-                      className="form-select"
+                      className={`form-select ${errors.role ? "is-invalid" : ""}`}
                       value={form.role}
                       onChange={handleChange}
                     >
@@ -144,12 +166,9 @@ const handleSubmit = async (e) => {
                       <option value="hr">HR</option>
                       <option value="user">User</option>
                     </select>
-                  </div>
-
-                  {/* Remember + Register */}
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    
-                   
+                    {errors.role && (
+                      <div className="invalid-feedback">{errors.role}</div>
+                    )}
                   </div>
 
                   {/* Submit */}
