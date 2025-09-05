@@ -86,7 +86,7 @@ router.post("/regJobSeeker",jobskrctrl.regSeekers);
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
 router.get("/profile", verifyUser, jobskrctrl.getProfile);
-
+router.put("/update", verifyToken, jobskrctrl.updateProfile);
 
 
 
@@ -98,17 +98,7 @@ router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 router.get("/allJob", jobctrl.fetchAllJobs);
   
 
-// Add data in job table 
-// router.post("/AddJob", jobctrl.addingJob);
-// get all jobs 
-
-// get job by ID//viewAllJobs
-
-// uodate the job 
-
-// delete job by id 
-
-// search job by title 
+// 
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);

@@ -38,9 +38,9 @@ export default function ViewStudProfile() {
       {profile ? (
         <div
           className="card shadow-lg border-0 p-4 w-100"
-          style={{ maxWidth: "700px", borderRadius: "16px" }}
+          style={{ maxWidth: "900px", borderRadius: "16px" }}
         >
-          {/* Header Section without Image */}
+          {/* Header Section */}
           <div className="text-center mb-4">
             <h2 className="fw-bold text-dark">{profile.name || "Student"}</h2>
             <p className="text-muted mb-1">
@@ -48,53 +48,52 @@ export default function ViewStudProfile() {
               Student
             </p>
             <span className="badge bg-success px-3 py-2">
-              {profile.course || "Course Not Assigned"}
+              {profile.branch || "Branch Not Assigned"}
             </span>
           </div>
 
-          {/* Student Information */}
-          <h5 className="fw-bold mb-3 text-secondary">Student Information</h5>
+          {/* Section: Basic Info */}
+          <h5 className="fw-bold mb-3 text-secondary">Basic Information</h5>
           <div className="row g-3">
             <div className="col-md-6">
-              <div className="p-3 rounded shadow-sm bg-light d-flex align-items-center">
-                <FaEnvelope className="text-success me-3 fs-5" />
-                <div>
-                  <p className="mb-0 text-muted small">Email</p>
-                  <p className="mb-0 fw-semibold">{profile.email || "N/A"}</p>
-                </div>
-              </div>
+              <p><FaEnvelope className="text-success me-2" /> <b>Email:</b> {profile.email}</p>
+              <p><FaPhone className="text-success me-2" /> <b>Phone:</b> {profile.phone || "N/A"}</p>
+              <p><FaMapMarkerAlt className="text-success me-2" /> <b>Address:</b> {profile.address || "N/A"}</p>
+              <p><b>Date of Birth:</b> {profile.dob || "N/A"}</p>
+              <p><b>Gender:</b> {profile.gender || "N/A"}</p>
             </div>
-
             <div className="col-md-6">
-              <div className="p-3 rounded shadow-sm bg-light d-flex align-items-center">
-                <FaPhone className="text-success me-3 fs-5" />
-                <div>
-                  <p className="mb-0 text-muted small">Phone</p>
-                  <p className="mb-0 fw-semibold">{profile.phone || "N/A"}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-6">
-              <div className="p-3 rounded shadow-sm bg-light d-flex align-items-center">
-                <FaMapMarkerAlt className="text-success me-3 fs-5" />
-                <div>
-                  <p className="mb-0 text-muted small">Address</p>
-                  <p className="mb-0 fw-semibold">{profile.address || "N/A"}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-6">
-              <div className="p-3 rounded shadow-sm bg-light d-flex align-items-center">
-                <FaBook className="text-success me-3 fs-5" />
-                <div>
-                  <p className="mb-0 text-muted small">Course</p>
-                  <p className="mb-0 fw-semibold">{profile.course || "N/A"}</p>
-                </div>
-              </div>
+              <p><b>Qualification:</b> {profile.qualification || "N/A"}</p>
+              <p><b>College:</b> {profile.college_name || "N/A"}</p>
+              <p><b>Branch:</b> {profile.branch || "N/A"}</p>
+              <p><b>Graduation Year:</b> {profile.graduation_year || "N/A"}</p>
+              <p><b>Percentage:</b> {profile.percentage || "N/A"}%</p>
             </div>
           </div>
+
+          {/* Section: Skills */}
+          <h5 className="fw-bold mt-4 mb-3 text-secondary">Skills & Projects</h5>
+          <p><b>Skills:</b> {profile.skills || "N/A"}</p>
+          <p><b>Certifications:</b> {profile.certifications || "N/A"}</p>
+          <p><b>Projects:</b> {profile.projects || "N/A"}</p>
+          <p><b>Experience:</b> {profile.experience || "N/A"}</p>
+          <p><b>Languages Known:</b> {profile.languages_known || "N/A"}</p>
+
+          {/* Section: Career Preferences */}
+          <h5 className="fw-bold mt-4 mb-3 text-secondary">Career Preferences</h5>
+          <p><b>Preferred Role:</b> {profile.preferred_role || "N/A"}</p>
+          <p><b>Preferred Location:</b> {profile.preferred_location || "N/A"}</p>
+          <p><b>Expected Salary:</b> {profile.expected_salary || "N/A"}</p>
+
+          {/* Section: Resume */}
+          <h5 className="fw-bold mt-4 mb-3 text-secondary">Resume</h5>
+          {profile.resume_url ? (
+            <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
+              View Resume
+            </a>
+          ) : (
+            <p>No Resume Uploaded</p>
+          )}
         </div>
       ) : (
         <h4 className="text-muted">No profile found.</h4>
