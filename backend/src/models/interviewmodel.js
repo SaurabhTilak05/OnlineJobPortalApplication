@@ -26,11 +26,20 @@ exports.createInterview = async (data) => {
   return result; // contains insertId
 };
 
-// Get all interviews
+// Get all interviews with seeker name & job title
 exports.getAllInterviews = async () => {
-  const [rows] = await db.query("SELECT * FROM interview_schedule");
+  const [rows] = await db.query(`
+    SELECT 
+      i.*, 
+      s.name AS seeker_name, 
+      j.title AS job_title
+    FROM interview_schedule i
+    JOIN job_seekers s ON i.seeker_id = s.seeker_id
+    JOIN jobs j ON i.job_id = j.job_id
+  `);
   return rows;
 };
+
 
 // Get by Seeker
 exports.getInterviewsBySeeker = async (seekerId) => {

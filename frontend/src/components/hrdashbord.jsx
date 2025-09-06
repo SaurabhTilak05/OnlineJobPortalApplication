@@ -10,6 +10,7 @@ import {
   FaHistory,
   FaEnvelope,
   FaUserCircle,
+  FaCalendarAlt, // new icon for schedule
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -39,11 +40,10 @@ export default function HRDashboard() {
         style={{
           height: "var(--hr-topnav)",
           zIndex: 1030,
-          background: "linear-gradient(90deg, #1e3a8a, #2563eb)", // 🔹 Blue gradient
+          background: "linear-gradient(90deg, #1e3a8a, #2563eb)",
         }}
       >
         <div className="container-fluid">
-          {/* Mobile: toggle sidebar */}
           <button
             className="btn btn-light d-lg-none"
             onClick={() => setSidebarOpen((s) => !s)}
@@ -59,13 +59,10 @@ export default function HRDashboard() {
             QuickStart <span className="text-warning">Career</span>
           </NavLink>
 
-          {/* ✅ Right side (desktop only) */}
           <div className="d-none d-lg-flex align-items-center gap-3">
             <NavLink end to="." className="btn btn-outline-light btn-sm">
               Dashboard
             </NavLink>
-
-            {/* Profile icon only visible in Navbar on desktop */}
             <NavLink to="profile" className="text-white fs-1 mr-3">
               <FaUserCircle />
             </NavLink>
@@ -98,6 +95,7 @@ export default function HRDashboard() {
               <FaUsers className="me-2" /> Dashboard
             </NavLink>
           </li>
+
           <li>
             <NavLink
               to="addjob"
@@ -111,6 +109,7 @@ export default function HRDashboard() {
               <FaBriefcase className="me-2" /> Post Job
             </NavLink>
           </li>
+
           <li>
             <NavLink
               to="view-applicants"
@@ -125,7 +124,21 @@ export default function HRDashboard() {
             </NavLink>
           </li>
 
-          {/* ✅ Profile only visible in Sidebar on mobile */}
+          {/* ✅ New View Schedule */}
+          <li>
+            <NavLink
+              to="view-schedule"
+              className={({ isActive }) =>
+                `nav-link d-flex align-items-center ${
+                  isActive ? "active" : "text-white"
+                }`
+              }
+              onClick={closeSidebar}
+            >
+              <FaCalendarAlt className="me-2" /> View Schedule
+            </NavLink>
+          </li>
+
           <li className="d-lg-none">
             <NavLink
               to="profile"
@@ -153,6 +166,7 @@ export default function HRDashboard() {
               <FaHistory className="me-2" /> Job History
             </NavLink>
           </li>
+
           <li>
             <NavLink
               to="messages"
@@ -168,7 +182,6 @@ export default function HRDashboard() {
           </li>
         </ul>
 
-        {/* ✅ Logout Button */}
         <div className="mt-auto pt-4">
           <button
             className="btn btn-danger w-100 fw-bold"
@@ -180,7 +193,6 @@ export default function HRDashboard() {
         </div>
       </aside>
 
-      {/* ✅ Overlay for Mobile */}
       {sidebarOpen && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
@@ -189,17 +201,11 @@ export default function HRDashboard() {
         />
       )}
 
-      {/* ✅ Main Content */}
       <main className="hr-main">
         <Outlet />
       </main>
 
-      {/* ✅ Scoped Styles */}
       <style>{`
-        .hr-topbar {
-          height: var(--hr-topnav);
-          z-index: 1030;
-        }
         .hr-main {
           margin-top: var(--hr-topnav);
           padding: 20px;

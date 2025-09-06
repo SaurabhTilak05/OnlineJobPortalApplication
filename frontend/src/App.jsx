@@ -36,6 +36,7 @@ import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
 import Studentupdate from "./components/studentupdate.jsx";
 import ApplicantProfile from "./components/ApplicantProfile.jsx";
 import InterViewSchedule from "./components/interviewSchedule.jsx";
+import ViewSchedule from "./components/viewschedule.jsx";
 
 
   // Navbar Layout
@@ -178,7 +179,7 @@ import InterViewSchedule from "./components/interviewSchedule.jsx";
             <Route path="job-history" element={<ViewAllJob />} />
             <Route path="job-history/update-job/:id" element={<UpdateJob />} />
             <Route path="job-history/applicants/:jobId" element={<JobApplicantsBYJob />} />  
-            
+             <Route path="view-schedule" element={<ViewSchedule />} />
             {/* Profile section */}
             <Route path="profile" element={<HRProfile />} />
             <Route path="profile/update" element={<UpdateHRProfile />} />
@@ -187,7 +188,7 @@ import InterViewSchedule from "./components/interviewSchedule.jsx";
             {/* Interview scheduling */}
               
        <Route path="/hrdashboard/schedule-interview/:seekerId/:jobId" element={<InterViewSchedule />} />
-
+       
 
       </Route>
 

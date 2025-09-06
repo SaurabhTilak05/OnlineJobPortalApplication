@@ -24,11 +24,11 @@ class InterviewService {
   }
 
   getInterviews() {
-    return axios.get(API_URL);
+    return axios.get("http://localhost:8080/interviews");///interviews
   }
 
   getInterviewBySeeker(seekerId) {
-    return axios.get(`${API_URL}/seeker/${seekerId}`);
+    return axios.get(`http://localhost:8080/interviews/seeker/${seekerId}`);
   }
 
   getInterviewByJob(jobId) {
