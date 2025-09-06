@@ -4,7 +4,8 @@ let hrCtrl=require("../controllers/hrcontroller.js");
 let jobskrctrl=require("../controllers/jobseekerctrl.js");
 let jobctrl=require("../controllers/jobcontrol.js");
 let email=require("../controllers/emailctrl.js");
- let { verifyToken,  verifyAdmin} = require("../middlewares/authmiddleware.js");
+let interviewCtrl =require("../controllers/interviewctrl.js"); 
+let { verifyToken,  verifyAdmin} = require("../middlewares/authmiddleware.js");
 
 let router = express.Router();
 
@@ -30,6 +31,20 @@ router.delete("/deleteJob/:id",verifyToken1,jobctrl.getDeleteJob);
 router.get("/getapplicant/:id/applicants", jobctrl.getApplicantsByJob);
 router.get("/searchJob",jobctrl.searchJob);
 router.get("/applicantprofile/:seekerId", jobskrctrl.getApplicantProfile);
+
+/////////////////////////
+// INTERVIEW ROUTES
+/////////////////////////
+router.post("/interviews/schedule", interviewCtrl.scheduleInterview);
+router.get("/interviews", interviewCtrl.getAllInterviews);
+router.get("/interviews/seeker/:seekerId", interviewCtrl.getBySeeker);
+router.get("/interviews/job/:jobId", interviewCtrl.getByJob);
+router.get("/interviews/hr/:hrId", interviewCtrl.getByHR);
+router.put("/interviews/:id", interviewCtrl.updateInterview);
+router.delete("/interviews/:id", interviewCtrl.deleteInterview);
+
+
+
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password

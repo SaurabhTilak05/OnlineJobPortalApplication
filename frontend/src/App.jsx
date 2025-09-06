@@ -35,6 +35,7 @@ import ViewRegStuToAdmin from "./components/ViewRegStuToAdmin.jsx"
 import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
 import Studentupdate from "./components/studentupdate.jsx";
 import ApplicantProfile from "./components/ApplicantProfile.jsx";
+import InterViewSchedule from "./components/interviewSchedule.jsx";
 
 
   // Navbar Layout
@@ -170,7 +171,7 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
 
             {/* HR Dashboard */}
        {/* HR Dashboard */}
-       <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}>
+      <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}>
             <Route index element={<HRHome />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="view-applicants" element={<ViewJobApplicants />} />
@@ -182,6 +183,11 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
             <Route path="profile" element={<HRProfile />} />
             <Route path="profile/update" element={<UpdateHRProfile />} />
             <Route path="applicantProfile/:seekerId" element={<ApplicantProfile />} />
+
+            {/* Interview scheduling */}
+              
+       <Route path="/hrdashboard/schedule-interview/:seekerId/:jobId" element={<InterViewSchedule />} />
+
 
       </Route>
 

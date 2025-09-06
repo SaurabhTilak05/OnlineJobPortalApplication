@@ -202,7 +202,6 @@ exports.update = async (seeker_id, data) => {
   return result;
 };
 
-
 exports.findApplicantById = async (seekerId) => {
   const [rows] = await db.query(
     `
@@ -211,7 +210,6 @@ exports.findApplicantById = async (seekerId) => {
       js.name,
       js.email,
       js.phone,
-
       sp.profile_id,
       sp.dob,
       sp.gender,
@@ -230,15 +228,19 @@ exports.findApplicantById = async (seekerId) => {
       sp.preferred_role,
       sp.preferred_location,
       sp.expected_salary,
-      sp.updated_at
-
+      sp.updated_at,
+      a.job_id
     FROM job_seekers js
     LEFT JOIN student_profiles sp 
       ON js.seeker_id = sp.seeker_id
+    LEFT JOIN applications a 
+      ON js.seeker_id = a.seeker_id
     WHERE js.seeker_id = ?
+    ORDER BY a.applied_at DESC
+    LIMIT 1
     `,
     [seekerId]
   );
 
-  return rows[0]; // single profile
+  return rows[0] || {}; // return empty object if no profile
 };
