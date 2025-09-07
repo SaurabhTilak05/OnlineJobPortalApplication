@@ -1,18 +1,44 @@
 const InterviewModel = require("../models/interviewmodel.js");
+const { sendEmail } = require("../services/sendEmail.js"); 
 
-// Schedule new interview
 exports.scheduleInterview = async (req, res) => {
   try {
     const data = { ...req.body };
 
-    // Basic validation (optional, prevents null errors)
     if (!data.job_id || !data.seeker_id || !data.hr_id || !data.interview_date || !data.interview_time) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Save interview
     const result = await InterviewModel.createInterview(data);
+
+    // Get seeker info
+    const seeker = await InterviewModel.getSeekerEmail(data.seeker_id);
+
+    if (seeker && seeker.email) {
+      const subject = "Interview Scheduled - QuickStart Career";
+      const html = `
+        <h2>Dear ${seeker.name},</h2>
+        <p>Your interview has been scheduled successfully.</p>
+        <p><b>Job ID:</b> ${data.job_id}</p>
+        <p><b>Date:</b> ${data.interview_date}</p>
+        <p><b>Time:</b> ${data.interview_time}</p>
+        <p><b>Mode:</b> ${data.interview_mode}</p>
+        ${
+          data.interview_mode === "Offline"
+            ? `<p><b>Location:</b> ${data.location}</p>`
+            : `<p><b>Link:</b> ${data.interview_link}</p>`
+        }
+        <br/>
+        <p>Regards,<br/>QuickStart Career Team</p>
+      `;
+
+      // Send email
+      await sendEmail(seeker.email, subject, html);
+    }
+
     res.status(201).json({
-      message: "Interview scheduled successfully",
+      message: "Interview scheduled successfully & email sent",
       interview_id: result.insertId,
     });
   } catch (err) {
@@ -20,6 +46,7 @@ exports.scheduleInterview = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // Get all interviews
 exports.getAllInterviews = async (req, res) => {

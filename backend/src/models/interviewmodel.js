@@ -40,29 +40,54 @@ exports.getAllInterviews = async () => {
   return rows;
 };
 
-
 // Get by Seeker
 exports.getInterviewsBySeeker = async (seekerId) => {
   const [rows] = await db.query(
-    "SELECT * FROM interview_schedule WHERE seeker_id = ?",
+    `SELECT 
+        i.*, 
+        j.title AS job_title
+     FROM interview_schedule i
+     JOIN jobs j ON i.job_id = j.job_id
+     WHERE i.seeker_id = ?`,
     [seekerId]
   );
   return rows;
 };
 
+// Get seeker email by seeker_id
+exports.getSeekerEmail = async (seekerId) => {
+  const [rows] = await db.query(
+    "SELECT email, name FROM job_seekers WHERE seeker_id = ?",
+    [seekerId]
+  );
+  return rows[0]; // एक result मिळेल
+};
+
 // Get by Job
 exports.getInterviewsByJob = async (jobId) => {
   const [rows] = await db.query(
-    "SELECT * FROM interview_schedule WHERE job_id = ?",
+    `SELECT 
+        i.*, 
+        s.name AS seeker_name
+     FROM interview_schedule i
+     JOIN job_seekers s ON i.seeker_id = s.seeker_id
+     WHERE i.job_id = ?`,
     [jobId]
   );
   return rows;
 };
 
-// Get by HR
+// ✅ Get by HR (with seeker name & job title)
 exports.getInterviewsByHR = async (hrId) => {
   const [rows] = await db.query(
-    "SELECT * FROM interview_schedule WHERE hr_id = ?",
+    `SELECT 
+        i.*, 
+        s.name AS seeker_name, 
+        j.title AS job_title
+     FROM interview_schedule i
+     JOIN job_seekers s ON i.seeker_id = s.seeker_id
+     JOIN jobs j ON i.job_id = j.job_id
+     WHERE i.hr_id = ?`,
     [hrId]
   );
   return rows;

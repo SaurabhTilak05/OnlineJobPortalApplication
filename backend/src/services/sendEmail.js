@@ -1,20 +1,33 @@
 require("dotenv").config();
-let nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
-let transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        pass: process.env.EMAIL_PASS, // App Password if 2FA enabled
     }
 });
 
-exports.sendEmail = (to, subject, message) => {
-    let mailOption = {
-        from: process.env.EMAIL_USER,  
+// Export sendEmail function
+// Make sure the third parameter is named and used correctly
+exports.sendEmail = async (to, subject,message, htmlContent) => {
+    if (!htmlContent) htmlContent = ""; // fallback
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
         to,
         subject,
-        text: message
+         text: message,
+        html: htmlContent // ✅ use the parameter
     };
-    return transporter.sendMail(mailOption);
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("✅ Email sent:", info.response);
+        return info;
+    } catch (err) {
+        console.error("❌ Error sending email:", err);
+        throw err;
+    }
 };

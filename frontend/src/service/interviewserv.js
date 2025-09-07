@@ -36,7 +36,8 @@ class InterviewService {
   }
 
   getInterviewByHR(hrId) {
-    return axios.get(`${API_URL}/hr/${hrId}`);
+    return axios.get(`http://localhost:8080/interviews/hr/${hrId}`);///interviews/hr/:hrId
+
   }
 }
 

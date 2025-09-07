@@ -84,7 +84,7 @@ export default function Sign() {
       } else if (role === "hr") {
         navigate("/hrdashboard");
       } else {
-        navigate("/userProfile");
+        navigate("/userProfile/user-dashboard");
       }
     } catch (err) {
       console.error("Login error:", err);

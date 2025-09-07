@@ -32,7 +32,7 @@ const formatTime = (timeStr) => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const res = await interviewServ.getInterviews(hrId);
+        const res = await interviewServ.getInterviewByHR(hrId);
         setSchedules(res.data);
       } catch (err) {
         console.error("Error fetching schedules:", err);
