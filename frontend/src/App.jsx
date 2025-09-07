@@ -20,7 +20,7 @@
   import AddHR from "./components/AddHR.jsx";
   import ViewHR from "./components/viewHR.jsx";
   import Adminhome from "./components/adminhome.jsx";
-  import UserProfile from "./components/userprofile.jsx";
+  import UserProfile from "./components/userhome.jsx";
   import AdminDashboard from "./components/admindashboard.jsx";
   import ViewStudProfile from "./components/viewstudprofile.jsx";  
   import Userdashboard from "./components/userdashbord.jsx";
