@@ -192,8 +192,8 @@ export default function UserProfile() {
       {/* Scoped Styles */}
       <style>{`
         .user-main {
-          margin-top: ;
-          padding: 20px;
+          margin-top: 40px ;
+          padding: 0px;
           min-height: 100vh;
           background: linear-gradient(135deg, #f0f9ff, #e9ecef);
           transition: margin-left 0.3s ease;

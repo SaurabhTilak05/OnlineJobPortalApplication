@@ -1,5 +1,5 @@
   import React, { useState } from "react";
-  import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
+  import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation, Router } from "react-router-dom";
   import "bootstrap/dist/css/bootstrap.min.css";
 
   // Components
@@ -38,6 +38,7 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
 import InterViewSchedule from "./components/interviewSchedule.jsx";
 import ViewSchedule from "./components/viewschedule.jsx";
 import Updateresume from "./components/updateresume.jsx";
+import Footer from "./components/footer.jsx";
 
   // Navbar Layout
   function LayoutWithNavbar({ children }) {
@@ -148,7 +149,8 @@ import Updateresume from "./components/updateresume.jsx";
             <Route path="/register" element={<Register />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-           
+          
+
 
             {/* Admin routes */}
             <Route
@@ -207,8 +209,9 @@ import Updateresume from "./components/updateresume.jsx";
             <Route path="update-profile" element={<Studentupdate/>}/>
             <Route path="upload-resume" element={<Updateresume/>} />
              </Route>
-    
+           
           </Routes>
+           <Footer />
           {/* ✅ Global toast container */}
           <ToastContainer
             position="top-center"

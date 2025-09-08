@@ -6,12 +6,13 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function ViewStudProfile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -52,7 +53,7 @@ export default function ViewStudProfile() {
           </div>
 
           {/* Section: Basic Info */}
-          <h5 className="fw-bold mb-3 text-secondary">Basic Information</h5>
+          <h5 className="fw-bold mb-3 section-title">Basic Information</h5>
           <div className="row g-3">
             <div className="col-md-6">
               <p>
@@ -68,7 +69,15 @@ export default function ViewStudProfile() {
                 {profile.address || "N/A"}
               </p>
               <p>
-                <b>Date of Birth:</b> {profile.dob || "N/A"}
+                <b>Date of Birth:</b>{" "}
+                {profile.dob
+                  ? new Date(profile.dob).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      timeZone: "Asia/Kolkata",
+                    })
+                  : "N/A"}
               </p>
               <p>
                 <b>Gender:</b> {profile.gender || "N/A"}
@@ -94,7 +103,7 @@ export default function ViewStudProfile() {
           </div>
 
           {/* Section: Skills */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Skills & Projects</h5>
+          <h5 className="fw-bold mt-4 mb-3 section-title">Skills & Projects</h5>
           <p>
             <b>Skills:</b> {profile.skills || "N/A"}
           </p>
@@ -112,7 +121,7 @@ export default function ViewStudProfile() {
           </p>
 
           {/* Section: Career Preferences */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">
+          <h5 className="fw-bold mt-4 mb-3 section-title">
             Career Preferences
           </h5>
           <p>
@@ -126,23 +135,21 @@ export default function ViewStudProfile() {
           </p>
 
           {/* Section: Resume */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Resume</h5>
+          <h5 className="fw-bold mt-4 mb-3 section-title">Resume</h5>
           {profile.resume_url ? (
             <div className="d-flex gap-3">
-              {/* View Button */}
-             <a
+              <a
                 href={`http://localhost:8080${profile.resume_url}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline-success"
+                className="btn btn-outline-danger"
               >
                 View Resume
               </a>
-              {/* Download Button */}
               <a
                 href={`http://localhost:8080${profile.resume_url}`}
                 download
-                className="btn btn-success"
+                className="btn btn-dark"
               >
                 Download Resume
               </a>
@@ -150,10 +157,48 @@ export default function ViewStudProfile() {
           ) : (
             <p>No Resume Uploaded</p>
           )}
+          <hr />
+
+          {/* Update Button */}
+           <div className="update d-flex justify-content-center align-items-center my-3">
+            <button
+              className="btn btn-primary px-4 py-2 rounded-pill shadow-sm update-btn"
+              onClick={() => navigate("/userProfile/update-profile")}   // ✅ navigate to update page
+            >
+              Update Profile
+            </button>
+          </div>
         </div>
       ) : (
         <h4 className="text-muted">No profile found.</h4>
       )}
+
+      {/* Styles */}
+      <style>
+        {`
+          .section-title {
+            color: #2c3e50;
+            border-left: 4px solid #28a745;
+            padding-left: 10px;
+          }
+
+          .update-btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease-in-out;
+          }
+
+          .update-btn:hover {
+            background-color: #212529;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+          }
+
+          .card {
+            background: #fff;
+          }
+        `}
+      </style>
     </div>
   );
 }
