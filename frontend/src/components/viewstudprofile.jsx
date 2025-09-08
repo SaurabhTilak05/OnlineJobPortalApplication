@@ -5,7 +5,6 @@ import {
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  FaBook,
 } from "react-icons/fa";
 
 export default function ViewStudProfile() {
@@ -56,41 +55,98 @@ export default function ViewStudProfile() {
           <h5 className="fw-bold mb-3 text-secondary">Basic Information</h5>
           <div className="row g-3">
             <div className="col-md-6">
-              <p><FaEnvelope className="text-success me-2" /> <b>Email:</b> {profile.email}</p>
-              <p><FaPhone className="text-success me-2" /> <b>Phone:</b> {profile.phone || "N/A"}</p>
-              <p><FaMapMarkerAlt className="text-success me-2" /> <b>Address:</b> {profile.address || "N/A"}</p>
-              <p><b>Date of Birth:</b> {profile.dob || "N/A"}</p>
-              <p><b>Gender:</b> {profile.gender || "N/A"}</p>
+              <p>
+                <FaEnvelope className="text-success me-2" /> <b>Email:</b>{" "}
+                {profile.email}
+              </p>
+              <p>
+                <FaPhone className="text-success me-2" /> <b>Phone:</b>{" "}
+                {profile.phone || "N/A"}
+              </p>
+              <p>
+                <FaMapMarkerAlt className="text-success me-2" /> <b>Address:</b>{" "}
+                {profile.address || "N/A"}
+              </p>
+              <p>
+                <b>Date of Birth:</b> {profile.dob || "N/A"}
+              </p>
+              <p>
+                <b>Gender:</b> {profile.gender || "N/A"}
+              </p>
             </div>
             <div className="col-md-6">
-              <p><b>Qualification:</b> {profile.qualification || "N/A"}</p>
-              <p><b>College:</b> {profile.college_name || "N/A"}</p>
-              <p><b>Branch:</b> {profile.branch || "N/A"}</p>
-              <p><b>Graduation Year:</b> {profile.graduation_year || "N/A"}</p>
-              <p><b>Percentage:</b> {profile.percentage || "N/A"}%</p>
+              <p>
+                <b>Qualification:</b> {profile.qualification || "N/A"}
+              </p>
+              <p>
+                <b>College:</b> {profile.college_name || "N/A"}
+              </p>
+              <p>
+                <b>Branch:</b> {profile.branch || "N/A"}
+              </p>
+              <p>
+                <b>Graduation Year:</b> {profile.graduation_year || "N/A"}
+              </p>
+              <p>
+                <b>Percentage:</b> {profile.percentage || "N/A"}%
+              </p>
             </div>
           </div>
 
           {/* Section: Skills */}
           <h5 className="fw-bold mt-4 mb-3 text-secondary">Skills & Projects</h5>
-          <p><b>Skills:</b> {profile.skills || "N/A"}</p>
-          <p><b>Certifications:</b> {profile.certifications || "N/A"}</p>
-          <p><b>Projects:</b> {profile.projects || "N/A"}</p>
-          <p><b>Experience:</b> {profile.experience || "N/A"}</p>
-          <p><b>Languages Known:</b> {profile.languages_known || "N/A"}</p>
+          <p>
+            <b>Skills:</b> {profile.skills || "N/A"}
+          </p>
+          <p>
+            <b>Certifications:</b> {profile.certifications || "N/A"}
+          </p>
+          <p>
+            <b>Projects:</b> {profile.projects || "N/A"}
+          </p>
+          <p>
+            <b>Experience:</b> {profile.experience || "N/A"}
+          </p>
+          <p>
+            <b>Languages Known:</b> {profile.languages_known || "N/A"}
+          </p>
 
           {/* Section: Career Preferences */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Career Preferences</h5>
-          <p><b>Preferred Role:</b> {profile.preferred_role || "N/A"}</p>
-          <p><b>Preferred Location:</b> {profile.preferred_location || "N/A"}</p>
-          <p><b>Expected Salary:</b> {profile.expected_salary || "N/A"}</p>
+          <h5 className="fw-bold mt-4 mb-3 text-secondary">
+            Career Preferences
+          </h5>
+          <p>
+            <b>Preferred Role:</b> {profile.preferred_role || "N/A"}
+          </p>
+          <p>
+            <b>Preferred Location:</b> {profile.preferred_location || "N/A"}
+          </p>
+          <p>
+            <b>Expected Salary:</b> {profile.expected_salary || "N/A"}
+          </p>
 
           {/* Section: Resume */}
           <h5 className="fw-bold mt-4 mb-3 text-secondary">Resume</h5>
           {profile.resume_url ? (
-            <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
-              View Resume
-            </a>
+            <div className="d-flex gap-3">
+              {/* View Button */}
+             <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-success"
+              >
+                View Resume
+              </a>
+              {/* Download Button */}
+              <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                download
+                className="btn btn-success"
+              >
+                Download Resume
+              </a>
+            </div>
           ) : (
             <p>No Resume Uploaded</p>
           )}

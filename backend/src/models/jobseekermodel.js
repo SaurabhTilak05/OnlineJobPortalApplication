@@ -160,47 +160,53 @@ exports.getAllApplications = async () => {
   );
   return rows;
 };
-
-
-
 exports.update = async (seeker_id, data) => {
-  const sql = `
-    INSERT INTO student_profiles (
-      seeker_id, dob, gender, address, qualification, college_name, branch,
-      graduation_year, percentage, skills, certifications, projects, experience,
-      languages_known, resume_url, preferred_role, preferred_location, expected_salary, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ON DUPLICATE KEY UPDATE
-      dob = VALUES(dob),
-      gender = VALUES(gender),
-      address = VALUES(address),
-      qualification = VALUES(qualification),
-      college_name = VALUES(college_name),
-      branch = VALUES(branch),
-      graduation_year = VALUES(graduation_year),
-      percentage = VALUES(percentage),
-      skills = VALUES(skills),
-      certifications = VALUES(certifications),
-      projects = VALUES(projects),
-      experience = VALUES(experience),
-      languages_known = VALUES(languages_known),
-      resume_url = VALUES(resume_url),
-      preferred_role = VALUES(preferred_role),
-      preferred_location = VALUES(preferred_location),
-      expected_salary = VALUES(expected_salary),
-      updated_at = CURRENT_TIMESTAMP
-  `;
-
-  const values = [
-    seeker_id, data.dob, data.gender, data.address, data.qualification, data.college_name, data.branch,
-    data.graduation_year, data.percentage, data.skills, data.certifications, data.projects,
-    data.experience, data.languages_known, data.resume_url, data.preferred_role,
-    data.preferred_location, data.expected_salary
+  // Only allowed fields
+  const allowedFields = [
+    "dob",
+    "gender",
+    "address",
+    "qualification",
+    "college_name",
+    "branch",
+    "graduation_year",
+    "percentage",
+    "skills",
+    "certifications",
+    "projects",
+    "experience",
+    "languages_known",
+    "resume_url",
+    "preferred_role",
+    "preferred_location",
+    "expected_salary"
   ];
+
+  const fields = [];
+  const values = [];
+
+  allowedFields.forEach((key) => {
+    if (data[key] !== undefined) {
+      fields.push(`${key} = ?`);
+      values.push(data[key]);
+    }
+  });
+
+  if (fields.length === 0) return { affectedRows: 0 };
+
+  const sql = `
+    UPDATE student_profiles
+    SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP
+    WHERE seeker_id = ?
+  `;
+  values.push(seeker_id);
 
   const [result] = await db.query(sql, values);
   return result;
 };
+
+
+
 
 exports.findApplicantById = async (seekerId) => {
   const [rows] = await db.query(

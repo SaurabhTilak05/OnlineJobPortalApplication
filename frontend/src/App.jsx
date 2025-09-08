@@ -37,7 +37,7 @@ import Studentupdate from "./components/studentupdate.jsx";
 import ApplicantProfile from "./components/ApplicantProfile.jsx";
 import InterViewSchedule from "./components/interviewSchedule.jsx";
 import ViewSchedule from "./components/viewschedule.jsx";
-
+import Updateresume from "./components/updateresume.jsx";
 
   // Navbar Layout
   function LayoutWithNavbar({ children }) {
@@ -205,14 +205,14 @@ import ViewSchedule from "./components/viewschedule.jsx";
             <Route path="view-jobs" element={<JobforUsers/>}/>
             <Route path="Applied-jobs" element={<Jobappliedstudent/>}/>
             <Route path="update-profile" element={<Studentupdate/>}/>
-
+            <Route path="upload-resume" element={<Updateresume/>} />
              </Route>
     
           </Routes>
           {/* ✅ Global toast container */}
           <ToastContainer
-            position="top-right"
-            autoClose={5000}   // 5 sec
+            position="top-center"
+            autoClose={3000}   
             hideProgressBar={false}
             newestOnTop
             closeOnClick
