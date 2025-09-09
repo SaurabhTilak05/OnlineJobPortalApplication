@@ -1,19 +1,21 @@
+// src/components/PrivateRoute.jsx
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-export default function PrivateRoute({ children, allowedRole }) {
+export default function PrivateRoute({ allowedRole, children }) {
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role"); // "admin" | "hr" | "user"
 
-  // if no token → send to signup page
+  // Not logged in
   if (!token) {
     return <Navigate to="/signup" replace />;
   }
 
-  // if role mismatch → block and redirect
+  // Role not allowed
   if (allowedRole && role !== allowedRole) {
-    return <Navigate to="/signup" replace />;
+    return <Navigate to="/" replace />;
   }
 
-  return children;
+  // ✅ Support both child and outlet routes
+  return children ? children : <Outlet />;
 }

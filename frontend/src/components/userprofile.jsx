@@ -1,5 +1,5 @@
 // src/components/UserProfile.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   FaUser,
@@ -20,16 +20,27 @@ export default function UserProfile() {
   const token = localStorage.getItem("token");
   const studentName = localStorage.getItem("username") || "user";
 
+  // 🔹 Hide public navbar when inside UserProfile
+  useEffect(() => {
+    const publicNavbar = document.querySelector(".navbar"); // your public navbar has "navbar" class
+    if (publicNavbar) {
+      publicNavbar.style.display = "none";
+    }
+
+    return () => {
+      // show again when leaving user profile
+      if (publicNavbar) {
+        publicNavbar.style.display = "flex";
+      }
+    };
+  }, []);
+
   const navItems = [
     { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "view-profile", icon: <FaUser />, label: "View Profile" },
-  
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
     { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
-
-     
-
   ];
 
   const handleLogout = () => {
@@ -61,13 +72,20 @@ export default function UserProfile() {
             <FaBars />
           </button>
 
-          <NavLink to="/userdashboard" className="navbar-brand fw-bold text-white">
+          <NavLink
+            to="/userdashboard"
+            className="navbar-brand fw-bold text-white"
+          >
             QuickStart <span className="text-warning">Career</span>
           </NavLink>
 
           {/* ✅ Right side (desktop only) */}
           <div className="d-none d-lg-flex align-items-center gap-3">
-            <NavLink end to="user-dashboard" className="btn btn-outline-light btn-sm">
+            <NavLink
+              end
+              to="user-dashboard"
+              className="btn btn-outline-light btn-sm"
+            >
               Dashboard
             </NavLink>
 
@@ -94,7 +112,6 @@ export default function UserProfile() {
             <li
               key={i}
               className={item.to === "view-profile" ? "d-lg-none" : ""}
-              // Profile will show only in sidebar on mobile
             >
               <NavLink
                 to={item.to}

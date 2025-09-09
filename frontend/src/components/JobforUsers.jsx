@@ -5,18 +5,22 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function JobforUsers() {
   const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [expandedJob, setExpandedJob] = useState(null);
 
-  const seekerId = localStorage.getItem("seeker_id"); // stored at login
-  const role = localStorage.getItem("role"); // "student" or "admin"
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const seekerId = localStorage.getItem("seeker_id"); 
+  const role = localStorage.getItem("role"); 
 
   // 🔹 Fetch all jobs
   useEffect(() => {
     UserJobservice.getAllJobsuser()
       .then((res) => {
         setJobs(res.data);
+        setFilteredJobs(res.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -25,6 +29,19 @@ export default function JobforUsers() {
         setLoading(false);
       });
   }, []);
+
+  // 🔍 Filter jobs whenever search term changes
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredJobs(jobs); // show all if empty
+    } else {
+      const results = jobs.filter((job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredJobs(results);
+    }
+  }, [searchTerm, jobs]);
 
   // 🚀 Apply for job
   const handleApply = (jobId, title) => {
@@ -60,11 +77,25 @@ export default function JobforUsers() {
     <div className="container mt-4">
       <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
 
+      {/* 🔍 Single Search Bar (Title + Location) */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <input
+            type="text"
+            placeholder="Search by Job Title or Location"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      {/* Jobs List */}
       <div className="row g-4">
-        {jobs.length === 0 ? (
-          <p className="text-center">No jobs available</p>
+        {filteredJobs.length === 0 ? (
+          <p className="text-center">No jobs found</p>
         ) : (
-          jobs.map((job) => (
+          filteredJobs.map((job) => (
             <div className="col-md-4" key={job.job_id}>
               <div className="card shadow-lg border-0 h-100">
                 <div className="card-body d-flex flex-column">
