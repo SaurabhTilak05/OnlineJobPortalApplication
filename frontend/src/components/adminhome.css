@@ -1,60 +1,194 @@
-/* Sidebar */
-.sidebar {
-  width: 250px;
-  height: calc(100vh - 56px); /* Full height minus navbar */
-  position: sticky;
-  top: 56px; /* Navbar height */
-  flex-shrink: 0;
-  overflow-y: auto; /* जर items जास्त झाले तर फक्त sidebar मध्ये scroll */
-  transition: transform 0.3s ease-in-out;
+:root {
+  --navbar-height: 56px;
+  --sidebar-width: 240px;
+  --sidebar-bg: #212529; /* dark */
+  --sidebar-text: #e9ecef;
+  --accent: #0d6efd;
 }
 
-.sidebar-link {
-  color: white;
-  transition: background 0.3s, transform 0.2s;
-}
-.sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
-}
-.active-link {
-  background: #0dcaf0 !important;
-  color: black !important;
-  font-weight: bold;
+/* Reset for the admin layout */
+.admin-layout {
+  min-height: 100vh;
 }
 
-/* Responsive (mobile view) */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 56px;
-    left: 0;
-    height: calc(100% - 56px);
-    transform: translateX(-100%);
-    z-index: 1050;
-  }
-  .sidebar.open {
-    transform: translateX(0);
-  }
+.admin-sidebar {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--navbar-height));
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  z-index: 1100;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 1px 0 6px rgba(0, 0, 0, 0.08);
 }
 
-/* Content Area */
-.content-area {
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  min-height: calc(100vh - 56px);
+/* Scrollable nav */
+.sidebar-body {
+  flex: 1;
   overflow-y: auto;
+  padding: 16px;
 }
 
-/* Dashboard Cards */
-.dashboard-card {
-  border-radius: 20px;
-  padding: 30px;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  min-height: 220px;
+/* Footer always visible */
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--sidebar-bg);
 }
-.dashboard-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+/* NAVBAR */
+.admin-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+}
+
+/* Overlay shown on mobile when sidebar is open */
+.sidebar-overlay {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1090;
+}
+
+/* SIDEBAR */
+.admin-sidebar {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--navbar-height));
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 16px;
+  display: flex;
+  flex-direction: column; /* header + nav + footer layout */
+  justify-content: space-between;
+  z-index: 1100;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 1px 0 6px rgba(0, 0, 0, 0.08);
+  transform: translateX(0); /* visible by default on desktop */
+  overflow: hidden;
+}
+
+/* inner scroll area so the footer stays at bottom */
+.admin-sidebar .sidebar-inner {
+  overflow-y: auto;
+  padding-right: 4px; /* avoid overlaying scrollbar on content */
+}
+
+/* NAV styles */
+.admin-sidebar .nav {
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.admin-sidebar .nav-item {
+  margin-bottom: 6px;
+}
+
+.admin-sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sidebar-text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-sidebar .nav-link .icon {
+  display: inline-flex;
+  width: 28px;
+  justify-content: center;
+  font-size: 1.05rem;
+  color: #cfd8dc;
+}
+
+.admin-sidebar .nav-link .label {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.admin-sidebar .nav-link.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Footer (logout) pinned to bottom */
+.sidebar-footer {
+  margin-top: 12px;
+}
+
+/* MAIN content area */
+.admin-content {
+  margin-top: var(--navbar-height);
+  margin-left: var(--sidebar-width);
+  padding: 22px;
+  min-height: calc(100vh - var(--navbar-height));
+  background-color: #f8f9fa;
+  transition: margin-left 0.25s ease;
+}
+
+/* Responsiveness: small screens */
+@media (max-width: 767.98px) {
+  /* Hide sidebar off-canvas by default */
+  .admin-sidebar {
+    transform: translateX(-110%);
+    box-shadow: none;
+  }
+
+  /* When open, slide in */
+  .admin-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 2px 0 14px rgba(0, 0, 0, 0.22);
+  }
+
+  /* On mobile, main content fills full width */
+  .admin-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+
+  /* show overlay when open handled by React rendering */
+}
+
+/* Small polish: scrollbar styling for sidebar */
+.admin-sidebar .sidebar-inner::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-sidebar .sidebar-inner::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+/* ensure content inside nav (labels) wrap nicely on very small widths */
+@media (max-width: 420px) {
+  .admin-sidebar .nav-link .label {
+    font-size: 0.95rem;
+  }
 }

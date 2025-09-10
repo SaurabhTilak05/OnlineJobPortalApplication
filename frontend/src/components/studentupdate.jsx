@@ -26,11 +26,16 @@ export default function StudentUpdate() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ Load profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const data = await AdminAuthService.getProfile();
+
+        if (data?.dob) {
+          // convert ISO -> YYYY-MM-DD
+          data.dob = new Date(data.dob).toISOString().split("T")[0];
+        }
+
         if (data) setProfile((prev) => ({ ...prev, ...data }));
       } catch (err) {
         toast.error("Failed to load profile");
@@ -41,19 +46,27 @@ export default function StudentUpdate() {
     fetchProfile();
   }, []);
 
-  // ✅ Handle input changes
+  //  Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
   };
 
-  // ✅ Submit profile update
+  //  Submit profile update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // dob always in YYYY-MM-DD before sending
+      if (profile.dob) {
+        profile.dob = new Date(profile.dob).toISOString().split("T")[0];
+      }
+
       await AdminAuthService.updateProfile(profile);
-      toast.success("Profile updated successfully!");
+
+     toast.success("Profile updated successfully!");
       navigate("/userProfile/view-profile");
+   
+
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Failed to update profile. Try again."
@@ -61,7 +74,7 @@ export default function StudentUpdate() {
     }
   };
 
-  // ✅ Cancel button
+  //  Cancel button
   const handleCancel = () => {
     navigate("/userProfile/view-profile");
   };

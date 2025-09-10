@@ -40,19 +40,29 @@ exports.getAllInterviews = async () => {
   return rows;
 };
 
-// Get by Seeker
+// Get Interviews by Seeker with Job Details
 exports.getInterviewsBySeeker = async (seekerId) => {
   const [rows] = await db.query(
     `SELECT 
-        i.*, 
-        j.title AS job_title
+        i.*,
+
+        j.job_id,
+        j.title AS job_title,
+        j.company,
+        j.location AS job_location,
+        j.experience_required,
+        j.package,
+        j.skills_required,
+        j.deadline
      FROM interview_schedule i
      JOIN jobs j ON i.job_id = j.job_id
-     WHERE i.seeker_id = ?`,
+     WHERE i.seeker_id = ?
+     ORDER BY i.interview_date, i.interview_time`,
     [seekerId]
   );
   return rows;
 };
+
 
 // Get seeker email by seeker_id
 exports.getSeekerEmail = async (seekerId) => {

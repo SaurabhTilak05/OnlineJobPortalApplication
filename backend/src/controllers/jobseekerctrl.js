@@ -170,7 +170,7 @@ exports.getallJobs = async (req, res) => {
   }
 };
 
-// Update profile (JSON)
+
 exports.updateProfile = async (req, res) => {
   try {
     const seeker_id = req.user.seeker_id;
@@ -180,16 +180,17 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ message: "Profile data is missing" });
     }
 
-    const result = await jobsctrl.update(seeker_id, profileData);
+    // Exclude resume_url
+    const { resume_url, ...dataWithoutResume } = profileData;
 
-    res.json({ message: "Profile updated successfully" });
+    await jobsctrl.upsertProfile(seeker_id, dataWithoutResume);
+    res.json({ message: "Profile saved successfully" });
   } catch (err) {
-    console.error("Error updating profile:", err);
-    res.status(500).json({ message: "Error updating profile", error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Error saving profile", error: err.message });
   }
 };
 
-// Upload resume (FormData + multer)
 exports.uploadResume = async (req, res) => {
   try {
     const seeker_id = req.user.seeker_id;
@@ -200,15 +201,17 @@ exports.uploadResume = async (req, res) => {
 
     const resumePath = `/resumes/${req.file.filename}`;
 
-    // Only update resume_url, do not touch other fields
-    await jobsctrl.update(seeker_id, { resume_url: resumePath });
-
+    await jobsctrl.upsertProfile(seeker_id, { resume_url: resumePath });
     res.json({ message: "Resume uploaded successfully", resume_url: resumePath });
   } catch (err) {
-    console.error("Error uploading resume:", err);
+    console.error(err);
     res.status(500).json({ message: "Error uploading resume", error: err.message });
   }
 };
+
+
+
+
 
 
 //  Get applicant profile by seekerId

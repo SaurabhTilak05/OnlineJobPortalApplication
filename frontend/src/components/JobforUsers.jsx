@@ -8,6 +8,8 @@ export default function JobforUsers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [expandedJob, setExpandedJob] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedJobs, setAppliedJobs] = useState([]); // 🔹 Track applied jobs
 
   const seekerId = localStorage.getItem("seeker_id"); // stored at login
   const role = localStorage.getItem("role"); // "student" or "admin"
@@ -38,8 +40,10 @@ export default function JobforUsers() {
         if (typeof res.data === "string") {
           if (res.data.toLowerCase().includes("success")) {
             toast.success(`✅ ${res.data}`);
+            setAppliedJobs((prev) => [...prev, jobId]); // ✅ Mark as applied
           } else if (res.data.toLowerCase().includes("already")) {
             toast.warning(`⚠️ ${res.data}`);
+            setAppliedJobs((prev) => [...prev, jobId]); // ✅ Mark as applied even if already
           } else {
             toast.info(res.data);
           }
@@ -53,6 +57,17 @@ export default function JobforUsers() {
       });
   };
 
+  // 🔍 Filter jobs based on search term
+  const filteredJobs = jobs.filter((job) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      job.title?.toLowerCase().includes(searchLower) ||
+      job.company?.toLowerCase().includes(searchLower) ||
+      job.location?.toLowerCase().includes(searchLower) ||
+      job.skills_required?.toLowerCase().includes(searchLower)
+    );
+  });
+
   if (loading) return <p className="text-center mt-5">⏳ Loading jobs...</p>;
   if (error) return <p className="text-center text-danger mt-5">❌ {error}</p>;
 
@@ -60,11 +75,24 @@ export default function JobforUsers() {
     <div className="container mt-4">
       <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
 
+      {/* 🔹 Search Field */}
+      <div className="row mb-4">
+        <div className="col-md-6 offset-md-3">
+          <input
+            type="text"
+            className="form-control shadow-sm"
+            placeholder="🔍 Search jobs by title, company, skills or location..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
       <div className="row g-4">
-        {jobs.length === 0 ? (
-          <p className="text-center">No jobs available</p>
+        {filteredJobs.length === 0 ? (
+          <p className="text-center">No jobs found</p>
         ) : (
-          jobs.map((job) => (
+          filteredJobs.map((job) => (
             <div className="col-md-4" key={job.job_id}>
               <div className="card shadow-lg border-0 h-100">
                 <div className="card-body d-flex flex-column">
@@ -80,14 +108,20 @@ export default function JobforUsers() {
                     {expandedJob === job.job_id ? (
                       <>
                         {job.description}{" "}
-                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(null)}>
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => setExpandedJob(null)}
+                        >
                           Show Less
                         </button>
                       </>
                     ) : (
                       <>
                         {job.description?.substring(0, 60)}...
-                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(job.job_id)}>
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => setExpandedJob(job.job_id)}
+                        >
                           Read More
                         </button>
                       </>
@@ -98,12 +132,18 @@ export default function JobforUsers() {
 
                   {/* 🚀 Apply Button only for students */}
                   {role === "user" && (
-                    <button
-                      className="btn btn-success w-100 mt-auto"
-                      onClick={() => handleApply(job.job_id, job.title)}
-                    >
-                      🚀 Apply Now
-                    </button>
+                    appliedJobs.includes(job.job_id) ? (
+                      <button className="btn btn-secondary w-100 mt-auto" disabled>
+                        ✅ Applied
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-success w-100 mt-auto"
+                        onClick={() => handleApply(job.job_id, job.title)}
+                      >
+                        🚀 Apply Now
+                      </button>
+                    )
                   )}
                 </div>
               </div>
@@ -111,7 +151,6 @@ export default function JobforUsers() {
           ))
         )}
       </div>
-
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );

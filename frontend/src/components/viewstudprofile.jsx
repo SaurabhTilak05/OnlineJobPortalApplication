@@ -142,14 +142,14 @@ export default function ViewStudProfile() {
                 href={`http://localhost:8080${profile.resume_url}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline-danger"
+                className=""
               >
                 View Resume
               </a>
               <a
                 href={`http://localhost:8080${profile.resume_url}`}
                 download
-                className="btn btn-dark"
+                className=""
               >
                 Download Resume
               </a>

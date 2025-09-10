@@ -28,6 +28,7 @@ export default function UserProfile() {
     { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Home" },
     { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
     { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
+
   ];
 
   // Profile menu items
@@ -35,6 +36,7 @@ export default function UserProfile() {
     { to: "view-profile", icon: <FaUser />, label: "View Profile" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
     { to: "upload-resume", icon: <FaBriefcase />, label: "Upload Resume" },
+    { to: "intschedule", icon: <FaClipboardCheck />, label: "My Schedule" }, 
   ];
 
   const handleLogout = () => {
@@ -42,7 +44,7 @@ export default function UserProfile() {
     navigate("/signup");
   };
 
-  // Close sidebar if clicking outside
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {

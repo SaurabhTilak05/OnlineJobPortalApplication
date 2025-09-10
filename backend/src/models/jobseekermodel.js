@@ -160,52 +160,38 @@ exports.getAllApplications = async () => {
   );
   return rows;
 };
-exports.update = async (seeker_id, data) => {
-  // Only allowed fields
+exports.upsertProfile = async (seeker_id, data) => {
   const allowedFields = [
-    "dob",
-    "gender",
-    "address",
-    "qualification",
-    "college_name",
-    "branch",
-    "graduation_year",
-    "percentage",
-    "skills",
-    "certifications",
-    "projects",
-    "experience",
-    "languages_known",
-    "resume_url",
-    "preferred_role",
-    "preferred_location",
-    "expected_salary"
+    "dob","gender","address","qualification","college_name","branch",
+    "graduation_year","percentage","skills","certifications","projects",
+    "experience","languages_known","resume_url","preferred_role",
+    "preferred_location","expected_salary"
   ];
 
-  const fields = [];
-  const values = [];
+  const fields = ["seeker_id"];
+  const placeholders = ["?"];
+  const values = [seeker_id];
+
+  const updateFields = [];
 
   allowedFields.forEach((key) => {
     if (data[key] !== undefined) {
-      fields.push(`${key} = ?`);
+      fields.push(key);
+      placeholders.push("?");
       values.push(data[key]);
+      updateFields.push(`${key} = VALUES(${key})`);
     }
   });
 
-  if (fields.length === 0) return { affectedRows: 0 };
-
   const sql = `
-    UPDATE student_profiles
-    SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP
-    WHERE seeker_id = ?
+    INSERT INTO student_profiles (${fields.join(", ")})
+    VALUES (${placeholders.join(", ")})
+    ON DUPLICATE KEY UPDATE ${updateFields.join(", ")}, updated_at = CURRENT_TIMESTAMP
   `;
-  values.push(seeker_id);
 
   const [result] = await db.query(sql, values);
   return result;
 };
-
-
 
 
 exports.findApplicantById = async (seekerId) => {

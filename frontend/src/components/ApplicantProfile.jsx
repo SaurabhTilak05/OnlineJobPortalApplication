@@ -81,12 +81,26 @@ useEffect(() => {
               <h6 className="text-secondary">📂 Resume</h6>
               <p>
                 {profile.resume_url ? (
-                  <a href={profile.resume_url} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-success">
-                    View Resume
-                  </a>
-                ) : (
-                  "Not uploaded"
-                )}
+            <div className="d-flex gap-3">
+              <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className=""
+              >
+                View Resume
+              </a>
+              <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                download
+                className=""
+              >
+                Download Resume
+              </a>
+            </div>
+          ) : (
+            <p>No Resume Uploaded</p>
+          )}
               </p>
                    <hr />{profile && profile.job_id ? (
   <button 

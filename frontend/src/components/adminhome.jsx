@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  FaUserPlus, FaUsers, FaClipboardList,
-  FaBars, FaTimes, FaSignOutAlt,
-  FaTachometerAlt, FaBell, FaUserCircle, FaCog,
-  FaUserGraduate
+  FaUserPlus,
+  FaUsers,
+  FaClipboardList,
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+  FaTachometerAlt,
+  FaBell,
+  FaUserCircle,
+  FaCog,
+  FaUserGraduate,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Adminhome.css";
@@ -14,7 +21,21 @@ export default function Adminhome() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  if (!token) return <h1 className="text-center mt-5 text-danger">Invalid Session</h1>;
+  useEffect(() => {
+    // if window resizes to desktop size, close mobile sidebar (state-driven)
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!token)
+    return (
+      <h1 className="text-center mt-5 text-danger">Invalid Session</h1>
+    );
 
   const handleLogout = () => {
     localStorage.clear();
@@ -25,22 +46,31 @@ export default function Adminhome() {
     { to: "admindashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
     { to: "addhr", icon: <FaUserPlus />, label: "Add HR" },
     { to: "viewshr", icon: <FaUsers />, label: "View HR" },
-    { to: "jobseekers", icon: <FaUserGraduate />, label: "Job Seekers" }, // ✅ New menu
+    { to: "jobseekers", icon: <FaUserGraduate />, label: "Job Seekers" },
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
     { to: "view-jobs", icon: <FaClipboardList />, label: "View Jobs" },
   ];
 
   return (
-    <div className="d-flex flex-column vh-100">
-      {/* Sticky Navbar */}
-      <nav className="navbar navbar-dark bg-primary shadow p-3 fixed-top px-3">
+    <div className="admin-layout" style={{ "--navbar-height": "56px" }}>
+      {/* Navbar */}
+      <nav
+        className="admin-navbar navbar navbar-dark bg-primary fixed-top shadow px-3 d-flex align-items-center"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <button
+          aria-label="Toggle sidebar"
           className="btn btn-outline-light d-md-none me-2"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={() => setSidebarOpen((s) => !s)}
         >
           {sidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
-        QuickStart <span className="text-danger p-1">Career</span>
+
+        <span className="fw-bold text-light">
+          QuickStart <span className="text-danger">Career</span>
+        </span>
+
         <div className="d-flex align-items-center ms-auto">
           <FaBell className="me-3 text-light fs-5 cursor-pointer" />
           <FaCog className="me-3 text-light fs-5 cursor-pointer" />
@@ -48,45 +78,65 @@ export default function Adminhome() {
         </div>
       </nav>
 
-      {/* Layout */}
-      <div className="d-flex flex-grow-1">
-        {/* Sidebar */}
-        <aside
-          className={`sidebar bg-dark text-white m-0 p-3 d-flex flex-column ${sidebarOpen ? "open" : ""}`}
-        >
-          <h4 className="text-info mb-4 text-center">Menu</h4>
-          <nav className="flex-grow-1">
-            {navItems.map((item, idx) => (
-              <NavLink
-                key={idx}
-                to={item.to}
-                className={({ isActive }) =>
-                  `d-flex align-items-center mb-3 p-2 rounded text-decoration-none sidebar-link ${
-                    isActive ? "active-link" : ""
-                  }`
-                }
-                onClick={() => setSidebarOpen(false)}
-              >
-                <span className="me-2 fs-5">{item.icon}</span>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="pt-3 border-top">
-            <button
-              className="btn btn-danger w-100 d-flex align-items-center justify-content-center"
-              onClick={handleLogout}
-            >
-              <FaSignOutAlt className="me-2" /> Logout
-            </button>
-          </div>
-        </aside>
+      {/* Mobile overlay (visible only when sidebar open on small screens) */}
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-        {/* Main Content */}
-        <main className="flex-grow-1 p-4 mt-5 content-area">
+     {/* Sidebar */}
+<aside
+  className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}
+  role="navigation"
+  aria-label="Sidebar navigation"
+>
+  <div className="sidebar-body">
+    <div className="sidebar-header text-center mb-3">
+      <h5 className="text-info mb-0">Menu</h5>
+    </div>
+
+    <ul className="nav flex-column">
+      {navItems.map((item, idx) => (
+        <li key={idx} className="nav-item">
+          <NavLink
+            to={item.to}
+            className={({ isActive }) =>
+              `nav-link d-flex align-items-center gap-2 ${
+                isActive ? "active" : ""
+              }`
+            }
+            onClick={() => setSidebarOpen(false)}
+          >
+            <span className="icon">{item.icon}</span>
+            <span className="label">{item.label}</span>
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Footer pinned */}
+  <div className="sidebar-footer">
+    <button
+      className="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2"
+      onClick={handleLogout}
+    >
+      <FaSignOutAlt /> Logout
+    </button>
+  </div>
+</aside>
+
+
+      {/* Main content */}
+      <main className="admin-content">
+        {/* container-fluid so child pages can use full width */}
+        <div className="container-fluid">
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

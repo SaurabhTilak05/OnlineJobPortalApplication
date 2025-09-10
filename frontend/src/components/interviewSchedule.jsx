@@ -1,15 +1,14 @@
-import { useState } from "react";
+// src/components/ScheduleInterview.jsx
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import interviewServ from "../service/interviewserv.js";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ScheduleInterview() {
   const { seekerId, jobId } = useParams();
   const navigate = useNavigate();
   const hrId = localStorage.getItem("hrId");
-  console.log(hrId);
-  console.log(jobId);
 
   const [form, setForm] = useState({
     interview_mode: "Online",
@@ -21,10 +20,10 @@ export default function ScheduleInterview() {
   });
   const [msg, setMsg] = useState("");
 
-  const handleChange = e =>
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!seekerId || !jobId || !hrId) {
@@ -41,8 +40,6 @@ export default function ScheduleInterview() {
       status: "Scheduled",
     };
 
-    console.log("Scheduling interview payload:", payload);
-
     try {
       await interviewServ.scheduleInterview(payload);
       toast.success("✅ Interview scheduled successfully!");
@@ -56,6 +53,21 @@ export default function ScheduleInterview() {
     }
   };
 
+  // Utility to display IST formatted date & time preview
+  const formatIST = (date, time) => {
+    if (!date || !time) return "";
+    const istDate = new Date(`${date}T${time}`);
+    return istDate.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   return (
     <div className="container py-4">
       <div className="card shadow border-0 rounded-4">
@@ -64,6 +76,7 @@ export default function ScheduleInterview() {
         </div>
         <div className="card-body">
           {msg && <div className="alert alert-danger">{msg}</div>}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Mode</label>
@@ -79,33 +92,35 @@ export default function ScheduleInterview() {
               </select>
             </div>
 
-            <div className="mb-3">
-              <label className="form-label">Date</label>
-              <input
-                type="date"
-                name="interview_date"
-                value={form.interview_date}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
-            </div>
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Date</label>
+                <input
+                  type="date"
+                  name="interview_date"
+                  value={form.interview_date}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
 
-            <div className="mb-3">
-              <label className="form-label">Time</label>
-              <input
-                type="time"
-                name="interview_time"
-                value={form.interview_time}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
+              <div className="col-md-6">
+                <label className="form-label">Time</label>
+                <input
+                  type="time"
+                  name="interview_time"
+                  value={form.interview_time}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
             </div>
 
             {form.interview_mode === "Online" ||
             form.interview_mode === "Telephonic" ? (
-              <div className="mb-3">
+              <div className="mb-3 mt-3">
                 <label className="form-label">Meeting Link / Number</label>
                 <input
                   type="text"
@@ -117,7 +132,7 @@ export default function ScheduleInterview() {
                 />
               </div>
             ) : (
-              <div className="mb-3">
+              <div className="mb-3 mt-3">
                 <label className="form-label">Location</label>
                 <input
                   type="text"
@@ -142,19 +157,29 @@ export default function ScheduleInterview() {
               />
             </div>
 
-            <button type="submit" className="btn btn-success">
-              ✅ Schedule
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="btn btn-secondary ms-2"
-            >
-              ⬅ Cancel
-            </button>
+            {form.interview_date && form.interview_time && (
+              <div className="alert alert-info">
+                Scheduled IST Preview:{" "}
+                <strong>{formatIST(form.interview_date, form.interview_time)}</strong>
+              </div>
+            )}
+
+            <div className="d-flex flex-wrap gap-2">
+              <button type="submit" className="btn btn-success flex-grow-1">
+                ✅ Schedule
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="btn btn-secondary flex-grow-1"
+              >
+                ⬅ Cancel
+              </button>
+            </div>
           </form>
         </div>
       </div>
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }
