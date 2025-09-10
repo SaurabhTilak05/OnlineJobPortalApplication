@@ -1,0 +1,49 @@
+/* Smooth card style */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+}
+
+.custom-table th,
+.custom-table td {
+  vertical-align: middle !important;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f1f5ff;
+  transition: 0.2s;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  color: #007bff;
+  font-weight: 500;
+}
+
+/* Search box styling */
+input.form-control {
+  border-radius: 30px;
+  padding: 10px 16px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination buttons */
+.pagination .page-link {
+  border-radius: 50% !important;
+  margin: 0 4px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}

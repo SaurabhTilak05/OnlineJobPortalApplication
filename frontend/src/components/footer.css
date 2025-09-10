@@ -1,0 +1,16 @@
+.footer a:hover {
+  color: #ff4d4f;
+  text-decoration: none;
+}
+
+.footer input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #ff4d4f;
+}
+
+.footer button:hover {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+  transition: 0.3s;
+}

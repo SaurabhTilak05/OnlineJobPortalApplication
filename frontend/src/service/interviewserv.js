@@ -39,6 +39,11 @@ class InterviewService {
     return axios.get(`http://localhost:8080/interviews/hr/${hrId}`);///interviews/hr/:hrId
 
   }
+    updateInterviewStatus(interviewId, status, remarks = null) {
+    const payload = { status, remarks };
+    return axios.put(`${API_URL}/${interviewId}/status`, payload);
+  }
+
 }
 
 export default new InterviewService();

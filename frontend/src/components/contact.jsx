@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Jobservice from "../service/Jobservice.js";
+import {  ToastContainer,toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -8,11 +10,7 @@ export default function Contact() {
     message: "",
   });
 
-
-
-  
-
-  const [msg, setMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,27 +19,22 @@ export default function Contact() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
 
-    Jobservice.contactUs(formData)
-      .then(() => {
-        setMsg("Message sent successfully!");
-        setFormData({
-          full_name: "",
-          email: "",
-          message: "",
-        });
-         setTimeout(() => {
-          setMsg("");
-        }, 3000);
-      })
-      .catch(() => {
-        setMsg(" Failed to send message. Please try again.");
-         setTimeout(() => {
-          setMsg("");
-        }, 3000);
+    try {
+      await Jobservice.contactUs(formData);
+      toast.success("✅ Message sent successfully!", { autoClose: 3000 });
+      setFormData({ full_name: "", email: "", message: "" });
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Failed to send message. Please try again.", {
+        autoClose: 3000,
       });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -58,8 +51,6 @@ export default function Contact() {
         <div className="row justify-content-center">
           <div className="col-md-8">
             <div className="card shadow-sm border-0 p-4">
-              {msg && <div className="alert alert-info">{msg}</div>}
-
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label fw-bold">Full Name</label>
@@ -100,15 +91,18 @@ export default function Contact() {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-success w-100">
-                  Send Message
+                <button
+                  type="submit"
+                  className="btn btn-success w-100"
+                  disabled={submitting}
+                >
+                  {submitting ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>
           </div>
         </div>
 
-   
         <div className="text-center mt-5">
           <p>
             <strong>Email:</strong> support@quickstart.com

@@ -12,7 +12,7 @@ export default function JobforUsers() {
   const [appliedJobs, setAppliedJobs] = useState([]); // 🔹 Track applied jobs
 
   const seekerId = localStorage.getItem("seeker_id"); // stored at login
-  const role = localStorage.getItem("role"); // "student" or "admin"
+  const role = localStorage.getItem("role"); // "user" or "admin"
 
   // 🔹 Fetch all jobs
   useEffect(() => {
@@ -40,10 +40,10 @@ export default function JobforUsers() {
         if (typeof res.data === "string") {
           if (res.data.toLowerCase().includes("success")) {
             toast.success(`✅ ${res.data}`);
-            setAppliedJobs((prev) => [...prev, jobId]); // ✅ Mark as applied
+            setAppliedJobs((prev) => [...prev, jobId]); // Mark as applied
           } else if (res.data.toLowerCase().includes("already")) {
             toast.warning(`⚠️ ${res.data}`);
-            setAppliedJobs((prev) => [...prev, jobId]); // ✅ Mark as applied even if already
+            setAppliedJobs((prev) => [...prev, jobId]);
           } else {
             toast.info(res.data);
           }
@@ -57,9 +57,29 @@ export default function JobforUsers() {
       });
   };
 
+  // 🔹 Handle search input with validation
+  const handleSearchChange = (e) => {
+    const value = e.target.value.trimStart(); // Remove leading spaces
+
+    if (value.length > 50) {
+      toast.warning("⚠️ Search term too long (max 50 characters)");
+      return;
+    }
+
+    // Allow only letters, numbers, spaces, and basic punctuation
+    const validPattern = /^[a-zA-Z0-9\s.,-]*$/;
+    if (!validPattern.test(value)) {
+      toast.error("❌ Invalid character in search");
+      return;
+    }
+
+    setSearchTerm(value);
+  };
+
   // 🔍 Filter jobs based on search term
   const filteredJobs = jobs.filter((job) => {
-    const searchLower = searchTerm.toLowerCase();
+    const searchLower = searchTerm.toLowerCase().trim();
+    if (!searchLower) return true; // if empty, show all jobs
     return (
       job.title?.toLowerCase().includes(searchLower) ||
       job.company?.toLowerCase().includes(searchLower) ||
@@ -83,7 +103,7 @@ export default function JobforUsers() {
             className="form-control shadow-sm"
             placeholder="🔍 Search jobs by title, company, skills or location..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
@@ -108,20 +128,14 @@ export default function JobforUsers() {
                     {expandedJob === job.job_id ? (
                       <>
                         {job.description}{" "}
-                        <button
-                          className="btn btn-link p-0"
-                          onClick={() => setExpandedJob(null)}
-                        >
+                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(null)}>
                           Show Less
                         </button>
                       </>
                     ) : (
                       <>
                         {job.description?.substring(0, 60)}...
-                        <button
-                          className="btn btn-link p-0"
-                          onClick={() => setExpandedJob(job.job_id)}
-                        >
+                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(job.job_id)}>
                           Read More
                         </button>
                       </>
@@ -151,6 +165,7 @@ export default function JobforUsers() {
           ))
         )}
       </div>
+
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );

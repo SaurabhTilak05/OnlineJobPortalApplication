@@ -129,6 +129,23 @@ uploadResume(resumeData) {
         throw err;
       });
   }
+    // ========================
+  // 🔹 CONTACT DETAILS
+  // ========================
+  getAllContacts() {
+    const token = this.getToken();
+    return axios
+      .get("http://localhost:8080/getallcontact", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error("Error fetching contact details:", err);
+        throw err;
+      });
+  }
+
+  ///getallcontact
 }
 
 export default new AdminAuthService();

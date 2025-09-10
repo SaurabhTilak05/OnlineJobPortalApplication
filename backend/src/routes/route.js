@@ -44,8 +44,8 @@ router.get("/interviews/job/:jobId", interviewCtrl.getByJob);
 router.get("/interviews/hr/:hrId", interviewCtrl.getByHR);
 router.put("/interviews/:id", interviewCtrl.updateInterview);
 router.delete("/interviews/:id", interviewCtrl.deleteInterview);
-
-
+//interview status update
+router.put("/interviews/:id/status", interviewCtrl.updateInterviewStatus);
 
 // Admin routes
 router.post("/addAdmin", adCtrl.saveAdmin);

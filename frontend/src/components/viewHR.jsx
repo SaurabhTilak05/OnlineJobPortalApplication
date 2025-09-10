@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import HRService from "../service/HrService.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ViewHR.css";
 
 export default function ViewHR() {
   const [hrList, setHrList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ search state
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -37,14 +39,35 @@ export default function ViewHR() {
     }
   };
 
-  // ✅ Filter HRs by search term
+  
+  const handleSearchChange = (e) => {
+    let value = e.target.value;
+    
+    value = value.replace(/^\s+/, "");
+    
+    if (value.length > 50) {
+      toast.warning("⚠️ Search term too long (max 50 characters)");
+      return;
+    }
+
+    const validPattern = /^[a-zA-Z0-9\s.,-]*$/;
+    if (!validPattern.test(value)) {
+      toast.error("❌ Invalid character in search");
+      return;
+    }
+
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to page 1 after search
+  };
+
+  // Filter HRs
   const filteredHRs = hrList.filter((hr) =>
     hr.hr_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     hr.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     hr.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination on filtered list
+  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredHRs.slice(indexOfFirstItem, indexOfLastItem);
@@ -58,16 +81,13 @@ export default function ViewHR() {
     <div className="view-hr-container">
       <h2 className="view-hr-title">👥 All HRs</h2>
 
-      {/* ✅ Search Box */}
+      {/* Search Box */}
       <div className="search-box">
         <input
           type="text"
           placeholder="🔍 Search HR by name, email, or company"
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset to page 1 after search
-          }}
+          onChange={handleSearchChange}
         />
       </div>
 
@@ -98,7 +118,7 @@ export default function ViewHR() {
             ))}
           </div>
 
-          {/* ✅ Pagination */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="pagination-wrapper">
               <button
@@ -134,6 +154,8 @@ export default function ViewHR() {
       {!loading && !error && currentItems.length === 0 && (
         <p className="no-hr">No HRs found</p>
       )}
+
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }

@@ -167,19 +167,7 @@ export default function HRDashboard() {
             </NavLink>
           </li>
 
-          <li>
-            <NavLink
-              to="messages"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
-              onClick={closeSidebar}
-            >
-              <FaEnvelope className="me-2" /> Messages
-            </NavLink>
-          </li>
+         
         </ul>
 
         <div className="mt-auto pt-4">

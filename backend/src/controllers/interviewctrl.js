@@ -169,3 +169,32 @@ exports.deleteInterview = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
+
+const statusMap = {
+  scheduled: "interview_scheduled",
+  completed: "shortlisted",
+  selected: "selected",
+  rejected: "rejected",
+  cancelled: "applied",
+};
+// controllers/interviewctrl.js
+exports.updateInterviewStatus = async (req, res) => {
+  try {
+    const interviewId = req.params.id;
+    const { status, remarks } = req.body;
+
+    // Model स्वतः interview + application update करतो
+    const result = await InterviewModel.updateInterviewStatus(interviewId, status, remarks);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Interview not found ❌" });
+    }
+
+    res.status(200).json({ message: "Interview & application updated successfully ✅" });
+  } catch (err) {
+    console.error("Error in updateInterviewStatus:", err);
+    res.status(500).json({ error: "Failed to update interview ❌" });
+  }
+};

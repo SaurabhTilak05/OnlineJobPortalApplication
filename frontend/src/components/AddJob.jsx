@@ -21,7 +21,7 @@ export default function AddJob() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ Prevent form reload
     try {
       const hrId = localStorage.getItem("hrId");
       if (!hrId) {
@@ -34,7 +34,7 @@ export default function AddJob() {
 
       toast.success("✅ Job posted successfully!");
 
-      // Reset form after successful submission
+      // Reset form after success
       setFormData({
         title: "",
         company: "",
@@ -53,30 +53,12 @@ export default function AddJob() {
   };
 
   return (
-    <div
-      className="d-flex flex-column justify-content-center align-items-center min-vh-100 px-3"
-      style={{
-        background: "linear-gradient(135deg, #f6f7faff 0%, #fef9faff 100%)",
-        overflow: "hidden",
-        paddingTop: "20px",
-        paddingBottom: "20px",
-      }}
-    >
-      <div
-        className="p-4 p-md-5 shadow-lg w-100"
-        style={{
-          maxWidth: "900px",
-          borderRadius: "20px",
-          background: "rgba(255, 255, 255, 0.2)",
-          backdropFilter: "blur(15px)",
-          color: "#fff",
-        }}
-      >
-        <h2 className="text-center mb-4 text-dark fw-bold"> Add New Job</h2>
-
+    <div className="d-flex justify-content-center align-items-center min-vh-100 px-3 bg-light">
+      <div className="add-job-card shadow-lg p-4 p-md-5 rounded-4 w-100" style={{ maxWidth: "900px" }}>
+        <h2 className="text-center mb-4 fw-bold text-primary">Add New Job</h2>
         <form onSubmit={handleSubmit}>
-          <div className="row text-dark">
-            <div className="col-12 col-md-6 mb-3">
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
               <label className="form-label fw-bold">Job Title</label>
               <input
                 type="text"
@@ -88,7 +70,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-6 mb-3">
+            <div className="col-12 col-md-6">
               <label className="form-label fw-bold">Company</label>
               <input
                 type="text"
@@ -100,7 +82,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-4 mb-3">
+            <div className="col-12 col-md-4">
               <label className="form-label fw-bold">Openings</label>
               <input
                 type="number"
@@ -112,7 +94,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-4 mb-3">
+            <div className="col-12 col-md-4">
               <label className="form-label fw-bold">Experience</label>
               <input
                 type="text"
@@ -124,7 +106,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-4 mb-3">
+            <div className="col-12 col-md-4">
               <label className="form-label fw-bold">Location</label>
               <input
                 type="text"
@@ -136,7 +118,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-6 mb-3">
+            <div className="col-12 col-md-6">
               <label className="form-label fw-bold">Package</label>
               <input
                 type="text"
@@ -148,7 +130,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 col-md-6 mb-3">
+            <div className="col-12 col-md-6">
               <label className="form-label fw-bold">Skills Required</label>
               <input
                 type="text"
@@ -160,7 +142,7 @@ export default function AddJob() {
                 required
               />
             </div>
-            <div className="col-12 mb-3">
+            <div className="col-12">
               <label className="form-label fw-bold">Job Description</label>
               <textarea
                 name="description"
@@ -172,7 +154,7 @@ export default function AddJob() {
                 required
               ></textarea>
             </div>
-            <div className="col-12 mb-4">
+            <div className="col-12">
               <label className="form-label fw-bold">Application Deadline</label>
               <input
                 type="date"
@@ -187,8 +169,8 @@ export default function AddJob() {
 
           <button
             type="submit"
-            className="btn btn-dark fw-bold w-100 py-2"
-            style={{ borderRadius: "10px", fontSize: "18px" }}
+            className="btn btn-primary fw-bold w-100 py-2 mt-4"
+            style={{ fontSize: "18px", borderRadius: "10px" }}
           >
             ➕ Post Job
           </button>

@@ -101,14 +101,13 @@ exports.contUs = async (full_name, email, message) => {
 };
 
 
-exports.getAllCont=()=>{
-    return new Promise((resolve, reject)=>{
-          db.query("select * from contact_us ",(err,result)=>{
-            if(err){
-                reject(err);
-            }else{
-                resolve(result);
-            }
-        });
-    })
-}
+
+exports.getAllCont = async () => {
+  try {
+    const [rows] = await db.query("SELECT * FROM contact_us order by id desc");
+    return rows; // returns array of contacts
+  } catch (err) {
+    console.error("DB Error:", err);
+    throw err;
+  }
+};

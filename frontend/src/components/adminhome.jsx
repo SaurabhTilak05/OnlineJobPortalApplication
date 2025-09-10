@@ -49,6 +49,7 @@ export default function Adminhome() {
     { to: "jobseekers", icon: <FaUserGraduate />, label: "Job Seekers" },
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
     { to: "view-jobs", icon: <FaClipboardList />, label: "View Jobs" },
+     { to: "contact-detail", icon: <FaUserCircle />, label: "Messages " },
   ];
 
   return (
@@ -101,18 +102,20 @@ export default function Adminhome() {
     <ul className="nav flex-column">
       {navItems.map((item, idx) => (
         <li key={idx} className="nav-item">
-          <NavLink
-            to={item.to}
-            className={({ isActive }) =>
-              `nav-link d-flex align-items-center gap-2 ${
-                isActive ? "active" : ""
-              }`
-            }
-            onClick={() => setSidebarOpen(false)}
-          >
-            <span className="icon">{item.icon}</span>
-            <span className="label">{item.label}</span>
-          </NavLink>
+     <NavLink
+  to={item.to}
+  className={({ isActive }) =>
+    `nav-link d-flex align-items-center gap-2 ${isActive ? "active-link" : ""}`
+  }
+  onClick={() => setSidebarOpen(false)}
+>
+  <span className="icon">{item.icon}</span>
+  <span className="label">{item.label}</span>
+</NavLink>
+
+
+
+
         </li>
       ))}
     </ul>

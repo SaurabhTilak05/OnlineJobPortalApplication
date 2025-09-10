@@ -31,7 +31,7 @@ import ViewStudProfile from "./components/viewstudprofile.jsx";
 import Userdashboard from "./components/userdashbord.jsx";
 import ViewAllJob from "./components/viewalljob.jsx";
 import HRProfile from "./components/hrProfile.jsx";
-import JobforUsers from "./components/JobforUsers.jsx";
+import JobforUsers from "./components/JobforUsersandAdmin.jsx";
 import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 import Jobappliedstudent from "./components/jobappliedbystudent.jsx";
@@ -46,6 +46,8 @@ import Updateresume from "./components/updateresume.jsx";
 import Footer from "./components/footer.jsx";
 import AdminHrFooter from "./components/adminhrfooter.jsx";
 import ViewScheduleForUser from "./components/viewscheduleforuser.jsx";
+import ContactDetails from "./components/contactdetail.jsx";
+import UpdateInterviewStatus from "./components/updateinterviewstatus.jsx";
 
 // Navbar Layout
 function LayoutWithNavbar({ children }) {
@@ -58,8 +60,9 @@ function LayoutWithNavbar({ children }) {
     location.pathname.startsWith("/userprofile");
 
   // Hide footer only in admin dashboard
-  const hideFooter = location.pathname.startsWith("/adminhome") ||
-  location.pathname.startsWith("/hrdashboard");//hrdashboard
+  const hideFooter =
+    location.pathname.startsWith("/adminhome") ||
+    location.pathname.startsWith("/hrdashboard"); //hrdashboard
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => setIsOpen(!isOpen);
@@ -94,7 +97,11 @@ function LayoutWithNavbar({ children }) {
                 <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
                   About Us
                 </NavLink>
-                <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
+                <NavLink
+                  className="nav-link"
+                  to="/contact"
+                  onClick={closeNavbar}
+                >
                   Contact
                 </NavLink>
                 <NavLink
@@ -237,6 +244,7 @@ export default function App() {
             <Route path="application" element={<ViewallapltoAdmin />} />
             <Route path="register-student" element={<Register />} />
             <Route path="view-jobs" element={<JobforUsers />} />
+            <Route path="contact-detail" element={<ContactDetails />} />
           </Route>
 
           {/* HR Dashboard */}
@@ -271,6 +279,9 @@ export default function App() {
               path="/hrdashboard/schedule-interview/:seekerId/:jobId"
               element={<InterViewSchedule />}
             />
+           <Route path="interviewstatus/:id" element={<UpdateInterviewStatus />} />
+
+           
           </Route>
 
           {/* Student Routes */}
@@ -293,7 +304,7 @@ export default function App() {
         </Routes>
 
         {/* ✅ Global toast container */}
-        <ToastContainer
+         <ToastContainer
           position="top-center"
           autoClose={3000}
           hideProgressBar={false}
