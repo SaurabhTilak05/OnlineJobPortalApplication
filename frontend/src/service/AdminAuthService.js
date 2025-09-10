@@ -63,21 +63,27 @@ class AdminAuthService {
       });
   }
 
-  updateProfile(profileData) {
-    const token = this.getToken();
-    return axios
-      .put("http://localhost:8080/update", profileData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => res.data)
-      .catch((err) => {
-        console.error(
-          "Error updating profile:",
-          err.response ? err.response.data : err.message
-        );
-        throw err;
-      });
-  }
+ // Profile update (JSON)
+updateProfile(profileData) {
+  return axios.put(`http://localhost:8080/update-profile`, profileData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json", // ✅ Must be JSON
+    },
+  });
+}
+
+// Resume upload (FormData)
+uploadResume(resumeData) {
+  return axios.put(`http://localhost:8080/upload-resume`, resumeData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "multipart/form-data", // ✅ FormData
+    },
+  });
+}
+
+
 
   // ========================
   // 🔹 UTILS

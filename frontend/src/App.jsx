@@ -1,5 +1,5 @@
   import React, { useState } from "react";
-  import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
+  import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation, Router } from "react-router-dom";
   import "bootstrap/dist/css/bootstrap.min.css";
 
   // Components
@@ -20,7 +20,7 @@
   import AddHR from "./components/AddHR.jsx";
   import ViewHR from "./components/viewHR.jsx";
   import Adminhome from "./components/adminhome.jsx";
-  import UserProfile from "./components/userprofile.jsx";
+  import UserProfile from "./components/userhome.jsx";
   import AdminDashboard from "./components/admindashboard.jsx";
   import ViewStudProfile from "./components/viewstudprofile.jsx";  
   import Userdashboard from "./components/userdashbord.jsx";
@@ -35,7 +35,10 @@ import ViewRegStuToAdmin from "./components/ViewRegStuToAdmin.jsx"
 import ViewallapltoAdmin from "./components/viewallapltoadmin.jsx";
 import Studentupdate from "./components/studentupdate.jsx";
 import ApplicantProfile from "./components/ApplicantProfile.jsx";
-
+import InterViewSchedule from "./components/interviewSchedule.jsx";
+import ViewSchedule from "./components/viewschedule.jsx";
+import Updateresume from "./components/updateresume.jsx";
+import Footer from "./components/footer.jsx";
 
   // Navbar Layout
   function LayoutWithNavbar({ children }) {
@@ -146,7 +149,8 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
             <Route path="/register" element={<Register />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-           
+          
+
 
             {/* Admin routes */}
             <Route
@@ -170,18 +174,23 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
 
             {/* HR Dashboard */}
        {/* HR Dashboard */}
-       <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}>
+      <Route path="/hrdashboard" element={<PrivateRoute allowedRole="hr"><HRDashboard /></PrivateRoute>}>
             <Route index element={<HRHome />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="view-applicants" element={<ViewJobApplicants />} />
             <Route path="job-history" element={<ViewAllJob />} />
             <Route path="job-history/update-job/:id" element={<UpdateJob />} />
             <Route path="job-history/applicants/:jobId" element={<JobApplicantsBYJob />} />  
-            
+             <Route path="view-schedule" element={<ViewSchedule />} />
             {/* Profile section */}
             <Route path="profile" element={<HRProfile />} />
             <Route path="profile/update" element={<UpdateHRProfile />} />
             <Route path="applicantProfile/:seekerId" element={<ApplicantProfile />} />
+
+            {/* Interview scheduling */}
+              
+       <Route path="/hrdashboard/schedule-interview/:seekerId/:jobId" element={<InterViewSchedule />} />
+       
 
       </Route>
 
@@ -198,14 +207,15 @@ import ApplicantProfile from "./components/ApplicantProfile.jsx";
             <Route path="view-jobs" element={<JobforUsers/>}/>
             <Route path="Applied-jobs" element={<Jobappliedstudent/>}/>
             <Route path="update-profile" element={<Studentupdate/>}/>
-
+            <Route path="upload-resume" element={<Updateresume/>} />
              </Route>
-    
+           
           </Routes>
+           <Footer />
           {/* ✅ Global toast container */}
           <ToastContainer
-            position="top-right"
-            autoClose={5000}   // 5 sec
+            position="top-center"
+            autoClose={3000}   
             hideProgressBar={false}
             newestOnTop
             closeOnClick

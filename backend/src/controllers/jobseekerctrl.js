@@ -170,31 +170,48 @@ exports.getallJobs = async (req, res) => {
   }
 };
 
-
-
-
+// Update profile (JSON)
 exports.updateProfile = async (req, res) => {
   try {
-    const seeker_id = req.user.seeker_id; // ✅ from JWT
-    console.log("seeker_id is:", seeker_id);
-
+    const seeker_id = req.user.seeker_id;
     const profileData = req.body;
+
+    if (!profileData || Object.keys(profileData).length === 0) {
+      return res.status(400).json({ message: "Profile data is missing" });
+    }
 
     const result = await jobsctrl.update(seeker_id, profileData);
 
-    // MySQL returns affectedRows = 1 for INSERT, 2 for UPDATE in ON DUPLICATE
-    if (result.affectedRows === 0) {
-      return res.status(400).json({ message: "Profile not created/updated" });
-    }
-
-    res.json({ message: "Profile saved successfully" });
+    res.json({ message: "Profile updated successfully" });
   } catch (err) {
     console.error("Error updating profile:", err);
     res.status(500).json({ message: "Error updating profile", error: err.message });
   }
 };
 
-// ✅ Get applicant profile by seekerId
+// Upload resume (FormData + multer)
+exports.uploadResume = async (req, res) => {
+  try {
+    const seeker_id = req.user.seeker_id;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const resumePath = `/resumes/${req.file.filename}`;
+
+    // Only update resume_url, do not touch other fields
+    await jobsctrl.update(seeker_id, { resume_url: resumePath });
+
+    res.json({ message: "Resume uploaded successfully", resume_url: resumePath });
+  } catch (err) {
+    console.error("Error uploading resume:", err);
+    res.status(500).json({ message: "Error uploading resume", error: err.message });
+  }
+};
+
+
+//  Get applicant profile by seekerId
 exports.getApplicantProfile = async (req, res) => {
   const { seekerId } = req.params;
 

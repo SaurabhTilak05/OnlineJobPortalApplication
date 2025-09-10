@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import AdminAuthService from "../service/AdminAuthService.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AddHR() {
   const [formData, setFormData] = useState({
@@ -58,9 +60,16 @@ export default function AddHR() {
     try {
       await AdminAuthService.AddHR(formData);
 
-      alert(`HR Added Successfully ✅\nEmail sent to ${formData.email}`);
+      toast.success(`HR Added Successfully ✅\nEmail sent to ${formData.email}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
 
-      // reset
+      // reset form
       setFormData({
         hr_name: "",
         company_name: "",
@@ -69,7 +78,10 @@ export default function AddHR() {
       });
     } catch (err) {
       console.error("Error adding HR:", err);
-      alert("Failed to add HR ❌");
+      toast.error("Failed to add HR ❌", {
+        position: "top-right",
+        autoClose: 5000,
+      });
     }
   };
 
@@ -96,9 +108,7 @@ export default function AddHR() {
             type="text"
             name="company_name"
             placeholder="Enter Company Name"
-            className={`form-control mb-2 ${
-              errors.company_name ? "is-invalid" : ""
-            }`}
+            className={`form-control mb-2 ${errors.company_name ? "is-invalid" : ""}`}
             value={formData.company_name}
             onChange={handleChange}
           />
@@ -137,6 +147,9 @@ export default function AddHR() {
           </button>
         </form>
       </div>
+
+      {/* Toast container */}
+      <ToastContainer />
     </div>
   );
 }

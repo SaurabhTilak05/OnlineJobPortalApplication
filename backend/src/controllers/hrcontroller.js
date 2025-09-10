@@ -5,7 +5,6 @@ const { sendEmail } = require("../services/sendEmail.js");
 const SECRET = process.env.JWT_SECRET || "mySecretKey";
 
 // Admin adds HR (phone will be used as password, stored hashed)
-
 exports.addHR1 = async (req, res) => {
   const { hr_name, company_name, email, phone } = req.body;
   const role = "hr";
@@ -15,22 +14,47 @@ exports.addHR1 = async (req, res) => {
     const hashedPassword = await bcrypt.hash(phone.toString(), 10);
 
     // call model (await)
-    const result = await hrModel.createHR(hr_name, company_name, email, phone, hashedPassword, role);
+    const result = await hrModel.createHR(
+      hr_name,
+      company_name,
+      email,
+      phone,
+      hashedPassword,
+      role
+    );
 
-     const message = `Hello ${hr_name},\n\nYour HR account has been created.\nUsername: ${email}\nPassword: ${phone}\n\nPlease change your password after first login.`;
-    await sendEmail(email, "HR Account Credentials", message);
+    // send email with credentials
+    const message = `Hello ${hr_name},
 
+Your HR account has been successfully created for ${company_name}.
+
+🔑 Login Credentials:
+- Username (Email): ${email}
+- Password: ${phone} (same as your mobile number)
+
+⚠️ Note: Your password is your mobile number by default. If you update your phone number, your password will also be updated automatically for security reasons.
+
+Regards,
+Quick Start Career Team`;
+
+    await sendEmail(email, "Your HR Account Credentials", message);
+
+    // proper response context
     res.status(201).json({
-      message: "HR added successfully",
+      success: true,
+      message: "HR account created successfully. Login credentials have been sent to the registered email.",
       hrId: result.insertId,
+      credentialsInfo: "Default password is the registered mobile number. Updating mobile will also update the password.",
     });
   } catch (err) {
     if (err.code === "ER_DUP_ENTRY") {
-      return res.status(400).json({ message: "Email already exists" });
+      return res.status(400).json({ success: false, message: "Email already exists" });
     }
-    res.status(500).json({ message: "Database error", error: err });
+    console.error("Error creating HR:", err);
+    res.status(500).json({ success: false, message: "Database error", error: err });
   }
 };
+
 
 
 

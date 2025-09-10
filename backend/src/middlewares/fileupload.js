@@ -1,14 +1,18 @@
+let multer = require("multer");
 
-//it is use for the upload the file like photos and others
-let multer =require("multer");
-let storage= multer.diskStorage({
-    destination:(req, file,cd)=>{
-        cd(null,"public/images/");
-    },
-    filename:(req,file,cd)=>{
-        cd(null,file.originalname);
-    }
+let storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (file.fieldname === "resume") cb(null, "public/resumes/");
+    else if (file.fieldname === "photo") cb(null, "public/images/");
+    else cb(null, "public/uploads/");
+  },
+  filename: (req, file, cb) => {
+    const cleanName = file.originalname.replace(/\s+/g, "-");
+    cb(null, Date.now() + "-" + cleanName);
+  },
 });
-let upload= multer({storage:storage});
 
-module.exports=upload;
+
+let upload = multer({ storage: storage });
+
+module.exports = upload;

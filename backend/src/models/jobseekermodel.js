@@ -83,7 +83,7 @@ exports.getAllApplicant = async (hrId) => {
   try {
     const [rows] = await db.query(
       `SELECT 
-         s.seeker_id,   -- ✅ add this
+         s.seeker_id,   
          s.name, 
          s.email, 
          s.phone, 
@@ -94,7 +94,7 @@ exports.getAllApplicant = async (hrId) => {
        INNER JOIN applications a ON s.seeker_id = a.seeker_id
        INNER JOIN jobs j ON a.job_id = j.job_id
        WHERE j.hr_id = ?  
-       ORDER BY a.application_id DESC`,  
+       ORDER BY a.applied_at DESC`,  
       [hrId]
     );
     return rows;
@@ -160,47 +160,52 @@ exports.getAllApplications = async () => {
   );
   return rows;
 };
-
-
-
 exports.update = async (seeker_id, data) => {
-  const sql = `
-    INSERT INTO student_profiles (
-      seeker_id, dob, gender, address, qualification, college_name, branch,
-      graduation_year, percentage, skills, certifications, projects, experience,
-      languages_known, resume_url, preferred_role, preferred_location, expected_salary, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ON DUPLICATE KEY UPDATE
-      dob = VALUES(dob),
-      gender = VALUES(gender),
-      address = VALUES(address),
-      qualification = VALUES(qualification),
-      college_name = VALUES(college_name),
-      branch = VALUES(branch),
-      graduation_year = VALUES(graduation_year),
-      percentage = VALUES(percentage),
-      skills = VALUES(skills),
-      certifications = VALUES(certifications),
-      projects = VALUES(projects),
-      experience = VALUES(experience),
-      languages_known = VALUES(languages_known),
-      resume_url = VALUES(resume_url),
-      preferred_role = VALUES(preferred_role),
-      preferred_location = VALUES(preferred_location),
-      expected_salary = VALUES(expected_salary),
-      updated_at = CURRENT_TIMESTAMP
-  `;
-
-  const values = [
-    seeker_id, data.dob, data.gender, data.address, data.qualification, data.college_name, data.branch,
-    data.graduation_year, data.percentage, data.skills, data.certifications, data.projects,
-    data.experience, data.languages_known, data.resume_url, data.preferred_role,
-    data.preferred_location, data.expected_salary
+  // Only allowed fields
+  const allowedFields = [
+    "dob",
+    "gender",
+    "address",
+    "qualification",
+    "college_name",
+    "branch",
+    "graduation_year",
+    "percentage",
+    "skills",
+    "certifications",
+    "projects",
+    "experience",
+    "languages_known",
+    "resume_url",
+    "preferred_role",
+    "preferred_location",
+    "expected_salary"
   ];
+
+  const fields = [];
+  const values = [];
+
+  allowedFields.forEach((key) => {
+    if (data[key] !== undefined) {
+      fields.push(`${key} = ?`);
+      values.push(data[key]);
+    }
+  });
+
+  if (fields.length === 0) return { affectedRows: 0 };
+
+  const sql = `
+    UPDATE student_profiles
+    SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP
+    WHERE seeker_id = ?
+  `;
+  values.push(seeker_id);
 
   const [result] = await db.query(sql, values);
   return result;
 };
+
+
 
 
 exports.findApplicantById = async (seekerId) => {
@@ -211,7 +216,6 @@ exports.findApplicantById = async (seekerId) => {
       js.name,
       js.email,
       js.phone,
-
       sp.profile_id,
       sp.dob,
       sp.gender,
@@ -230,15 +234,19 @@ exports.findApplicantById = async (seekerId) => {
       sp.preferred_role,
       sp.preferred_location,
       sp.expected_salary,
-      sp.updated_at
-
+      sp.updated_at,
+      a.job_id
     FROM job_seekers js
     LEFT JOIN student_profiles sp 
       ON js.seeker_id = sp.seeker_id
+    LEFT JOIN applications a 
+      ON js.seeker_id = a.seeker_id
     WHERE js.seeker_id = ?
+    ORDER BY a.applied_at DESC
+    LIMIT 1
     `,
     [seekerId]
   );
 
-  return rows[0]; // single profile
+  return rows[0] || {}; // return empty object if no profile
 };

@@ -6,6 +6,7 @@ export default function ViewHR() {
   const [hrList, setHrList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ search state
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -36,11 +37,18 @@ export default function ViewHR() {
     }
   };
 
-  // Pagination
+  // ✅ Filter HRs by search term
+  const filteredHRs = hrList.filter((hr) =>
+    hr.hr_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    hr.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    hr.company_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Pagination on filtered list
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = hrList.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(hrList.length / itemsPerPage);
+  const currentItems = filteredHRs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredHRs.length / itemsPerPage);
 
   const goToPage = (page) => setCurrentPage(page);
   const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1));
@@ -50,35 +58,47 @@ export default function ViewHR() {
     <div className="view-hr-container">
       <h2 className="view-hr-title">👥 All HRs</h2>
 
-      {loading && <p className="text-center text-muted">Loading...</p>}
-      {error && <p className="text-center text-danger">{error}</p>}
+      {/* ✅ Search Box */}
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="🔍 Search HR by name, email, or company"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // reset to page 1 after search
+          }}
+        />
+      </div>
+
+      {loading && <p className="loading-text">Loading...</p>}
+      {error && <p className="error-text">{error}</p>}
 
       {!loading && !error && currentItems.length > 0 && (
         <>
           <div className="hr-grid">
-            {currentItems.map((hr, index) => (
+            {currentItems.map((hr) => (
               <div key={hr.hr_id} className="hr-card">
-                <div className="hr-card-header">
-                  <h5>{hr.hr_name}</h5>
+                <div className="hr-avatar">
+                  {hr.hr_name.charAt(0).toUpperCase()}
                 </div>
-                <div className="hr-card-body">
+                <div className="hr-info">
+                  <h5>{hr.hr_name}</h5>
                   <p><strong>Email:</strong> {hr.email}</p>
                   <p><strong>Company:</strong> {hr.company_name}</p>
                   <p><strong>Phone:</strong> {hr.phone}</p>
                 </div>
-                <div className="hr-card-footer">
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => deleteHR(hr.hr_id)}
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteHR(hr.hr_id)}
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* ✅ Pagination */}
           {totalPages > 1 && (
             <div className="pagination-wrapper">
               <button
@@ -86,8 +106,9 @@ export default function ViewHR() {
                 disabled={currentPage === 1}
                 className="pagination-btn"
               >
-                &laquo; Prev
+                &laquo;
               </button>
+
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
                 <button
                   key={num}
@@ -97,12 +118,13 @@ export default function ViewHR() {
                   {num}
                 </button>
               ))}
+
               <button
                 onClick={nextPage}
                 disabled={currentPage === totalPages}
                 className="pagination-btn"
               >
-                Next &raquo;
+                &raquo;
               </button>
             </div>
           )}
@@ -110,7 +132,7 @@ export default function ViewHR() {
       )}
 
       {!loading && !error && currentItems.length === 0 && (
-        <p className="text-center no-hr">No HRs found</p>
+        <p className="no-hr">No HRs found</p>
       )}
     </div>
   );

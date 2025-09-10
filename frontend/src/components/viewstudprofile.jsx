@@ -5,14 +5,14 @@ import {
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  FaBook,
 } from "react-icons/fa";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function ViewStudProfile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -53,51 +53,152 @@ export default function ViewStudProfile() {
           </div>
 
           {/* Section: Basic Info */}
-          <h5 className="fw-bold mb-3 text-secondary">Basic Information</h5>
+          <h5 className="fw-bold mb-3 section-title">Basic Information</h5>
           <div className="row g-3">
             <div className="col-md-6">
-              <p><FaEnvelope className="text-success me-2" /> <b>Email:</b> {profile.email}</p>
-              <p><FaPhone className="text-success me-2" /> <b>Phone:</b> {profile.phone || "N/A"}</p>
-              <p><FaMapMarkerAlt className="text-success me-2" /> <b>Address:</b> {profile.address || "N/A"}</p>
-              <p><b>Date of Birth:</b> {profile.dob || "N/A"}</p>
-              <p><b>Gender:</b> {profile.gender || "N/A"}</p>
+              <p>
+                <FaEnvelope className="text-success me-2" /> <b>Email:</b>{" "}
+                {profile.email}
+              </p>
+              <p>
+                <FaPhone className="text-success me-2" /> <b>Phone:</b>{" "}
+                {profile.phone || "N/A"}
+              </p>
+              <p>
+                <FaMapMarkerAlt className="text-success me-2" /> <b>Address:</b>{" "}
+                {profile.address || "N/A"}
+              </p>
+              <p>
+                <b>Date of Birth:</b>{" "}
+                {profile.dob
+                  ? new Date(profile.dob).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      timeZone: "Asia/Kolkata",
+                    })
+                  : "N/A"}
+              </p>
+              <p>
+                <b>Gender:</b> {profile.gender || "N/A"}
+              </p>
             </div>
             <div className="col-md-6">
-              <p><b>Qualification:</b> {profile.qualification || "N/A"}</p>
-              <p><b>College:</b> {profile.college_name || "N/A"}</p>
-              <p><b>Branch:</b> {profile.branch || "N/A"}</p>
-              <p><b>Graduation Year:</b> {profile.graduation_year || "N/A"}</p>
-              <p><b>Percentage:</b> {profile.percentage || "N/A"}%</p>
+              <p>
+                <b>Qualification:</b> {profile.qualification || "N/A"}
+              </p>
+              <p>
+                <b>College:</b> {profile.college_name || "N/A"}
+              </p>
+              <p>
+                <b>Branch:</b> {profile.branch || "N/A"}
+              </p>
+              <p>
+                <b>Graduation Year:</b> {profile.graduation_year || "N/A"}
+              </p>
+              <p>
+                <b>Percentage:</b> {profile.percentage || "N/A"}%
+              </p>
             </div>
           </div>
 
           {/* Section: Skills */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Skills & Projects</h5>
-          <p><b>Skills:</b> {profile.skills || "N/A"}</p>
-          <p><b>Certifications:</b> {profile.certifications || "N/A"}</p>
-          <p><b>Projects:</b> {profile.projects || "N/A"}</p>
-          <p><b>Experience:</b> {profile.experience || "N/A"}</p>
-          <p><b>Languages Known:</b> {profile.languages_known || "N/A"}</p>
+          <h5 className="fw-bold mt-4 mb-3 section-title">Skills & Projects</h5>
+          <p>
+            <b>Skills:</b> {profile.skills || "N/A"}
+          </p>
+          <p>
+            <b>Certifications:</b> {profile.certifications || "N/A"}
+          </p>
+          <p>
+            <b>Projects:</b> {profile.projects || "N/A"}
+          </p>
+          <p>
+            <b>Experience:</b> {profile.experience || "N/A"}
+          </p>
+          <p>
+            <b>Languages Known:</b> {profile.languages_known || "N/A"}
+          </p>
 
           {/* Section: Career Preferences */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Career Preferences</h5>
-          <p><b>Preferred Role:</b> {profile.preferred_role || "N/A"}</p>
-          <p><b>Preferred Location:</b> {profile.preferred_location || "N/A"}</p>
-          <p><b>Expected Salary:</b> {profile.expected_salary || "N/A"}</p>
+          <h5 className="fw-bold mt-4 mb-3 section-title">
+            Career Preferences
+          </h5>
+          <p>
+            <b>Preferred Role:</b> {profile.preferred_role || "N/A"}
+          </p>
+          <p>
+            <b>Preferred Location:</b> {profile.preferred_location || "N/A"}
+          </p>
+          <p>
+            <b>Expected Salary:</b> {profile.expected_salary || "N/A"}
+          </p>
 
           {/* Section: Resume */}
-          <h5 className="fw-bold mt-4 mb-3 text-secondary">Resume</h5>
+          <h5 className="fw-bold mt-4 mb-3 section-title">Resume</h5>
           {profile.resume_url ? (
-            <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
-              View Resume
-            </a>
+            <div className="d-flex gap-3">
+              <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-danger"
+              >
+                View Resume
+              </a>
+              <a
+                href={`http://localhost:8080${profile.resume_url}`}
+                download
+                className="btn btn-dark"
+              >
+                Download Resume
+              </a>
+            </div>
           ) : (
             <p>No Resume Uploaded</p>
           )}
+          <hr />
+
+          {/* Update Button */}
+           <div className="update d-flex justify-content-center align-items-center my-3">
+            <button
+              className="btn btn-primary px-4 py-2 rounded-pill shadow-sm update-btn"
+              onClick={() => navigate("/userProfile/update-profile")}   // ✅ navigate to update page
+            >
+              Update Profile
+            </button>
+          </div>
         </div>
       ) : (
         <h4 className="text-muted">No profile found.</h4>
       )}
+
+      {/* Styles */}
+      <style>
+        {`
+          .section-title {
+            color: #2c3e50;
+            border-left: 4px solid #28a745;
+            padding-left: 10px;
+          }
+
+          .update-btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease-in-out;
+          }
+
+          .update-btn:hover {
+            background-color: #212529;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+          }
+
+          .card {
+            background: #fff;
+          }
+        `}
+      </style>
     </div>
   );
 }

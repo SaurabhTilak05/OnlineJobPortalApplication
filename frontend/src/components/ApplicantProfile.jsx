@@ -8,14 +8,18 @@ export default function ApplicantProfile() {
   const [profile, setProfile] = useState(null);
   const [msg, setMsg] = useState("");
 
-  useEffect(() => {
-    applicantServ.getApplicantProfile(seekerId)
-      .then((res) => setProfile(res.data))
-      .catch((err) => {
-        console.error(err);
-        setMsg("Failed to fetch applicant profile");
-      });
-  }, [seekerId]);
+useEffect(() => {
+  applicantServ.getApplicantProfile(seekerId)
+    .then((res) => {
+      console.log("Applicant Profile:", res.data);
+      setProfile(res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+      setMsg("Failed to fetch applicant profile");
+    });
+}, [seekerId]);
+
 
   return (
     <div className="container py-5">
@@ -84,6 +88,17 @@ export default function ApplicantProfile() {
                   "Not uploaded"
                 )}
               </p>
+                   <hr />{profile && profile.job_id ? (
+  <button 
+    className="btn btn-outline-primary"
+    onClick={() => navigate(`/hrdashboard/schedule-interview/${seekerId}/${profile.job_id}`)}
+  >
+    📅 Schedule Interview
+  </button>
+) : (
+  <p className="text-muted">No job application found to schedule an interview.</p>
+)}
+
 
               {/* Updated */}
               <p className="text-muted"><small>Last Updated: {profile.updated_at}</small></p>
@@ -91,7 +106,9 @@ export default function ApplicantProfile() {
           ) : (
             <p className="text-muted">Loading profile...</p>
           )}
+         
         </div>
+        
       </div>
     </div>
   );
