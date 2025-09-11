@@ -19,8 +19,8 @@ export default function Footer() {
             <div className="d-flex gap-3 mt-3">
               <a href="#" className="text-white fs-5"><FaFacebookF /></a>
               <a href="#" className="text-white fs-5"><FaTwitter /></a>
-              <a href="#" className="text-white fs-5"><FaInstagram /></a>
-              <a href="#" className="text-white fs-5"><FaLinkedinIn /></a>
+              <a href="https://www.instagram.com/saurabh_tilak_061/" className="text-white fs-5"><FaInstagram /></a>
+              <a href="https://www.linkedin.com/in/saurabh-tilak-502ab6350/" className="text-white fs-5"><FaLinkedinIn /></a>
             </div>
           </div>
 

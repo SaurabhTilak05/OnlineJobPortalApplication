@@ -8,10 +8,7 @@ let interviewCtrl =require("../controllers/interviewctrl.js");
 const upload = require("../middlewares/fileupload.js"); 
 
 let { verifyToken,  verifyAdmin} = require("../middlewares/authmiddleware.js");
-
 let router = express.Router();
-
-
 
  //hr authentication 
 const verifyToken1=require("../middlewares/Hrauthmiddleware.js");
@@ -65,7 +62,6 @@ router.get("/applications",jobskrctrl.getAppltoadmin);
 //applications
 
 //admin homepage sathi kahi logic 
-
 router.get("/count/hr", hrCtrl.countHr);
 router.get("/count/students", hrCtrl.countStudents);
 router.get("/count/applications", hrCtrl.countApplications);
@@ -75,20 +71,16 @@ router.post("/contact",adCtrl.contactUs);
 
 
 // Hr routes
-router.post("/AddHr", hrCtrl.registerHr);
-
-
+// router.post("/AddHr", hrCtrl.registerHr);
 
 
 // view all Hr 
 router.get("/viewHr", hrCtrl.getHrs);
-//hr login with email and password
-// router.post("/hrLogin",hrCtrl.loginHr);
-// update all fields 
+
 
 // Delete hr by Id
 router.delete("/deleteHR/:hr_id", hrCtrl.deleteHRByID);
-// for the delete student by hr
+
 //router.delete("/DeleteStudByID", hrCtrl.DeleteStudByID);
 router.delete("/DeleteStudByID/:seeker_id", hrCtrl.DeleteStudByID);
 //Add interview schedule
@@ -107,29 +99,21 @@ router.get("/profile", verifyUser, jobskrctrl.getProfile);
 router.put("/update-profile", verifyToken, jobskrctrl.updateProfile);
 // Upload resume separately
 router.put("/upload-resume", verifyToken, upload.single("resume"), jobskrctrl.uploadResume);
-// router.put("/update", verifyToken, upload.single("resume"), jobskrctrl.updateProfile);
-//router.put("/student/update", upload.single("resume"), studentCtrl.updateProfile);
+
 
 
 // get job seeker by id
 router.get("/jobseekerbyid/:seeker_id",jobskrctrl.getUserById);
 
 // for the search job by laction 
-
 router.get("/allJob", jobctrl.fetchAllJobs);
-  
 
-// 
 router.get("/searchByTitle",jobctrl.searchJobByTitle);
 //Applied for the job 
 router.post("/applyedJob",jobskrctrl.applyJob);
 
 
 router.get("/appliedJobs/:seekerId", jobskrctrl.getallJobs);
-
-
-
-
 
 // Send mail testing 
 router.post("/sendEmail",email.sendGemail);

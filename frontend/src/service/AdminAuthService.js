@@ -13,6 +13,7 @@ class AdminAuthService {
   AddHR(hrdata) {
     return axios.post("http://localhost:8080/AddHr", hrdata);
   }
+  
 
   hrLogin(data) {
     return axios.post("http://localhost:8080/hr/login", data).then((res) => {

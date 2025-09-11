@@ -14,24 +14,37 @@ const db = require("../../db.js");
 // Add HR 
 
 
+
+exports.findByEmail = async (email) => {
+  const sql = "SELECT * FROM hr WHERE email = ?";
+  const [rows] = await db.query(sql, [email]);
+  return rows;
+};
+
 exports.createHR = async (hr_name, company_name, email, phone, hashedPassword, role) => {
   const sql = `
     INSERT INTO hr (hr_name, company_name, email, phone, password, role) 
     VALUES (?, ?, ?, ?, ?, ?)
   `;
-  const [result] = await db.query(sql, [hr_name, company_name, email, phone, hashedPassword, role]);
+  const [result] = await db.query(sql, [
+    hr_name,
+    company_name,
+    email,
+    phone,
+    hashedPassword,
+    role,
+  ]);
   return result;
 };
-
-exports.findByEmail = async (email) => {
-  try {
-    const [rows] = await db.execute("SELECT * FROM hr WHERE email = ?", [email]);
-    return rows; // returns an array of HRs (0 or 1)
-  } catch (err) {
-    console.error("DB Error:", err);
-    throw err;
-  }
-};
+// exports.findByEmail = async (email) => {
+//   try {
+//     const [rows] = await db.execute("SELECT * FROM hr WHERE email = ?", [email]);
+//     return rows; // returns an array of HRs (0 or 1)
+//   } catch (err) {
+//     console.error("DB Error:", err);
+//     throw err;
+//   }
+// };
 
 // Get HR by ID (without password)
 exports.findById = async (id) => {
@@ -133,19 +146,18 @@ exports.getResentJob = async (hrId) => {
 
 
 
-//delete hr using its id 
-exports.delHrById = async (hr_id) => {
-  try {
-    const [result] = await db.query("DELETE FROM hr WHERE hr_id = ?", [hr_id]);
-
-    if (result.affectedRows === 0) {
-      throw "HR not found";
-    }
-    return "HR deleted successfully";
-  } catch (err) {
-    throw "Hr Not Deleted...";
-  }
+exports.getHrById = async (hr_id) => {
+  const [rows] = await db.query("SELECT email FROM hr WHERE hr_id = ?", [hr_id]);
+  if (rows.length === 0) throw "HR not found";
+  return rows[0]; // { email: "abc@domain.com" }
 };
+
+exports.delHrById = async (hr_id) => {
+  const [result] = await db.query("DELETE FROM hr WHERE hr_id = ?", [hr_id]);
+  if (result.affectedRows === 0) throw "HR not found";
+  return "HR deleted successfully";
+};
+
 
 // for the delete student by hr
 exports.deleteStudById = (seeker_id) => {

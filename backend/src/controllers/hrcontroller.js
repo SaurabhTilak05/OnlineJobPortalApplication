@@ -5,15 +5,23 @@ const { sendEmail } = require("../services/sendEmail.js");
 const SECRET = process.env.JWT_SECRET || "mySecretKey";
 
 // Admin adds HR (phone will be used as password, stored hashed)
+
 exports.addHR1 = async (req, res) => {
   const { hr_name, company_name, email, phone } = req.body;
   const role = "hr";
 
   try {
-    // default password = phone (hashed)
+    // 🔍 check if email already exists
+    const existingHR = await hrModel.findByEmail(email);
+    if (existingHR.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists ",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(phone.toString(), 10);
 
-    // call model (await)
     const result = await hrModel.createHR(
       hr_name,
       company_name,
@@ -23,7 +31,7 @@ exports.addHR1 = async (req, res) => {
       role
     );
 
-    // send email with credentials
+    // send email
     const message = `Hello ${hr_name},
 
 Your HR account has been successfully created for ${company_name}.
@@ -32,31 +40,27 @@ Your HR account has been successfully created for ${company_name}.
 - Username (Email): ${email}
 - Password: ${phone} (same as your mobile number)
 
-⚠️ Note: Your password is your mobile number by default. If you update your phone number, your password will also be updated automatically for security reasons.
+⚠️ Note: Please change your password after first login.
 
 Regards,
 Quick Start Career Team`;
 
     await sendEmail(email, "Your HR Account Credentials", message);
 
-    // proper response context
     res.status(201).json({
       success: true,
-      message: "HR account created successfully. Login credentials have been sent to the registered email.",
+      message: "HR account created successfully. Credentials sent to email.",
       hrId: result.insertId,
-      credentialsInfo: "Default password is the registered mobile number. Updating mobile will also update the password.",
     });
   } catch (err) {
-    if (err.code === "ER_DUP_ENTRY") {
-      return res.status(400).json({ success: false, message: "Email already exists" });
-    }
     console.error("Error creating HR:", err);
-    res.status(500).json({ success: false, message: "Database error", error: err });
+    res.status(500).json({
+      success: false,
+      message: "Database error",
+      error: err,
+    });
   }
 };
-
-
-
 
 // HR login
 
@@ -223,16 +227,41 @@ exports.updateHRProfile = async (req, res) => {
 };
 
 
+
 exports.deleteHRByID = async (req, res) => {
   try {
     const { hr_id } = req.params;
+
+    // 1️⃣ Get HR email before delete
+    const hrData = await hrModel.getHrById(hr_id);
+    const hrEmail = hrData.email;
+
+    // 2️⃣ Delete HR record
     const result = await hrModel.delHrById(hr_id);
-    return res.status(200).json({ message: result });
+
+    // 3️⃣ Send email notification
+    const subject = "HR Account Deleted - Quick Start Career";
+    const message = "Your HR account has been deleted from our system.";
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: red;">HR Account Deleted</h2>
+        <p>Dear HR,</p>
+        <p>We regret to inform you that your HR account has been <b>deleted</b> from our system.</p>
+        <p>If you believe this was a mistake, please contact our support team immediately.</p>
+        <br/>
+        <p>Regards,<br/>Quick Start Career Team</p>
+      </div>
+    `;
+
+    await sendEmail(hrEmail, subject, message, htmlContent);
+
+    // 4️⃣ Respond back
+    return res.status(200).json({ message: result, emailSent: true });
+
   } catch (err) {
-    return res.status(400).json({ message: err });
+    return res.status(400).json({ message: err.toString() });
   }
 };
-
 
 
 

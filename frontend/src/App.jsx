@@ -44,7 +44,7 @@ import InterViewSchedule from "./components/interviewSchedule.jsx";
 import ViewSchedule from "./components/viewschedule.jsx";
 import Updateresume from "./components/updateresume.jsx";
 import Footer from "./components/footer.jsx";
-import AdminHrFooter from "./components/adminhrfooter.jsx";
+
 import ViewScheduleForUser from "./components/viewscheduleforuser.jsx";
 import ContactDetails from "./components/contactdetail.jsx";
 import UpdateInterviewStatus from "./components/updateinterviewstatus.jsx";
@@ -62,7 +62,8 @@ function LayoutWithNavbar({ children }) {
   // Hide footer only in admin dashboard
   const hideFooter =
     location.pathname.startsWith("/adminhome") ||
-    location.pathname.startsWith("/hrdashboard"); //hrdashboard
+    location.pathname.startsWith("/hrdashboard")||
+    location.pathname.startsWith("/userProfile"); //hrdashboard
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => setIsOpen(!isOpen);
