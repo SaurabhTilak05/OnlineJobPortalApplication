@@ -79,10 +79,18 @@ getAppliedJobs(seekerId) {
 }
 
   // search job for hr by title location company skills 
- searchJobs(query) {
-    return axios.get(`http://localhost:8080/searchJob?query=${query}`);
+  searchJobsForHr(hr_id, query = "") {
+    return axios.get(
+      `http://localhost:8080/searchjobtohr/${hr_id}?query=${query}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    );
   }
 
+  searchJobs(query) {
+    return axios.get(`http://localhost:8080/searchJob?query=${query}`);
+  }
 
 
 }
