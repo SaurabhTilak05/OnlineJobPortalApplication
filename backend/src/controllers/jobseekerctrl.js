@@ -67,7 +67,7 @@ exports.getLogJobSeeker = async (req, res) => {
   }
 };
 
-exports.getProfile = async (req, res) => {
+exports.getProfileuser = async (req, res) => {
   try {
     const user = await jobsctrl.findById(req.user.seeker_id); // ✅ use seeker_id, not id
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -228,6 +228,47 @@ exports.getApplicantProfile = async (req, res) => {
     res.json(applicant);
   } catch (err) {
     console.error("Error fetching applicant profile:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// Upload profile picture
+exports.uploadProfilePicture = async (req, res) => {
+  try {
+    const seeker_id = req.user.seeker_id; // token मधून id येईल
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const profilePath = `/images/${req.file.filename}`; // image path तयार
+
+    // Save/Update profile picture
+    await jobsctrl.upsertProfile(seeker_id, { profile_picture: profilePath });
+
+    res.json({
+      message: "Profile picture uploaded successfully",
+      profile_picture: profilePath,
+    });
+  } catch (err) {
+    console.error("Error uploading profile picture:", err);
+    res.status(500).json({
+      message: "Error uploading profile picture",
+      error: err.message,
+    });
+  }
+};
+
+// Get profile (with profile picture)
+exports.getProfile = async (req, res) => {
+  try {
+    const seeker_id = req.user.seeker_id; // <-- problem here
+    const profile = await jobsctrl.findByIdP(seeker_id);
+    if (!profile) return res.status(404).json({ message: "Profile not found" });
+    res.json(profile);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

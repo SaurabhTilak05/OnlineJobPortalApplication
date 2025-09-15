@@ -18,10 +18,10 @@ exports.findByEmail = async (email) => {
 exports.findById = async (id) => {
   const [rows] = await db.query(
     `SELECT 
-       js.seeker_id, js.name, js.email, js.phone, js.address, js.created_at,
-       sp.dob, sp.gender, sp.qualification, sp.college_name, sp.branch,
+       js.seeker_id, js.name, js.email, js.phone, js.address AS js_address, js.created_at,
+       sp.dob, sp.gender, sp.address AS sp_address, sp.qualification, sp.college_name, sp.branch,
        sp.graduation_year, sp.percentage, sp.skills, sp.certifications, sp.projects,
-       sp.experience, sp.languages_known, sp.resume_url, sp.preferred_role,
+       sp.experience, sp.languages_known, sp.resume_url, sp.profile_picture, sp.preferred_role,
        sp.preferred_location, sp.expected_salary, sp.updated_at
      FROM job_seekers js
      LEFT JOIN student_profiles sp 
@@ -29,7 +29,36 @@ exports.findById = async (id) => {
      WHERE js.seeker_id = ?`,
     [id]
   );
-  return rows[0];
+
+  if (!rows[0]) return null;
+
+  const user = rows[0];
+
+  // Fallback: अगर student_profiles record नाही, तर default empty values द्या
+  const profile = {
+    dob: user.dob || "",
+    gender: user.gender || "",
+    address: user.sp_address || user.js_address || "",
+    qualification: user.qualification || "",
+    college_name: user.college_name || "",
+    branch: user.branch || "",
+    graduation_year: user.graduation_year || "",
+    percentage: user.percentage || "",
+    skills: user.skills || "",
+    certifications: user.certifications || "",
+    projects: user.projects || "",
+    experience: user.experience || "",
+    languages_known: user.languages_known || "",
+    resume_url: user.resume_url || "",
+   // ✅ added
+    preferred_role: user.preferred_role || "",
+    preferred_location: user.preferred_location || "",
+    expected_salary: user.expected_salary || "",
+    updated_at: user.updated_at || null,
+     profile_picture: user.profile_picture || "", 
+  };
+
+  return { ...user, ...profile };
 };
 
 
@@ -160,21 +189,22 @@ exports.getAllApplications = async () => {
   );
   return rows;
 };
+
+
 exports.upsertProfile = async (seeker_id, data) => {
   const allowedFields = [
     "dob","gender","address","qualification","college_name","branch",
     "graduation_year","percentage","skills","certifications","projects",
-    "experience","languages_known","resume_url","preferred_role",
+    "experience","languages_known","resume_url","profile_picture","preferred_role",
     "preferred_location","expected_salary"
   ];
 
   const fields = ["seeker_id"];
   const placeholders = ["?"];
   const values = [seeker_id];
-
   const updateFields = [];
 
-  allowedFields.forEach((key) => {
+  allowedFields.forEach(key => {
     if (data[key] !== undefined) {
       fields.push(key);
       placeholders.push("?");
@@ -183,56 +213,30 @@ exports.upsertProfile = async (seeker_id, data) => {
     }
   });
 
+  // If nothing to update besides seeker_id, still do insert with only seeker_id
   const sql = `
-    INSERT INTO student_profiles (${fields.join(", ")})
-    VALUES (${placeholders.join(", ")})
-    ON DUPLICATE KEY UPDATE ${updateFields.join(", ")}, updated_at = CURRENT_TIMESTAMP
+    INSERT INTO student_profiles (${fields.join(",")})
+    VALUES (${placeholders.join(",")})
+    ON DUPLICATE KEY UPDATE ${updateFields.length ? updateFields.join(",") + ", updated_at = CURRENT_TIMESTAMP" : "updated_at = CURRENT_TIMESTAMP"}
   `;
-
   const [result] = await db.query(sql, values);
   return result;
 };
 
 
-exports.findApplicantById = async (seekerId) => {
+exports.findByIdP = async (id) => {
   const [rows] = await db.query(
-    `
-    SELECT 
-      js.seeker_id,
-      js.name,
-      js.email,
-      js.phone,
-      sp.profile_id,
-      sp.dob,
-      sp.gender,
-      sp.address,
-      sp.qualification,
-      sp.college_name,
-      sp.branch,
-      sp.graduation_year,
-      sp.percentage,
-      sp.skills,
-      sp.certifications,
-      sp.projects,
-      sp.experience,
-      sp.languages_known,
-      sp.resume_url,
-      sp.preferred_role,
-      sp.preferred_location,
-      sp.expected_salary,
-      sp.updated_at,
-      a.job_id
-    FROM job_seekers js
-    LEFT JOIN student_profiles sp 
-      ON js.seeker_id = sp.seeker_id
-    LEFT JOIN applications a 
-      ON js.seeker_id = a.seeker_id
-    WHERE js.seeker_id = ?
-    ORDER BY a.applied_at DESC
-    LIMIT 1
-    `,
-    [seekerId]
+    `SELECT 
+       js.seeker_id, js.name, js.email, js.phone, js.address, js.created_at,
+       sp.dob, sp.gender, sp.qualification, sp.college_name, sp.branch,
+       sp.graduation_year, sp.percentage, sp.skills, sp.certifications, sp.projects,
+       sp.experience, sp.languages_known, sp.resume_url, sp.profile_picture,
+       sp.preferred_role, sp.preferred_location, sp.expected_salary, sp.updated_at
+     FROM job_seekers js
+     LEFT JOIN student_profiles sp 
+       ON js.seeker_id = sp.seeker_id
+     WHERE js.seeker_id = ?`,
+    [id]
   );
-
-  return rows[0] || {}; // return empty object if no profile
+  return rows[0];
 };

@@ -146,6 +146,15 @@ uploadResume(resumeData) {
       });
   }
 
+
+  uploadProfilePicture(formData) {
+  return axios.put(`http://localhost:8080/upload-profile-picture`, formData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
   ///getallcontact
 }
 

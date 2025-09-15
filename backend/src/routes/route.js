@@ -30,10 +30,10 @@ router.delete("/deleteJob/:id",verifyToken1,jobctrl.getDeleteJob);
 router.get("/getapplicant/:id/applicants", jobctrl.getApplicantsByJob);
 router.get("/searchJob",jobctrl.searchJob);
 router.get("/applicantprofile/:seekerId", jobskrctrl.getApplicantProfile);
+router.get("/upload", verifyUser, jobskrctrl.getProfile);
+router.put("/upload-profile-picture", verifyToken, upload.single("photo"), jobskrctrl.uploadProfilePicture);
 
-/////////////////////////
-// INTERVIEW ROUTES
-/////////////////////////
+
 router.post("/interviews/schedule", interviewCtrl.scheduleInterview);
 router.get("/interviews", interviewCtrl.getAllInterviews);
 router.get("/interviews/seeker/:seekerId", interviewCtrl.getBySeeker);
@@ -94,7 +94,7 @@ router.post("/regJobSeeker",jobskrctrl.regSeekers);
 
 //Login the job seeker using email and password
 router.post("/loginseeker",jobskrctrl.getLogJobSeeker);
-router.get("/profile", verifyUser, jobskrctrl.getProfile);
+router.get("/profile", verifyUser, jobskrctrl.getProfileuser);
 //router.put("/upload-resume", verifyToken, upload.single("resume"), jobskrctrl.uploadResume);
 router.put("/update-profile", verifyToken, jobskrctrl.updateProfile);
 // Upload resume separately
