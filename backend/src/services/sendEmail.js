@@ -19,7 +19,7 @@ exports.sendEmail = async (to, subject,message, htmlContent) => {
         to,
         subject,
          text: message,
-        html: htmlContent // ✅ use the parameter
+        html: htmlContent //  use the parameter
     };
 
     try {
