@@ -73,7 +73,7 @@ router.post("/contact",adCtrl.contactUs);
 // Hr routes
 // router.post("/AddHr", hrCtrl.registerHr);
 
-
+///hr/jobs
 // view all Hr 
 router.get("/viewHr", hrCtrl.getHrs);
 

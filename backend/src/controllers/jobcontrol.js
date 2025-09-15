@@ -176,3 +176,20 @@ exports.searchJob = async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error: err });
   }
 };
+
+
+
+exports.searchJobstohr = async (req, res) => {
+  try {
+    const { hr_id } = req.params;
+    const { query } = req.query;
+
+    if (!hr_id) return res.status(400).json({ error: "hr_id is required" });
+
+    const jobs = await jobctrl.searchJobsByHr(hr_id, query || "");
+    res.json(jobs);
+  } catch (err) {
+    console.error("Error searching jobs:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

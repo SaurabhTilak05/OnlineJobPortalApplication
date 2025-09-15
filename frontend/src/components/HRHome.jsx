@@ -2,20 +2,21 @@
 import React, { useEffect, useState } from "react";
 import HRService from "../service/HrService.js";
 import { FaBriefcase, FaUsers, FaCalendarCheck } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function HRHome() {
   const [jobs, setJobs] = useState([]);
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
   const fetchJobs = async () => {
-  try {
-    const res = await HRService.getRecentJobsByHR();
-    setJobs(res.data || []);   // ✅ works because backend returns array
-  } catch (err) {
-    setMsg("Failed to fetch jobs");
-  }
-};
-
+    try {
+      const res = await HRService.getRecentJobsByHR();
+      setJobs(res.data || []); // backend returns array
+    } catch (err) {
+      setMsg("Failed to fetch jobs");
+    }
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -38,24 +39,32 @@ export default function HRHome() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats with Navigation */}
       <div className="row g-3 g-md-4 mb-4">
-        <div className="col-6 col-md-4">
-          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white">
+        {/* Total Jobs */}
+        <div
+          className="col-6 col-md-4"
+          onClick={() => navigate("/hrdashboard/job-history")}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white hover-shadow">
             <div className="text-primary mb-1 mb-md-2">
-              <FaBriefcase size={22} className="d-md-none" />
-              <FaBriefcase size={28} className="d-none d-md-inline" />
+              <FaBriefcase size={28} />
             </div>
             <h6 className="mb-1 text-muted fs-7 fs-md-6">Total Jobs</h6>
             <p className="fs-5 fw-bold text-dark mb-0">{jobs.length || 0}</p>
           </div>
         </div>
 
-        <div className="col-6 col-md-4">
-          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white">
+        {/* Applicants */}
+        <div
+          className="col-6 col-md-4"
+          onClick={() => navigate("/hrdashboard/view-applicants")}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white hover-shadow">
             <div className="text-success mb-1 mb-md-2">
-              <FaUsers size={22} className="d-md-none" />
-              <FaUsers size={28} className="d-none d-md-inline" />
+              <FaUsers size={28} />
             </div>
             <h6 className="mb-1 text-muted fs-7 fs-md-6">Applicants</h6>
             <p className="fs-5 fw-bold text-dark mb-0">
@@ -64,14 +73,20 @@ export default function HRHome() {
           </div>
         </div>
 
-        <div className="col-12 col-md-4">
-          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white">
+        {/* Interviews */}
+        <div
+          className="col-12 col-md-4"
+          onClick={() => navigate("/hrdashboard/view-schedule")}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="card text-center border-0 shadow-sm rounded-4 p-3 p-md-4 h-100 bg-white hover-shadow">
             <div className="text-warning mb-1 mb-md-2">
-              <FaCalendarCheck size={22} className="d-md-none" />
-              <FaCalendarCheck size={28} className="d-none d-md-inline" />
+              <FaCalendarCheck size={28} />
             </div>
             <h6 className="mb-1 text-muted fs-7 fs-md-6">Interviews</h6>
-            <p className="fs-5 fw-bold text-dark mb-0">0</p>
+            <p className="fs-5 fw-bold text-dark mb-0">
+              {jobs.reduce((sum, job) => sum + (job.interview_count || 0), 0)}
+            </p>
           </div>
         </div>
       </div>
@@ -100,15 +115,15 @@ export default function HRHome() {
                   .slice(-5)
                   .reverse()
                   .map((job, idx) => (
-                    <tr key={job.job_id || idx}>
+                    <tr
+                      key={job.job_id || idx}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/hr/job/${job.job_id}`)}
+                    >
                       <td>{idx + 1}</td>
-                      <td >{job.title}</td>
+                      <td>{job.title}</td>
                       <td>{job.company}</td>
-                      <td>
-                        <span >
-                          {job.applicant_count || 0}
-                        </span>
-                      </td>
+                      <td>{job.applicant_count || 0}</td>
                       <td>
                         {job.deadline
                           ? new Date(job.deadline).toLocaleDateString("en-IN", {
@@ -141,6 +156,8 @@ export default function HRHome() {
                 <div
                   key={job.job_id || idx}
                   className="border rounded-3 shadow-sm bg-white p-3 mb-3"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/hr/job/${job.job_id}`)}
                 >
                   <h6 className="fw-bold text-primary mb-1">{job.title}</h6>
                   <p className="text-muted mb-1 small">{job.company}</p>

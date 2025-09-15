@@ -126,9 +126,13 @@ exports.getResentJob = async (hrId) => {
     const [rows] = await db.query(
       `
       SELECT j.*, 
-             COUNT(a.application_id) AS applicant_count
+             COUNT(DISTINCT a.application_id) AS applicant_count,
+             COUNT(DISTINCT i.interview_id) AS interview_count
       FROM jobs j
-      LEFT JOIN applications a ON j.job_id = a.job_id
+      LEFT JOIN applications a 
+             ON j.job_id = a.job_id
+      LEFT JOIN interview_schedule i 
+             ON j.job_id = i.job_id
       WHERE j.hr_id = ?
       GROUP BY j.job_id
       ORDER BY j.created_at ASC

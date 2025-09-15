@@ -34,6 +34,7 @@ export default function ViewHR() {
     try {
       await HRService.deleteHR(id);
       setHrList(hrList.filter((hr) => hr.hr_id !== id));
+       toast.success("✅ HR deleted successfully");
     } catch (err) {
       alert("Failed to delete HR");
     }

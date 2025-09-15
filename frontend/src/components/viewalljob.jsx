@@ -13,13 +13,20 @@ export default function ViewAllJob() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // ✅ Get current HR ID from localStorage
+  const currentHrId = localStorage.getItem("hrId");
+
   useEffect(() => {
     fetchJobs();
   }, []);
 
   const fetchJobs = () => {
     Jobservice.getAllJobs()
-      .then((result) => setJobs(result.data))
+      .then((result) => {
+        // Filter only jobs of current HR
+        const hrJobs = result.data.filter((job) => job.hr_id == currentHrId);
+        setJobs(hrJobs);
+      })
       .catch((err) => {
         setMsg("Failed to fetch jobs");
         console.error(err);
@@ -49,7 +56,7 @@ export default function ViewAllJob() {
     }
   };
 
-  // ✅ Search handler (calls backend)
+  // ✅ Search handler (only for current HR)
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -58,7 +65,11 @@ export default function ViewAllJob() {
       fetchJobs(); // Reload all jobs if cleared
     } else {
       Jobservice.searchJobs(value)
-        .then((result) => setJobs(result.data))
+        .then((result) => {
+          // Filter by current HR
+          const hrJobs = result.data.filter((job) => job.hr_id == currentHrId);
+          setJobs(hrJobs);
+        })
         .catch((err) => {
           console.error(err);
           toast.error("Search failed!");
@@ -81,7 +92,7 @@ export default function ViewAllJob() {
           Posted Jobs
         </h2>
 
-        {/* ✅ Search Box */}
+        {/* Search Box */}
         <div className="row justify-content-center mb-5">
           <div className="col-md-6">
             <input
@@ -89,7 +100,7 @@ export default function ViewAllJob() {
               className="form-control rounded-3 shadow-sm"
               placeholder="🔍 Search by title, company, location, or skills..."
               value={searchTerm}
-              onChange={handleSearch} // ✅ calls backend search
+              onChange={handleSearch}
             />
           </div>
         </div>
@@ -223,7 +234,7 @@ export default function ViewAllJob() {
         </div>
       </div>
 
-      {/* ✅ Modal */}
+      {/* Modal */}
       {selectedJob && (
         <div
           className="modal fade show d-block"
@@ -254,7 +265,7 @@ export default function ViewAllJob() {
       )}
 
       <div>
-        <Outlet /> {/* 👈 required for nested routes */}
+        <Outlet />
       </div>
     </div>
   );
