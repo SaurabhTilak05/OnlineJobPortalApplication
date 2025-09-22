@@ -51,6 +51,8 @@ router.post("/addAdmin", adCtrl.saveAdmin);
 router.post("/adminLogin",adCtrl.adminLogin);
 //placement students 
 router.get("/place", place.getPlacements);
+// ✅ Dashboard stats API
+router.get("/stats", verifyUser, jobskrctrl.getDashboardStats);
 
 // Protect admin-only APIs
 router.get("/viewAlljobforAdmin", verifyToken, verifyAdmin, adCtrl.viewAlljobforAdmin);
@@ -72,7 +74,6 @@ router.get("/count/applications", hrCtrl.countApplications);
 router.post("/contact",adCtrl.contactUs);
 
 
-// Hr routes
 // router.post("/AddHr", hrCtrl.registerHr);
 
 ///hr/jobs

@@ -274,3 +274,21 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// -------------------------
+
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const seeker_id = req.user.seeker_id;
+
+    const applied = await jobsctrl.getAppliedCount(seeker_id);
+    // const saved = await jobsctrl.getSavedCount(seeker_id);
+    const openings = await jobsctrl.getOpeningsCount();
+    const profileCompletion = await jobsctrl.getProfileCompletion(seeker_id);
+
+    res.json({ applied, openings, profileCompletion });
+  } catch (err) {
+    console.error("Error fetching dashboard stats:", err);
+    res.status(500).json({ message: "Server error while fetching stats" });
+  }
+};

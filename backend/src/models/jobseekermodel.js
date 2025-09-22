@@ -283,3 +283,49 @@ exports.findByIdP = async (id) => {
   );
   return rows[0];
 };
+
+
+// -------------------------
+
+// Total applied jobs
+exports.getAppliedCount = async (seeker_id) => {
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS totalApplied FROM applications WHERE seeker_id = ?",
+    [seeker_id]
+  );
+  return rows[0]?.totalApplied || 0;
+};
+
+
+// Total active openings
+exports.getOpeningsCount = async () => {
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS totalOpenings FROM jobs WHERE deadline >= CURDATE()"
+  );
+  return rows[0]?.totalOpenings || 0;
+};
+
+// Profile completion %
+exports.getProfileCompletion = async (seeker_id) => {
+  const [rows] = await db.query(
+    `SELECT dob, gender, address, qualification, college_name, branch,
+     graduation_year, percentage, skills, certifications, projects,
+     experience, languages_known, resume_url, profile_picture,
+     preferred_role, preferred_location, expected_salary
+     FROM student_profiles
+     WHERE seeker_id = ?`,
+    [seeker_id]
+  );
+
+  if (!rows[0]) return 0;
+
+  const profile = rows[0];
+  const totalFields = Object.keys(profile).length;
+  let filledFields = 0;
+
+  Object.values(profile).forEach(val => {
+    if (val !== null && val !== "") filledFields++;
+  });
+
+  return Math.round((filledFields / totalFields) * 100);
+};

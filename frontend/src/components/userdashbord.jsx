@@ -1,100 +1,92 @@
-// src/components/StudentDashboard.jsx
 import React, { useEffect, useState } from "react";
-import { FaUser, FaBriefcase, FaBookmark, FaClipboardCheck } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaUser, FaBriefcase, FaClipboardCheck } from "react-icons/fa";
+import "./userdashbord.css"; // Custom CSS
 
-export default function userdashbord() {
+export default function StudentDashboard() {
+  const navigate = useNavigate();
+
   const [stats, setStats] = useState({
     applied: 0,
     saved: 0,
     openings: 0,
-    profileComplete: 0,
+    profileCompletion: 0,
   });
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [appliedRes, savedRes, openingsRes, profileRes] = await Promise.all([
-          fetch("http://localhost:8080/student/appliedCount"),
-          fetch("http://localhost:8080/student/savedCount"),
-          fetch("http://localhost:8080/student/openingsCount"),
-          fetch("http://localhost:8080/student/profileStatus"),
-        ]);
+        const token = localStorage.getItem("token");
+        if (!token) return console.error("No token found");
 
-        const applied = await appliedRes.json();
-        const saved = await savedRes.json();
-        const openings = await openingsRes.json();
-        const profile = await profileRes.json();
+        const res = await fetch("http://localhost:8080/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
+        if (!res.ok) {
+          const errData = await res.json();
+          console.error("Error fetching stats:", errData.message);
+          return;
+        }
+
+        const data = await res.json();
         setStats({
-          applied: applied.total || 0,
-          saved: saved.total || 0,
-          openings: openings.total || 0,
-          profileComplete: profile.percent || 0,
+          applied: data.applied || 0,
+          saved: data.saved || 0,
+          openings: data.openings || 0,
+          profileCompletion: data.profileCompletion || 0,
         });
       } catch (err) {
-        console.error("Error fetching student stats:", err);
+        console.error("Fetch error:", err);
       }
     }
     fetchStats();
   }, []);
 
-  const cardStyle = {
-    borderRadius: "15px",
-    padding: "2rem",
-    color: "#fff",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "150px",
-    transition: "transform 0.3s ease",
-    cursor: "pointer",
-  };
-
   const cards = [
     {
       title: "Profile Completion",
-      count: stats.profileComplete + "%",
-      icon: <FaUser size={40} />,
+      count: stats.profileCompletion + "%",
+      icon: <FaUser size={50} />,
       bg: "linear-gradient(135deg, #0d6efd, #6610f2)",
+      link: "/userProfile/view-profile",
     },
     {
       title: "Applied Jobs",
       count: stats.applied,
-      icon: <FaBriefcase size={40} />,
+      icon: <FaBriefcase size={50} />,
       bg: "linear-gradient(135deg, #20c997, #0dcaf0)",
-    },
-    {
-      title: "Saved Jobs",
-      count: stats.saved,
-      icon: <FaBookmark size={40} />,
-      bg: "linear-gradient(135deg, #fd7e14, #ffc107)",
+      link: "/userProfile/applied-jobs",
     },
     {
       title: "New Openings",
       count: stats.openings,
-      icon: <FaClipboardCheck size={40} />,
+      icon: <FaClipboardCheck size={50} />,
       bg: "linear-gradient(135deg, #198754, #28a745)",
+      link: "/userProfile/view-jobs",
     },
   ];
 
   return (
     <div className="container-fluid mt-4">
-      <h2 className="fw-bold mb-4 text-center text-success">🎓 Student Dashboard</h2>
-      <p className="text-center text-muted mb-5 fs-5">
-        Track your applications, saved jobs, and profile progress here.
+      <h2 className="fw-bold mb-2 text-center text-primary">🎓 Student Dashboard</h2>
+      <p className="text-center text-muted mb-5 fs-6">
+        Track your applications, saved jobs, and profile progress all in one place.
       </p>
 
       <div className="row g-4 justify-content-center">
-        {cards.map((card, i) => (
-          <div className="col-md-3" key={i}>
+        {cards.map((card, index) => (
+          <div
+            key={index}
+            className="col-12 col-sm-6 col-md-4"
+            onClick={() => navigate(card.link)}
+            style={{ cursor: "pointer" }}
+          >
             <div
-              style={{ ...cardStyle, background: card.bg }}
-              className="text-center"
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
-              <div className="mb-3">{card.icon}</div>
+              className="dashboard-card shadow-sm text-center p-4 mb-3"
+              style={{ background: card.bg }}
+            >
+              <div className="icon mb-3">{card.icon}</div>
               <h4 className="fw-bold">{card.count}</h4>
               <p className="mb-0">{card.title}</p>
             </div>
