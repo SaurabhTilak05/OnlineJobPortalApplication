@@ -9,9 +9,8 @@ const statusMap = {
 };
 
 const InterviewModel = {
-  // ✅ Create interview only if it doesn't exist
+  // Create interview only if it doesn't exist
   async createInterview(data) {
-    // Check for duplicate interview (same job, seeker, date, time)
     const [existing] = await db.query(
       `SELECT * FROM interview_schedule
        WHERE job_id = ? AND seeker_id = ? AND interview_date = ? AND interview_time = ?`,
@@ -51,10 +50,22 @@ const InterviewModel = {
     return result;
   },
 
+  // Insert into placement table
+  async insertPlacement(seeker_id, job_id) {
+    // Optional: prevent duplicate placement
+    const [existing] = await db.query(
+      `SELECT * FROM placement WHERE seeker_id = ? AND job_id = ?`,
+      [seeker_id, job_id]
+    );
+    if (existing.length === 0) {
+      await db.query(`INSERT INTO placement (seeker_id, job_id) VALUES (?, ?)`, [seeker_id, job_id]);
+    }
+  },
+
   // Get all interviews
   async getAllInterviews() {
     const [rows] = await db.query(`
-      SELECT i.*, s.name AS seeker_name, j.title AS job_title
+      SELECT i.*, s.name AS seeker_name, s.email AS seeker_email, j.title AS job_title
       FROM interview_schedule i
       JOIN job_seekers s ON i.seeker_id = s.seeker_id
       JOIN jobs j ON i.job_id = j.job_id
@@ -65,9 +76,10 @@ const InterviewModel = {
   // Get interviews by seeker
   async getInterviewsBySeeker(seekerId) {
     const [rows] = await db.query(
-      `SELECT i.*, j.title AS job_title
+      `SELECT i.*, j.title AS job_title, s.email AS seeker_email, s.name AS seeker_name
        FROM interview_schedule i
        JOIN jobs j ON i.job_id = j.job_id
+       JOIN job_seekers s ON i.seeker_id = s.seeker_id
        WHERE i.seeker_id = ?
        ORDER BY i.interview_date, i.interview_time`,
       [seekerId]
@@ -75,22 +87,10 @@ const InterviewModel = {
     return rows;
   },
 
-  // Get interviews by job
-  async getInterviewsByJob(jobId) {
-    const [rows] = await db.query(
-      `SELECT i.*, s.name AS seeker_name
-       FROM interview_schedule i
-       JOIN job_seekers s ON i.seeker_id = s.seeker_id
-       WHERE i.job_id = ?`,
-      [jobId]
-    );
-    return rows;
-  },
-
   // Get interviews by HR
   async getInterviewsByHR(hrId) {
     const [rows] = await db.query(
-      `SELECT i.*, s.name AS seeker_name, j.title AS job_title
+      `SELECT i.*, s.name AS seeker_name, s.email AS seeker_email, j.title AS job_title
        FROM interview_schedule i
        JOIN job_seekers s ON i.seeker_id = s.seeker_id
        JOIN jobs j ON i.job_id = j.job_id
@@ -100,42 +100,7 @@ const InterviewModel = {
     return rows;
   },
 
-  // Update interview partially
-  async updateInterview(id, data) {
-    const sql = `
-      UPDATE interview_schedule SET
-        interview_mode = COALESCE(?, interview_mode),
-        interview_date = COALESCE(?, interview_date),
-        interview_time = COALESCE(?, interview_time),
-        interview_link = COALESCE(?, interview_link),
-        location = COALESCE(?, location),
-        status = COALESCE(?, status),
-        remarks = COALESCE(?, remarks)
-      WHERE interview_id = ?
-    `;
-    const [result] = await db.query(sql, [
-      data.interview_mode || null,
-      data.interview_date || null,
-      data.interview_time || null,
-      data.interview_link || null,
-      data.location || null,
-      data.status || "scheduled",
-      data.remarks || null,
-      id,
-    ]);
-    return result;
-  },
-
-  // Delete interview
-  async deleteInterview(id) {
-    const [result] = await db.query(
-      "DELETE FROM interview_schedule WHERE interview_id = ?",
-      [id]
-    );
-    return result;
-  },
-
-  // Update interview status AND sync with applications
+  // Update interview status AND sync with applications & placement
   async updateInterviewStatus(interviewId, status, remarks) {
     const conn = await db.getConnection();
     try {
@@ -149,17 +114,23 @@ const InterviewModel = {
 
       if (result.affectedRows === 0) {
         await conn.rollback();
-        return result;
+        return null;
       }
 
-      // Fetch job_id & seeker_id
+      // Fetch interview details for email + application update
       const [rows] = await conn.query(
-        `SELECT job_id, seeker_id FROM interview_schedule WHERE interview_id = ?`,
+        `SELECT i.job_id, i.seeker_id, j.title AS job_title, s.email AS seeker_email, s.name AS seeker_name
+         FROM interview_schedule i
+         JOIN jobs j ON i.job_id = j.job_id
+         JOIN job_seekers s ON i.seeker_id = s.seeker_id
+         WHERE i.interview_id = ?`,
         [interviewId]
       );
+
       const interview = rows[0];
 
       if (interview) {
+        // Update applications
         const applicationStatus = statusMap[status];
         if (applicationStatus) {
           await conn.query(
@@ -167,10 +138,15 @@ const InterviewModel = {
             [applicationStatus, interview.job_id, interview.seeker_id]
           );
         }
+
+        // ✅ If selected, insert into placement table
+        if (status === "selected") {
+          await this.insertPlacement(interview.seeker_id, interview.job_id);
+        }
       }
 
       await conn.commit();
-      return result;
+      return interview; // return interview details for controller email
     } catch (err) {
       await conn.rollback();
       throw err;

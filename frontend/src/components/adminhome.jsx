@@ -49,7 +49,8 @@ export default function Adminhome() {
     { to: "jobseekers", icon: <FaUserGraduate />, label: "Job Seekers" },
     { to: "application", icon: <FaClipboardList />, label: "Applications" },
     { to: "view-jobs", icon: <FaClipboardList />, label: "View Jobs" },
-     { to: "contact-detail", icon: <FaUserCircle />, label: "Messages " },
+    { to: "contact-detail", icon: <FaUserCircle />, label: "Messages " },
+    { to: "placementlist", icon: <FaUserGraduate />, label: "Placements" }, 
   ];
 
   return (

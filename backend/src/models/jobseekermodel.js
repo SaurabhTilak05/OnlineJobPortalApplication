@@ -1,6 +1,6 @@
 let db = require("../../db.js");
 
-// ✅ Add hr in database
+// Insert new job seeker
 exports.create = async (name, email, hashedPassword, phone, address) => {
   await db.query(
     "INSERT INTO job_seekers (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)",
@@ -8,11 +8,10 @@ exports.create = async (name, email, hashedPassword, phone, address) => {
   );
 };
 
-
-
+// Find user by email
 exports.findByEmail = async (email) => {
   const [rows] = await db.query("SELECT * FROM job_seekers WHERE email = ?", [email]);
-  return rows[0];
+  return rows[0]; // return single user or undefined
 };
 
 exports.findById = async (id) => {
@@ -188,6 +187,50 @@ exports.getAllApplications = async () => {
      JOIN jobs j ON a.job_id = j.job_id order by application_id desc`
   );
   return rows;
+};
+
+
+exports.findApplicantById = async (seekerId) => {
+  const [rows] = await db.query(
+    `
+    SELECT 
+      js.seeker_id,
+      js.name,
+      js.email,
+      js.phone,
+      sp.profile_id,
+      sp.dob,
+      sp.gender,
+      sp.address,
+      sp.qualification,
+      sp.college_name,
+      sp.branch,
+      sp.graduation_year,
+      sp.percentage,
+      sp.skills,
+      sp.certifications,
+      sp.projects,
+      sp.experience,
+      sp.languages_known,
+      sp.resume_url,
+      sp.preferred_role,
+      sp.preferred_location,
+      sp.expected_salary,
+      sp.updated_at,
+      a.job_id
+    FROM job_seekers js
+    LEFT JOIN student_profiles sp 
+      ON js.seeker_id = sp.seeker_id
+    LEFT JOIN applications a 
+      ON js.seeker_id = a.seeker_id
+    WHERE js.seeker_id = ?
+    ORDER BY a.applied_at DESC
+    LIMIT 1
+    `,
+    [seekerId]
+  );
+
+  return rows[0] || {}; // return empty object if no profile
 };
 
 

@@ -3,27 +3,29 @@ let jobsctrl = require("../models/jobseekermodel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-//  Register Seeker
 
+
+// Register Job Seeker
 exports.regSeekers = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
+    //  Check email already exists
     const existingUser = await jobsctrl.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     await jobsctrl.create(name, email, hashedPassword, phone, address);
 
-    res.status(201).json({ message: "Job seeker registered successfully" });
+    res.status(201).json({ message: "✅ Job seeker registered successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Error registering seeker", error: err.message });
+    console.error("Error registering seeker:", err);
+    res.status(500).json({ message: "Server error while registering" });
   }
 };
-
-
 
 
 

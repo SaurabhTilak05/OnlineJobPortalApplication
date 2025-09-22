@@ -3,6 +3,7 @@ let adCtrl = require("../controllers/adminController.js");
 let hrCtrl=require("../controllers/hrcontroller.js");
 let jobskrctrl=require("../controllers/jobseekerctrl.js");
 let jobctrl=require("../controllers/jobcontrol.js");
+let place=require("../controllers/placementctrl.js");
 let email=require("../controllers/emailctrl.js");
 let interviewCtrl =require("../controllers/interviewctrl.js"); 
 const upload = require("../middlewares/fileupload.js"); 
@@ -48,8 +49,8 @@ router.put("/interviews/:id/status", interviewCtrl.updateInterviewStatus);
 router.post("/addAdmin", adCtrl.saveAdmin);
 // Admin login by email and password
 router.post("/adminLogin",adCtrl.adminLogin);
-
-
+//placement students 
+router.get("/place", place.getPlacements);
 
 // Protect admin-only APIs
 router.get("/viewAlljobforAdmin", verifyToken, verifyAdmin, adCtrl.viewAlljobforAdmin);
@@ -59,6 +60,7 @@ router.get("/getallcontact", verifyToken, verifyAdmin, adCtrl.getcontact);
 // to show all job seekers
 router.get("/getAllJobSeeker",jobskrctrl.getSeeker);
 router.get("/applications",jobskrctrl.getAppltoadmin);
+router.get("/admin/placements", adCtrl.getAllPlacements);
 //applications
 
 //admin homepage sathi kahi logic 

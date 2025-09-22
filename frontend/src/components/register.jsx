@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import RegisterServ from "../service/registerserv.js";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast } from "react-toastify"; // ✅ import toast
-import "react-toastify/dist/ReactToastify.css"; // ✅ toast css
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RegisterJobSeeker() {
   const [form, setForm] = useState({
@@ -27,46 +27,70 @@ export default function RegisterJobSeeker() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const validate = () => {
-    let temp = {};
+  // validate single field
+  const validateField = (name, value) => {
+    let temp = { ...errors };
 
-    if (!form.name.trim()) temp.name = "Full Name is required";
-    else if (form.name.length < 3) temp.name = "Name must be at least 3 characters";
-
-    if (!form.email) temp.email = "Email is required";
-    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email))
-      temp.email = "Enter a valid email address";
-
-    if (!form.phone) temp.phone = "Phone number is required";
-    else if (!/^\+?[0-9]{10,15}$/.test(form.phone))
-      temp.phone = "Enter a valid phone number (10-15 digits)";
-
-    if (!form.address) temp.address = "Address is required";
-    else if (form.address.length < 5) temp.address = "Address must be at least 5 characters";
-
-    if (!form.password)
-      temp.password = "Password is required";
-    else if (form.password.length < 6 || !/[A-Za-z]/.test(form.password) || !/[0-9]/.test(form.password))
-      temp.password = "Password must be at least 6 characters and contain letters & numbers";
-
-    if (!form.confirmPassword) temp.confirmPassword = "Confirm your password";
-    else if (form.password !== form.confirmPassword)
-      temp.confirmPassword = "Passwords do not match";
+    switch (name) {
+      case "name":
+        if (!value.trim()) temp.name = "Full Name is required";
+        else if (value.length < 3) temp.name = "Name must be at least 3 characters";
+        else delete temp.name;
+        break;
+      case "email":
+        if (!value) temp.email = "Email is required";
+        else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value))
+          temp.email = "Enter a valid email address";
+        else delete temp.email;
+        break;
+      case "phone":
+        if (!value) temp.phone = "Phone number is required";
+        else if (!/^\+?[0-9]{10,15}$/.test(value))
+          temp.phone = "Enter a valid phone number (10-15 digits)";
+        else delete temp.phone;
+        break;
+      case "address":
+        if (!value) temp.address = "Address is required";
+        else if (value.length < 5) temp.address = "Address must be at least 5 characters";
+        else delete temp.address;
+        break;
+      case "password":
+        if (!value) temp.password = "Password is required";
+        else if (value.length < 6 || !/[A-Za-z]/.test(value) || !/[0-9]/.test(value))
+          temp.password = "Password must be at least 6 characters and contain letters & numbers";
+        else delete temp.password;
+        break;
+      case "confirmPassword":
+        if (!value) temp.confirmPassword = "Confirm your password";
+        else if (value !== form.password) temp.confirmPassword = "Passwords do not match";
+        else delete temp.confirmPassword;
+        break;
+      default:
+        break;
+    }
 
     setErrors(temp);
-    return Object.keys(temp).length === 0;
+  };
+
+  const handleBlur = (e) => {
+    validateField(e.target.name, e.target.value);
+  };
+
+  const validate = () => {
+    let temp = {};
+    Object.keys(form).forEach((key) => validateField(key, form[key]));
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     setSubmitting(true);
 
     RegisterServ.register(form)
-      .then(() => {
-        toast.success("✅ Registered successfully!"); // ✅ toast success
+      .then((res) => {
+        toast.success(res.data.message || "✅ Registered successfully!");
         setForm({
           name: "",
           email: "",
@@ -77,7 +101,11 @@ export default function RegisterJobSeeker() {
         });
       })
       .catch((err) => {
-        toast.error("❌ Registration Failed! " + (err.message || err)); // ✅ toast error
+        if (err.response && err.response.data && err.response.data.message) {
+          toast.error("❌ " + err.response.data.message);
+        } else {
+          toast.error("❌ Registration Failed!");
+        }
       })
       .finally(() => setSubmitting(false));
   };
@@ -100,6 +128,7 @@ export default function RegisterJobSeeker() {
                       name="name"
                       value={form.name}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`form-control ${errors.name ? "is-invalid" : ""}`}
                       placeholder="Enter your full name"
                     />
@@ -114,6 +143,7 @@ export default function RegisterJobSeeker() {
                       name="email"
                       value={form.email}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`form-control ${errors.email ? "is-invalid" : ""}`}
                       placeholder="you@example.com"
                     />
@@ -128,6 +158,7 @@ export default function RegisterJobSeeker() {
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`form-control ${errors.phone ? "is-invalid" : ""}`}
                       placeholder="e.g. +919876543210"
                     />
@@ -141,6 +172,7 @@ export default function RegisterJobSeeker() {
                       name="address"
                       value={form.address}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`form-control ${errors.address ? "is-invalid" : ""}`}
                       rows={3}
                       placeholder="Your full address"
@@ -157,6 +189,7 @@ export default function RegisterJobSeeker() {
                         name="password"
                         value={form.password}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         className={`form-control ${errors.password ? "is-invalid" : ""}`}
                         placeholder="Create a password"
                       />
@@ -167,8 +200,10 @@ export default function RegisterJobSeeker() {
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </span>
-                      {errors.password && <div className="invalid-feedback">{errors.password}</div>}
                     </div>
+                    {errors.password && (
+                      <div className="invalid-feedback d-block">{errors.password}</div>
+                    )}
                   </div>
 
                   {/* Confirm Password */}
@@ -180,6 +215,7 @@ export default function RegisterJobSeeker() {
                         name="confirmPassword"
                         value={form.confirmPassword}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
                         placeholder="Re-enter your password"
                       />
@@ -190,17 +226,13 @@ export default function RegisterJobSeeker() {
                       >
                         {showConfirm ? <FaEyeSlash /> : <FaEye />}
                       </span>
-                      {errors.confirmPassword && (
-                        <div className="invalid-feedback">{errors.confirmPassword}</div>
-                      )}
                     </div>
+                    {errors.confirmPassword && (
+                      <div className="invalid-feedback d-block">{errors.confirmPassword}</div>
+                    )}
                   </div>
 
-                  <button
-                    type="submit"
-                    className="btn btn-primary w-100"
-                    disabled={submitting}
-                  >
+                  <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
                     {submitting ? "Registering..." : "Register"}
                   </button>
 

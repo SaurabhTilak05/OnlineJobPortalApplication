@@ -124,6 +124,12 @@
   transform: scale(0.98);
 }
 
+textarea.form-control {
+  border: none !important;
+  box-shadow: none !important;
+  resize: none; /* जर resize नको असेल तर */
+}
+
 /* Toast notifications */
 .toast {
   position: fixed;

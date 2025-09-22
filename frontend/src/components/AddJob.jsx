@@ -5,6 +5,18 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./AddJob.css";
 
+// Predefined location suggestions
+const locationOptions = [
+  "Mumbai",
+  "Pune",
+  "Delhi",
+  "Bangalore",
+  "Chennai",
+  "Hyderabad",
+  "Kolkata",
+  "Ahmedabad",
+];
+
 export default function AddJob() {
   const navigate = useNavigate();
 
@@ -21,8 +33,9 @@ export default function AddJob() {
   });
 
   const [errors, setErrors] = useState({});
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
 
-  // ✅ Validate single field
+  // Validate single field
   const validateField = (name, value) => {
     let error = "";
 
@@ -42,26 +55,20 @@ export default function AddJob() {
         else if (isNaN(value) || value <= 0) error = "Openings must be a positive number";
         break;
 
-    case "experience_required":
-  if (!value.trim()) {
-    error = "Experience is required";
-  } else if (!/^(NA|[0-9]+)$/i.test(value)) {
-    error = "Enter valid experience (e.g. 2 or NA)";
-  }
-  break;
-
+      case "experience_required":
+        if (!value.trim()) error = "Experience is required";
+        else if (!/^(NA|[0-9]+)$/i.test(value)) error = "Enter valid experience (e.g. 2 or NA)";
+        break;
 
       case "location":
         if (!value.trim()) error = "Location is required";
         else if (value.length < 2) error = "Enter a valid location";
         break;
 
-     case "package":
-  if (!value.trim()) error = "Package details are required";
-  else if (!/^[0-9]+(\.[0-9]+)?(\s?(LPA|PA|K))?$/i.test(value))
-    error = "Enter valid package ";
-  break;
-
+      case "package":
+        if (!value.trim()) error = "Package details are required";
+        else if (!/^[0-9]+(\.[0-9]+)?(\s?(LPA|PA|K))?$/i.test(value)) error = "Enter valid package";
+        break;
 
       case "skills_required":
         if (!value.trim()) error = "Skills are required";
@@ -74,16 +81,12 @@ export default function AddJob() {
         break;
 
       case "deadline":
-  if (!value) {
-    error = "Application deadline is required";
-  } else {
-    const today = new Date().toISOString().split("T")[0];
-    if (value <= today) {
-      error = "Deadline must be after today";
-    }
-  }
-  break;
-
+        if (!value) error = "Application deadline is required";
+        else {
+          const today = new Date().toISOString().split("T")[0];
+          if (value < today) error = "Deadline cannot be before today";
+        }
+        break;
 
       default:
         break;
@@ -92,20 +95,36 @@ export default function AddJob() {
     return error;
   };
 
-  // ✅ Handle input change
+  // Handle input change
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" }); // clear error while typing
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+
+    // Location suggestions
+    if (name === "location") {
+      if (!value.trim()) setLocationSuggestions([]);
+      else {
+        const filtered = locationOptions.filter((loc) =>
+          loc.toLowerCase().includes(value.toLowerCase())
+        );
+        setLocationSuggestions(filtered);
+      }
+    }
   };
 
-  // ✅ Handle blur validation
+  // Handle blur validation
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const error = validateField(name, value);
     setErrors({ ...errors, [name]: error });
+
+    if (name === "location") {
+      setTimeout(() => setLocationSuggestions([]), 100);
+    }
   };
 
-  // ✅ Final validation before submit
+  // Validate all fields
   const validateAll = () => {
     let newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -115,7 +134,7 @@ export default function AddJob() {
     return newErrors;
   };
 
-  // ✅ Submit handler
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -160,10 +179,7 @@ export default function AddJob() {
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 px-3 bg-light">
-      <div
-        className="add-job-card shadow-lg p-4 p-md-5 rounded-4 w-100"
-        style={{ maxWidth: "900px" }}
-      >
+      <div className="add-job-card shadow-lg p-4 p-md-5 rounded-4 w-100" style={{ maxWidth: "900px" }}>
         <h2 className="text-center mb-4 fw-bold text-primary">Add New Job</h2>
         <form onSubmit={handleSubmit}>
           <div className="row g-3">
@@ -224,13 +240,11 @@ export default function AddJob() {
                 className={`form-control ${errors.experience_required ? "is-invalid" : ""}`}
                 placeholder="e.g. 2+ years"
               />
-              {errors.experience_required && (
-                <div className="invalid-feedback">{errors.experience_required}</div>
-              )}
+              {errors.experience_required && <div className="invalid-feedback">{errors.experience_required}</div>}
             </div>
 
-            {/* Location */}
-            <div className="col-12 col-md-4">
+            {/* Location with suggestions */}
+            <div className="col-12 col-md-4 position-relative">
               <label className="form-label fw-bold">Location</label>
               <input
                 type="text"
@@ -239,9 +253,30 @@ export default function AddJob() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={`form-control ${errors.location ? "is-invalid" : ""}`}
-                placeholder="Job location"
+                placeholder="Enter job location"
+                autoComplete="off"
               />
               {errors.location && <div className="invalid-feedback">{errors.location}</div>}
+              {locationSuggestions.length > 0 && (
+                <ul
+                  className="list-group position-absolute w-100"
+                  style={{ zIndex: 1000, maxHeight: "150px", overflowY: "auto" }}
+                >
+                  {locationSuggestions.map((loc, idx) => (
+                    <li
+                      key={idx}
+                      className="list-group-item list-group-item-action"
+                      onMouseDown={() => {
+                        setFormData({ ...formData, location: loc });
+                        setLocationSuggestions([]);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {loc}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* Package */}
@@ -271,9 +306,7 @@ export default function AddJob() {
                 className={`form-control ${errors.skills_required ? "is-invalid" : ""}`}
                 placeholder="e.g. React, Java, SQL"
               />
-              {errors.skills_required && (
-                <div className="invalid-feedback">{errors.skills_required}</div>
-              )}
+              {errors.skills_required && <div className="invalid-feedback">{errors.skills_required}</div>}
             </div>
 
             {/* Description */}
@@ -284,13 +317,12 @@ export default function AddJob() {
                 value={formData.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`form-control ${errors.description ? "is-invalid" : ""}`}
                 rows="3"
                 placeholder="Enter job description"
-              ></textarea>
-              {errors.description && (
-                <div className="invalid-feedback">{errors.description}</div>
-              )}
+                style={{ border: "none", boxShadow: "none", outline: "none", resize: "none" }}
+                className={errors.description ? "is-invalid" : ""}
+              />
+              {errors.description && <div className="invalid-feedback">{errors.description}</div>}
             </div>
 
             {/* Deadline */}
@@ -303,6 +335,7 @@ export default function AddJob() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={`form-control ${errors.deadline ? "is-invalid" : ""}`}
+                min={new Date().toISOString().split("T")[0]} // आज पासून select करता येईल
               />
               {errors.deadline && <div className="invalid-feedback">{errors.deadline}</div>}
             </div>

@@ -1,25 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaBriefcase, FaUsers, FaBuilding } from "react-icons/fa";
+import { FaBriefcase, FaUsers, FaBuilding, FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./home.css";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [placements, setPlacements] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [loadingPlacements, setLoadingPlacements] = useState(true);
 
-  // ✅ Fetch latest jobs from backend
+  // Fetch latest jobs
   useEffect(() => {
     fetch("http://localhost:8080/allJob")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Jobs fetched:", data); // Debugging
         setJobs(data);
-        setLoading(false);
+        setLoadingJobs(false);
       })
       .catch((err) => {
         console.error("Error fetching jobs:", err);
-        setLoading(false);
+        setLoadingJobs(false);
+      });
+  }, []);
+
+  // Fetch placements
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/placements")
+      .then((res) => res.json())
+      .then((data) => {
+        setPlacements(data.placements || []); // assuming your API returns { placements: [...] }
+        setLoadingPlacements(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching placements:", err);
+        setLoadingPlacements(false);
       });
   }, []);
 
@@ -106,73 +121,116 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🔥 Latest Jobs Section (Scrollable) */}
-  {/* 🔥 Latest Jobs Section (Horizontal Scroll) */}
+      {/* Latest Jobs Section (Horizontal Scroll) */}
+      <section className="py-5 bg-light">
+        <div className="container">
+          <h2 className="fw-bold text-center mb-4">Latest Job Openings</h2>
+          {loadingJobs ? (
+            <p className="text-center text-muted">Loading jobs...</p>
+          ) : jobs.length > 0 ? (
+            <div className="job-scroll-horizontal d-flex gap-3" style={{ overflowX: "auto", paddingBottom: "10px" }}>
+              {jobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="card shadow-sm p-3"
+                  style={{ minWidth: "280px", borderRadius: "12px", flex: "0 0 auto" }}
+                >
+                  <h5 className="fw-bold">{job.title}</h5>
+                  <p className="text-muted mb-1">{job.company}</p>
+                  <p className="small mb-1">
+                    <FaBuilding className="me-1 text-primary" />
+                    {job.location}
+                  </p>
+                  <p className="small mb-2">
+                    <FaBriefcase className="me-1 text-success" />
+                    {job.experience_required} yrs
+                  </p>
+                  <NavLink to={`/signup`} className="btn btn-sm btn-outline-primary">
+                    View Details
+                  </NavLink>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-muted">⚡ No jobs available right now</p>
+          )}
+          <div className="text-center mt-4">
+            <NavLink to="/signup" className="btn btn-primary px-4">
+              View All Jobs
+            </NavLink>
+          </div>
+        </div>
+      </section>
+
+      {/* Placed Jobseekers Section */}
+     {/* Placed Jobseekers Section (Horizontal Scroll + Auto Scroll) */}
 <section className="py-5 bg-light">
   <div className="container">
-    <h2 className="fw-bold text-center mb-4">Latest Job Openings</h2>
-
-    {loading ? (
-      <p className="text-center text-muted">Loading jobs...</p>
-    ) : jobs.length > 0 ? (
+    <h2 className="fw-bold text-center mb-4">Recently Placed Jobseekers</h2>
+    {loadingPlacements ? (
+      <p className="text-center text-muted">Loading placements...</p>
+    ) : placements.length > 0 ? (
       <div
-        className="job-scroll-horizontal d-flex gap-3"
+        className="placement-scroll-horizontal d-flex gap-3"
         style={{
           overflowX: "auto",
+          scrollBehavior: "smooth",
           paddingBottom: "10px",
         }}
+        ref={(el) => {
+          if (el) {
+            let scrollAmount = 0;
+            const scrollStep = 1;
+            const scrollInterval = setInterval(() => {
+              if (scrollAmount >= el.scrollWidth) scrollAmount = 0;
+              el.scrollLeft = scrollAmount;
+              scrollAmount += scrollStep;
+            }, 20); // adjust speed here
+          }
+        }}
       >
-        {jobs.map((job) => (
+        {placements.map((p) => (
           <div
-            key={job.id}
+            key={p.placement_id}
             className="card shadow-sm p-3"
-            style={{
-              minWidth: "280px",
-              borderRadius: "12px",
-              flex: "0 0 auto",
-            }}
+            style={{ minWidth: "250px", maxWidth: "300px", borderRadius: "12px" }}
           >
-            <h5 className="fw-bold">{job.title}</h5>
-            <p className="text-muted mb-1">{job.company}</p>
-            <p className="small mb-1">
-              <FaBuilding className="me-1 text-primary" />
-              {job.location}
+            <div className="text-center mb-2">
+              {p.profile_picture ? (
+                <img
+                  src={`http://localhost:8080${p.profile_picture}`}
+                  alt={p.seeker_name}
+                  style={{ width: "60px", height: "60px", borderRadius: "50%" }}
+                />
+              ) : (
+                <FaUserCircle size={60} className="text-secondary" />
+              )}
+            </div>
+            <h5 className="fw-bold text-center">{p.seeker_name}</h5>
+            <p className="text-center mb-1">{p.job_title} at {p.company}</p>
+            <p className="text-center small text-muted">
+              Placed on: {new Date(p.placement_date).toLocaleDateString()}
             </p>
-            <p className="small mb-2">
-              <FaBriefcase className="me-1 text-success" />
-              {job.experience_required} yrs
-            </p>
-            <NavLink
-              to={`/signup`}
-              className="btn btn-sm btn-outline-primary"
-            >
-              View Details
-            </NavLink>
+           
           </div>
         ))}
       </div>
     ) : (
-      <p className="text-center text-muted">⚡ No jobs available right now</p>
+      <p className="text-center text-muted">No placements yet.</p>
     )}
-
-    <div className="text-center mt-4">
-      <NavLink to="/signup" className="btn btn-primary px-4">
-        View All Jobs
-      </NavLink>
-    </div>
   </div>
 
   {/* Horizontal Scrollbar Style */}
   <style>
     {`
-      .job-scroll-horizontal::-webkit-scrollbar {
+      .placement-scroll-horizontal::-webkit-scrollbar {
         height: 8px;
       }
-      .job-scroll-horizontal::-webkit-scrollbar-thumb {
+      .placement-scroll-horizontal::-webkit-scrollbar-thumb {
         background-color: #007bff;
         border-radius: 10px;
       }
-      .job-scroll-horizontal::-webkit-scrollbar-track {
+      .placement-scroll-horizontal::-webkit-scrollbar-track {
         background: #f1f1f1;
       }
     `}
@@ -193,18 +251,12 @@ export default function Home() {
         </div>
       </section>
 
-     
-
       {/* Custom Styles */}
       <style>
         {`
           .hero {
             min-height: 90vh;
-            background: linear-gradient(
-                rgba(0, 0, 0, 0.5),
-                rgba(0, 0, 0, 0.6)
-              ),
-              url('/images/banner.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('/images/banner.jpg') center/cover no-repeat;
           }
           .hover-card {
             border-radius: 12px;
@@ -212,10 +264,20 @@ export default function Home() {
           }
           .hover-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
           }
           .cta-section {
             background: linear-gradient(45deg, #007bff, #6610f2);
+          }
+          .job-scroll-horizontal::-webkit-scrollbar {
+            height: 8px;
+          }
+          .job-scroll-horizontal::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 10px;
+          }
+          .job-scroll-horizontal::-webkit-scrollbar-track {
+            background: #f1f1f1;
           }
         `}
       </style>

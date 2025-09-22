@@ -10,7 +10,8 @@ import {
   FaHistory,
   FaEnvelope,
   FaUserCircle,
-  FaCalendarAlt, // new icon for schedule
+  FaCalendarAlt,
+  FaCheckCircle ,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -166,6 +167,20 @@ export default function HRDashboard() {
               <FaHistory className="me-2" /> Job History
             </NavLink>
           </li>
+          <li>
+  <NavLink
+    to="placement"
+    className={({ isActive }) =>
+      `nav-link d-flex align-items-center ${
+        isActive ? "active" : "text-white"
+      }`
+    }
+    onClick={closeSidebar}
+  >
+    <FaCheckCircle className="me-2" /> Placement Records
+  </NavLink>
+</li>
+
 
          
         </ul>

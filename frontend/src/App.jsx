@@ -48,7 +48,8 @@ import Footer from "./components/footer.jsx";
 import ViewScheduleForUser from "./components/viewscheduleforuser.jsx";
 import ContactDetails from "./components/contactdetail.jsx";
 import UpdateInterviewStatus from "./components/updateinterviewstatus.jsx";
-
+import Placement from "./components/placement.jsx";
+import PlacementList from "./components/placementlist.jsx";
 // Navbar Layout
 function LayoutWithNavbar({ children }) {
   const location = useLocation();
@@ -246,6 +247,7 @@ export default function App() {
             <Route path="register-student" element={<Register />} />
             <Route path="view-jobs" element={<JobforUsers />} />
             <Route path="contact-detail" element={<ContactDetails />} />
+            <Route path="placementlist" element={<PlacementList />} />
           </Route>
 
           {/* HR Dashboard */}
@@ -274,14 +276,14 @@ export default function App() {
               path="applicantProfile/:seekerId"
               element={<ApplicantProfile />}
             />
-
+             
             {/* Interview scheduling */}
             <Route
               path="/hrdashboard/schedule-interview/:seekerId/:jobId"
               element={<InterViewSchedule />}
             />
            <Route path="interviewstatus/:id" element={<UpdateInterviewStatus />} />
-
+            <Route path="placement" element={<Placement />} />
            
           </Route>
 

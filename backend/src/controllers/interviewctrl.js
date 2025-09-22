@@ -101,6 +101,55 @@ QuickStart Career Team
     res.status(500).json({ error: "Server error" });
   }
 };
+const signature = `
+Best regards,<br>
+Tilak S.<br>
+Project Lead<br>
+Quick Start Career<br>
+Pune, India
+`;
+
+const getEmailContent = (status, jobTitle, seekerName, remarks) => {
+  let subject = "";
+  let bodyMessage = "";
+
+  switch (status) {
+    case "scheduled":
+      subject = `Interview Scheduled - ${jobTitle}`;
+      bodyMessage = `Your interview for <strong>${jobTitle}</strong> has been scheduled.`;
+      break;
+    case "completed":
+      subject = `Interview Completed - ${jobTitle}`;
+      bodyMessage = `Your interview for <strong>${jobTitle}</strong> has been completed successfully.`;
+      break;
+    case "selected":
+      subject = `Congratulations! Selected for ${jobTitle}`;
+      bodyMessage = `🎉 Congratulations! You have been selected for <strong>${jobTitle}</strong>.`;
+      break;
+    case "rejected":
+      subject = `Interview Result - ${jobTitle}`;
+      bodyMessage = `We regret to inform you that you have not been selected for <strong>${jobTitle}</strong>.`;
+      break;
+    case "cancelled":
+      subject = `Interview Cancelled - ${jobTitle}`;
+      bodyMessage = `Your interview for <strong>${jobTitle}</strong> has been cancelled.`;
+      break;
+    default:
+      subject = `Update on ${jobTitle}`;
+      bodyMessage = `Status updated: ${status}`;
+      break;
+  }
+
+  const html = `
+    <p>Dear ${seekerName},</p>
+    <p>${bodyMessage}</p>
+    <p>${remarks}</p>
+    <p>${signature}</p>
+  `;
+
+  return { subject, html };
+};
+
 
 
 // Get all interviews
@@ -172,6 +221,7 @@ exports.deleteInterview = async (req, res) => {
 
 
 
+// Status map for application update
 const statusMap = {
   scheduled: "interview_scheduled",
   completed: "shortlisted",
@@ -179,22 +229,29 @@ const statusMap = {
   rejected: "rejected",
   cancelled: "applied",
 };
-// controllers/interviewctrl.js
+
+// Update interview status & send email
 exports.updateInterviewStatus = async (req, res) => {
   try {
-    const interviewId = req.params.id;
+    const { id } = req.params;
     const { status, remarks } = req.body;
 
-    // Model स्वतः interview + application update करतो
-    const result = await InterviewModel.updateInterviewStatus(interviewId, status, remarks);
+    // Update DB and get interview details
+    const interview = await InterviewModel.updateInterviewStatus(id, status, remarks);
 
-    if (result.affectedRows === 0) {
+    if (!interview) {
       return res.status(404).json({ error: "Interview not found ❌" });
+    }
+
+    // Send email
+    if (["scheduled","completed","selected","rejected","cancelled"].includes(status)) {
+      const { subject, html } = getEmailContent(status, interview.job_title, interview.seeker_name, remarks);
+      await sendEmail(interview.seeker_email, subject, "", html);
     }
 
     res.status(200).json({ message: "Interview & application updated successfully ✅" });
   } catch (err) {
-    console.error("Error in updateInterviewStatus:", err);
+    console.error("Error updating interview status:", err);
     res.status(500).json({ error: "Failed to update interview ❌" });
   }
 };
