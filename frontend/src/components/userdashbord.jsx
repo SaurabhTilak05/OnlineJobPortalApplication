@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaBriefcase, FaClipboardCheck } from "react-icons/fa";
-import "./userdashbord.css"; // Custom CSS
+import "./userdashboard.css";
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const [stats, setStats] = useState({
     applied: 0,
-    saved: 0,
     openings: 0,
     profileCompletion: 0,
   });
@@ -32,7 +31,6 @@ export default function StudentDashboard() {
         const data = await res.json();
         setStats({
           applied: data.applied || 0,
-          saved: data.saved || 0,
           openings: data.openings || 0,
           profileCompletion: data.profileCompletion || 0,
         });
@@ -48,50 +46,81 @@ export default function StudentDashboard() {
       title: "Profile Completion",
       count: stats.profileCompletion + "%",
       icon: <FaUser size={50} />,
-      bg: "linear-gradient(135deg, #0d6efd, #6610f2)",
+      bg: "linear-gradient(135deg, #1E3C72, #2A5298)",
       link: "/userProfile/view-profile",
     },
     {
       title: "Applied Jobs",
       count: stats.applied,
       icon: <FaBriefcase size={50} />,
-      bg: "linear-gradient(135deg, #20c997, #0dcaf0)",
+      bg: "linear-gradient(135deg, #FF416C, #FF4B2B)",
       link: "/userProfile/applied-jobs",
     },
     {
       title: "New Openings",
       count: stats.openings,
       icon: <FaClipboardCheck size={50} />,
-      bg: "linear-gradient(135deg, #198754, #28a745)",
+      bg: "linear-gradient(135deg, #11998E, #38EF7D)",
       link: "/userProfile/view-jobs",
     },
   ];
 
-  return (
-    <div className="container-fluid mt-4">
-      <h2 className="fw-bold mb-2 text-center text-primary">🎓 Student Dashboard</h2>
-      <p className="text-center text-muted mb-5 fs-6">
-        Track your applications, saved jobs, and profile progress all in one place.
-      </p>
 
-      <div className="row g-4 justify-content-center">
+  const tips = [
+    "Complete your profile to increase chances of getting hired.",
+    "Apply to at least 5 jobs per week for better visibility.",
+    "Keep your resume updated with latest skills.",
+  ];
+
+  return (
+    <div className="dashboard-container">
+      {/* Welcome Section */}
+      <div className="welcome-section">
+        <h2>Welcome Back, 🎓 Student!</h2>
+        <p>Track your profile progress, applied jobs, and new opportunities.</p>
+      </div>
+
+      {/* Dashboard Cards */}
+      <div className="cards-wrapper">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="col-12 col-sm-6 col-md-4"
+            className="dashboard-card"
+            style={{ background: card.bg }}
             onClick={() => navigate(card.link)}
-            style={{ cursor: "pointer" }}
           >
-            <div
-              className="dashboard-card shadow-sm text-center p-4 mb-3"
-              style={{ background: card.bg }}
-            >
-              <div className="icon mb-3">{card.icon}</div>
-              <h4 className="fw-bold">{card.count}</h4>
-              <p className="mb-0">{card.title}</p>
-            </div>
+            <div className="card-icon">{card.icon}</div>
+            <h3 className="card-count">{card.count}</h3>
+            <p className="card-title">{card.title}</p>
           </div>
         ))}
+      </div>
+
+      {/* Profile Progress Section */}
+      <div className="profile-progress-section">
+        <h3>Profile Completion</h3>
+        <div className="progress-bar-bg">
+          <div
+            className="progress-bar-fill"
+            style={{ width: `${stats.profileCompletion}%` }}
+          >
+            {stats.profileCompletion}%
+          </div>
+        </div>
+        <p>Complete your profile to increase your chances of getting hired!</p>
+      </div>
+
+      
+      
+
+      {/* Tips / Recommendations */}
+      <div className="tips-section">
+        <h3>Tips for Success</h3>
+        <ul>
+          {tips.map((tip, index) => (
+            <li key={index}>{tip}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
