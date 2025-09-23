@@ -21,5 +21,12 @@ applyJob( job_id, seeker_id) {
     }
   );
 }
+
+ getProfileCompletion(seeker_id) {
+    const token = localStorage.getItem("token");
+    return axios.get(`http://localhost:8080/profileStatus/${seeker_id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
 }
 export default new UserJobservice();
