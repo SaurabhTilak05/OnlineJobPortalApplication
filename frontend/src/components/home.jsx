@@ -166,7 +166,7 @@ export default function Home() {
      {/* Placed Jobseekers Section (Horizontal Scroll + Auto Scroll) */}
 <section className="py-5 bg-light">
   <div className="container">
-    <h2 className="fw-bold text-center mb-4">Recently Placed Jobseekers</h2>
+    <h2 className="fw-bold text-center mb-4">Recently Placed Students </h2>
     {loadingPlacements ? (
       <p className="text-center text-muted">Loading placements...</p>
     ) : placements.length > 0 ? (

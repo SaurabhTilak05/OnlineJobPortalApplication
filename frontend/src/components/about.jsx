@@ -128,17 +128,17 @@ export default function About() {
                 className="rounded-circle mb-3 shadow"
                 style={{ width: "150px", height: "150px", objectFit: "cover" }}
               />
-              <h5 className="fw-bold">John Doe</h5>
+              <h5 className="fw-bold">Jon Deos</h5>
               <p className="text-muted">Founder & CEO</p>
             </div>
             <div className="col-md-4 mb-4">
               <img
-                src="/images/man2.jpg"
+                src="/images/kishor.jpeg"
                 alt="Team Member"
                 className="rounded-circle mb-3 shadow"
                 style={{ width: "150px", height: "150px", objectFit: "cover" }}
               />
-              <h5 className="fw-bold">Jane Smith</h5>
+              <h5 className="fw-bold">Kishor Wankhede</h5>
               <p className="text-muted">Head of Development</p>
             </div>
             <div className="col-md-4 mb-4">

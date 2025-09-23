@@ -45,15 +45,9 @@ exports.getSeeker = async (req, res) => {
 exports.getLogJobSeeker = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
-
     const user = await jobsctrl.findByEmail(email);
-    console.log(user);
-
     if (!user) return res.status(401).json({ message: "Invalid email or password" });
-
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
 
     if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
 
@@ -80,8 +74,6 @@ exports.getProfileuser = async (req, res) => {
 };
 
 
-
-
 //  Get User by ID
 exports.getUserById = async (req, res) => {
   try {
@@ -103,9 +95,7 @@ exports.getUserById = async (req, res) => {
 exports.applyJob = async (req, res) => {
   try {
     const { job_id, seeker_id } = req.body;
-
-
-    console.log("ids are",req.body);
+    
     const result = await jobsctrl.applyJobs(job_id, seeker_id);
     res.json(result);
   } catch (err) {

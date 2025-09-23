@@ -51,6 +51,7 @@ import UpdateInterviewStatus from "./components/updateinterviewstatus.jsx";
 import Placement from "./components/placement.jsx";
 import PlacementList from "./components/placementlist.jsx";
 // Navbar Layout
+// Navbar Layout
 function LayoutWithNavbar({ children }) {
   const location = useLocation();
 
@@ -60,22 +61,22 @@ function LayoutWithNavbar({ children }) {
     location.pathname.startsWith("/hrdashboard") ||
     location.pathname.startsWith("/userprofile");
 
-  // Hide footer only in admin dashboard
   const hideFooter =
     location.pathname.startsWith("/adminhome") ||
-    location.pathname.startsWith("/hrdashboard")||
-    location.pathname.startsWith("/userProfile"); //hrdashboard
+    location.pathname.startsWith("/hrdashboard") ||
+    location.pathname.startsWith("/userProfile");
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
 
   return (
-    <div className="app-layout d-flex flex-column p-2 min-vh-100">
+    <div className="app-layout d-flex flex-column min-vh-100">
       {!hideNavbar && (
         <>
-          <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top m-0 p-0">
+          <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top px-3">
             <div className="container-fluid d-flex justify-content-between align-items-center">
+              {/* Logo */}
               <NavLink
                 className="navbar-brand fw-bold d-flex align-items-center"
                 to="/"
@@ -99,11 +100,7 @@ function LayoutWithNavbar({ children }) {
                 <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
                   About Us
                 </NavLink>
-                <NavLink
-                  className="nav-link"
-                  to="/contact"
-                  onClick={closeNavbar}
-                >
+                <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
                   Contact
                 </NavLink>
                 <NavLink
@@ -122,23 +119,23 @@ function LayoutWithNavbar({ children }) {
                 </NavLink>
               </div>
 
-              {/* Mobile Toggle */}
+              {/* Custom Hamburger */}
               <button
-                className="navbar-toggler d-lg-none"
+                className={`hamburger d-lg-none ${isOpen ? "open" : ""}`}
                 type="button"
                 onClick={toggleNavbar}
+                aria-label="Toggle navigation"
               >
-                <span className="navbar-toggler-icon"></span>
+                <span className="line"></span>
+                <span className="line"></span>
+                <span className="line"></span>
               </button>
             </div>
           </nav>
 
           {/* Mobile Side Drawer */}
-          <div
-            className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}
-            onClick={closeNavbar}
-          >
-            <ul className="list-unstyled p-4">
+          <div className={`side-drawer ${isOpen ? "open" : ""} d-lg-none`}>
+            <ul className="list-unstyled px-4 pt-4">
               <li>
                 <NavLink className="nav-link" to="/" onClick={closeNavbar}>
                   Home
@@ -150,11 +147,7 @@ function LayoutWithNavbar({ children }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className="nav-link"
-                  to="/contact"
-                  onClick={closeNavbar}
-                >
+                <NavLink className="nav-link" to="/contact" onClick={closeNavbar}>
                   Contact
                 </NavLink>
               </li>
@@ -177,45 +170,96 @@ function LayoutWithNavbar({ children }) {
             </ul>
           </div>
 
+          {/* Overlay */}
           {isOpen && (
             <div className="overlay d-lg-none" onClick={closeNavbar}></div>
           )}
+
+          {/* Custom CSS */}
+          <style>{`
+            /* ✅ Hamburger */
+            .hamburger {
+              border: none;
+              background: transparent;
+              cursor: pointer;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              width: 28px;
+              height: 22px;
+              padding: 0;
+              transition: all 0.3s ease-in-out;
+              z-index: 1100;
+            }
+            .hamburger .line {
+              height: 3px;
+              width: 100%;
+              background-color: #333;
+              border-radius: 2px;
+              transition: all 0.3s ease-in-out;
+            }
+            .hamburger.open .line:nth-child(1) {
+              transform: rotate(45deg) translateY(8px);
+            }
+            .hamburger.open .line:nth-child(2) {
+              opacity: 0;
+            }
+            .hamburger.open .line:nth-child(3) {
+              transform: rotate(-45deg) translateY(-8px);
+            }
+            .hamburger:hover .line {
+              background-color: #dc3545;
+            }
+
+            /* ✅ Side Drawer */
+            .side-drawer {
+              position: fixed;
+              top: 0;
+              left: -260px;
+              width: 260px;
+              height: 100vh;
+              background: #fff;
+              box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+              transition: left 0.3s ease-in-out;
+              z-index: 1050;
+            }
+            .side-drawer.open {
+              left: 0;
+            }
+            .side-drawer .nav-link {
+              display: block;
+              padding: 10px 0;
+              font-size: 1.1rem;
+              font-weight: 500;
+              color: #333;
+              transition: color 0.2s;
+            }
+            .side-drawer .nav-link:hover {
+              color: #dc3545;
+            }
+
+            /* ✅ Overlay */
+            .overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0,0,0,0.4);
+              z-index: 1040;
+            }
+          `}</style>
         </>
       )}
 
       {/* Main Content */}
       <main className="main-wrapper flex-grow-1">{children}</main>
 
-      {/* ✅ Show footer only if not admin */}
       {!hideFooter && <Footer />}
-
-      {/* Custom CSS */}
-      <style>{`
-        .side-drawer {
-          position: fixed;
-          top: 0;
-          left: -200px;
-          width: 150px;
-          height: 100%;
-          background: #fff;
-          box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-          transition: left 0.3s ease-in-out;
-          z-index: 1050;
-        }
-        .side-drawer.open { left: 0; }
-        .overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.3);
-          z-index: 1040;
-        }
-      `}</style>
     </div>
   );
 }
+
 
 export default function App() {
   return (

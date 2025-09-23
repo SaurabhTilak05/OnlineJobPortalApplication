@@ -16,12 +16,6 @@ exports.addAdmin = (username, password, role) => {
     });
 };
 
-//wrfergtgrtgre
-
-
-// exports.adminLogin = async (username) => {
-//   try {
-//     console.log("in repo " + username);
 
 
 exports.adminLogin = async (username) => {
@@ -29,7 +23,7 @@ exports.adminLogin = async (username) => {
     console.log("in repo " + username);
 
     const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [username]);
-    console.log("result is ", rows);
+   
 
     if (rows.length === 0) {
       console.log("in if");

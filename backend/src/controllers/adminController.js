@@ -35,21 +35,21 @@ exports.saveAdmin = async (req, res) => {
 exports.adminLogin = async (req, res) => {
   try {
     let { username, password } = req.body;
-    console.log("Request creds:", username, password);
+    
 
     // fetch from DB
     let result = await adminCtrl.adminLogin(username);
-    console.log(result)
+    
     if (!result || result.length === 0) {
       return res.status(401).json({ message: "Invalid username" });
     }
 
     let admin = result[0]; // row from DB
-    console.log("DB admin record:", admin);
+   
 
     // check password
     const isMatch = await bcrypt.compare(password, admin.password);
-    console.log("is match is "+isMatch)
+    
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }

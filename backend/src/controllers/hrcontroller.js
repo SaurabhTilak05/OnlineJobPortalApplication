@@ -88,7 +88,7 @@ exports.hrLogin = async (req, res) => {
     const token = jwt.sign(
       { id: hr.hr_id, email: hr.email, role: hr.role },
       process.env.JWT_SECRET || "mySecretKey",
-      { expiresIn: "1h" }
+      { expiresIn: "2h" }
     );
 
    res.json({
@@ -97,7 +97,7 @@ exports.hrLogin = async (req, res) => {
   hr_id: hr.hr_id   
 });
   } catch (err) {
-    console.error("Error during HR login:", err);
+   
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -115,7 +115,7 @@ exports.addingJob = (req, res) => {
   hrModel.addJob({ title, company, opening, experience_required, location, package, skills_required, description, deadline, hr_id })
     .then(() => res.status(201).json({ message: "Job saved successfully" }))
     .catch(err => {
-      console.error("Job save error:", err);
+     
       res.status(500).json({ message: "Failed to save job" });
     });
 };
@@ -155,7 +155,7 @@ exports.getJobHrDash = async (req, res) => {
    // ✅ debug DB result
     return res.status(200).json(result);
   } catch (err) {
-    console.error(err);
+   
     res.status(500).json({ message: "Something went wrong", error: err });
   }
 };
@@ -173,7 +173,7 @@ exports.registerHr = (req, res) => {
             return res.status(200).json({ message: result });
         })
         .catch((err) => {
-            console.error("Error saving admin:", err);
+          
             return res.status(500).json({ error: err });
         });
 };
