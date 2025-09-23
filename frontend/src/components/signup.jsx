@@ -184,14 +184,8 @@ export default function Sign() {
                   </NavLink>
                 </p>
 
-                <p className="text-center small">or</p>
-                <p className="text-center small">Login With Social</p>
-
-                <div className="d-flex justify-content-center gap-2">
-                  <button className="btn btn-outline-danger">Google</button>
-                  <button className="btn btn-primary">Facebook</button>
-                  <button className="btn btn-info text-white">Twitter</button>
-                </div>
+                
+               
               </div>
             </div>
           </div>
