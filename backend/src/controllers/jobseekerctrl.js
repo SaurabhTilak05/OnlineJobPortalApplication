@@ -91,17 +91,17 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-//  Apply for Job
-exports.applyJob = async (req, res) => {
-  try {
-    const { job_id, seeker_id } = req.body;
+// //  Apply for Job
+// exports.applyJob = async (req, res) => {
+//   try {
+//     const { job_id, seeker_id } = req.body;
     
-    const result = await jobsctrl.applyJobs(job_id, seeker_id);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message || "Error applying for job" });
-  }
-};
+//     const result = await jobsctrl.applyJobs(job_id, seeker_id);
+//     res.json(result);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message || "Error applying for job" });
+//   }
+// };
 
 //  Get All Applicants
 
@@ -117,21 +117,30 @@ exports.getApplicants = async (req, res) => {
 
 
 
-// ✅ Student applies for a job
-exports.applyForJob = async (req, res) => {
+// service layer (jobskrctrl.js)
+exports.applyJob = async (req, res) => {
   try {
     const { job_id, seeker_id } = req.body;
+    // 🔹 Check profile completion %
+    const percentage = await jobsctrl.getProfileCompletion(seeker_id);
 
-    if (!job_id || !seeker_id) {
-      return res.status(400).json({ message: "Job ID and Seeker ID are required" });
+    if (percentage < 30) {
+      return res.status(403).json({
+        success: false,
+        message: `⚠️ Please complete your profile at least 30% before applying. Current: ${percentage}%`
+      });
     }
 
+    // 🔹 Normal Apply Logic
     const result = await jobsctrl.applyJobs(job_id, seeker_id);
-    res.status(200).json({ message: result });
+    res.json({ success: true, message: result });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error applying for job" });
   }
 };
+
 
 
 // ✅ Get applied jobs for a student
@@ -280,5 +289,15 @@ exports.getDashboardStats = async (req, res) => {
   } catch (err) {
     console.error("Error fetching dashboard stats:", err);
     res.status(500).json({ message: "Server error while fetching stats" });
+  }
+};
+
+exports.profileStatus = async (req, res) => {
+  try {
+    const { seeker_id } = req.params;
+    const completion = await jobsctrl.getProfileCompletion(seeker_id);
+    res.json({ completion }); // return { completion: number }
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Error fetching profile status" });
   }
 };

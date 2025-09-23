@@ -53,6 +53,8 @@ router.post("/adminLogin",adCtrl.adminLogin);
 router.get("/place", place.getPlacements);
 // ✅ Dashboard stats API
 router.get("/stats", verifyUser, jobskrctrl.getDashboardStats);
+// Profile Completion %
+router.get("/profileStatus/:seeker_id", jobskrctrl.profileStatus);
 
 // Protect admin-only APIs
 router.get("/viewAlljobforAdmin", verifyToken, verifyAdmin, adCtrl.viewAlljobforAdmin);

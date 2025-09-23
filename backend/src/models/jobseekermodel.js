@@ -137,9 +137,9 @@ exports.getAllApplicant = async (hrId) => {
 
 
 // ✅ Apply for Job
+// controller (jobsctrl.js)
 exports.applyJobs = async (job_id, seeker_id) => {
   try {
-    // Prevent duplicate applications
     const [check] = await db.query(
       "SELECT * FROM applications WHERE job_id = ? AND seeker_id = ?",
       [job_id, seeker_id]
@@ -149,7 +149,6 @@ exports.applyJobs = async (job_id, seeker_id) => {
       return "You have already applied for this job";
     }
 
-    // Insert application
     await db.query(
       "INSERT INTO applications (job_id, seeker_id, status) VALUES (?, ?, 'applied')",
       [job_id, seeker_id]

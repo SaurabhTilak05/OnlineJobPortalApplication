@@ -31,7 +31,7 @@ import ViewStudProfile from "./components/viewstudprofile.jsx";
 import Userdashboard from "./components/userdashbord.jsx";
 import ViewAllJob from "./components/viewalljob.jsx";
 import HRProfile from "./components/hrProfile.jsx";
-import JobforUsers from "./components/JobforUsersandAdmin.jsx";
+import JobforUsers from "./components/jobforusers.jsx";
 import UpdateJob from "./components/updateJob.jsx";
 import UpdateHRProfile from "./components/UpdateHrProfile.jsx";
 import Jobappliedstudent from "./components/jobappliedbystudent.jsx";

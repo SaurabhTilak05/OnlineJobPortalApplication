@@ -9,12 +9,13 @@ export default function JobforUsers() {
   const [error, setError] = useState("");
   const [expandedJob, setExpandedJob] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [appliedJobs, setAppliedJobs] = useState([]); // 🔹 Track applied jobs
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [profileCompletion, setProfileCompletion] = useState(0);
 
-  const seekerId = localStorage.getItem("seeker_id"); // stored at login
-  const role = localStorage.getItem("role"); // "user" or "admin"
+  const seekerId = localStorage.getItem("seeker_id");
+  const role = localStorage.getItem("role");
 
-  // 🔹 Fetch all jobs
+  // Fetch all jobs
   useEffect(() => {
     UserJobservice.getAllJobsuser()
       .then((res) => {
@@ -28,27 +29,44 @@ export default function JobforUsers() {
       });
   }, []);
 
-  // 🚀 Apply for job
-  const handleApply = (jobId, title) => {
+  // Fetch profile completion %
+  useEffect(() => {
+    if (seekerId && role === "user") {
+      UserJobservice.getProfileCompletion(seekerId)
+        .then((res) => {
+          // Backend should return { completion: number }
+          setProfileCompletion(res.data.completion || 0);
+        })
+        .catch((err) => {
+          console.error("Error fetching profile completion:", err);
+          setProfileCompletion(0);
+        });
+    }
+  }, [seekerId, role]);
+
+  // Apply for job
+  const handleApply = (jobId) => {
     if (!seekerId) {
-      toast.error("⚠️ Please login as a student first!");
+      toast.error(" Please login as a student first!");
+      return;
+    }
+
+    if (profileCompletion < 30) {
+      toast.warning("Complete at least 30% of your profile to apply!");
       return;
     }
 
     UserJobservice.applyJob(jobId, seekerId)
       .then((res) => {
-        if (typeof res.data === "string") {
-          if (res.data.toLowerCase().includes("success")) {
-            toast.success(`✅ ${res.data}`);
-            setAppliedJobs((prev) => [...prev, jobId]); // Mark as applied
-          } else if (res.data.toLowerCase().includes("already")) {
-            toast.warning(`⚠️ ${res.data}`);
-            setAppliedJobs((prev) => [...prev, jobId]);
-          } else {
-            toast.info(res.data);
-          }
+        console.log("Apply Job Response:", res.data);
+
+        if (res.data.success) {
+          toast[res.data.message.toLowerCase().includes("already") ? "warning" : "success"](
+            res.data.message
+          );
+          setAppliedJobs((prev) => [...prev, jobId]);
         } else {
-          toast.info("ℹ️ Unexpected response from server");
+          toast.warning(res.data.message || " Cannot apply for this job");
         }
       })
       .catch((err) => {
@@ -57,29 +75,25 @@ export default function JobforUsers() {
       });
   };
 
-  // 🔹 Handle search input with validation
+  // Handle search input
   const handleSearchChange = (e) => {
-    const value = e.target.value.trimStart(); // Remove leading spaces
-
-    if (value.length > 50) {
-      toast.warning("⚠️ Search term too long (max 50 characters)");
+    const value = e.target.value.trimStart();
+    if (value.length > 30) {
+      toast.warning("Search term too long (max 50 characters)");
       return;
     }
-
-    // Allow only letters, numbers, spaces, and basic punctuation
     const validPattern = /^[a-zA-Z0-9\s.,-]*$/;
     if (!validPattern.test(value)) {
       toast.error("❌ Invalid character in search");
       return;
     }
-
     setSearchTerm(value);
   };
 
-  // 🔍 Filter jobs based on search term
+  // Filter jobs based on search
   const filteredJobs = jobs.filter((job) => {
     const searchLower = searchTerm.toLowerCase().trim();
-    if (!searchLower) return true; // if empty, show all jobs
+    if (!searchLower) return true;
     return (
       job.title?.toLowerCase().includes(searchLower) ||
       job.company?.toLowerCase().includes(searchLower) ||
@@ -95,7 +109,9 @@ export default function JobforUsers() {
     <div className="container mt-4">
       <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
 
-      {/* 🔹 Search Field */}
+    
+
+      {/* Search Field */}
       <div className="row mb-4">
         <div className="col-md-6 offset-md-3">
           <input
@@ -144,7 +160,6 @@ export default function JobforUsers() {
                     📅 <strong>Deadline:</strong> {job.deadline}
                   </p>
 
-                  {/* 🚀 Apply Button only for students */}
                   {role === "user" && (
                     appliedJobs.includes(job.job_id) ? (
                       <button className="btn btn-secondary w-100 mt-auto" disabled>
@@ -153,7 +168,7 @@ export default function JobforUsers() {
                     ) : (
                       <button
                         className="btn btn-success w-100 mt-auto"
-                        onClick={() => handleApply(job.job_id, job.title)}
+                        onClick={() => handleApply(job.job_id)}
                       >
                         🚀 Apply Now
                       </button>
