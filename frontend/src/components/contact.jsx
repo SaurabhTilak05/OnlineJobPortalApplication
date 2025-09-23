@@ -151,10 +151,10 @@ export default function Contact() {
 
         <div className="text-center mt-5">
           <p>
-            <strong>Email:</strong> support@quickstart.com
+            <strong>Email:</strong> quickstartcareer01@gmail.com
           </p>
           <p>
-            <strong>Phone:</strong> +91 98765 43210
+            <strong>Phone:</strong> +91 97653 03776
           </p>
         </div>
       </div>
