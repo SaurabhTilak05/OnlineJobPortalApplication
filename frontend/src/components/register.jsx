@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import RegisterServ from "../service/registerserv.js";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function RegisterJobSeeker() {
@@ -20,17 +20,12 @@ export default function RegisterJobSeeker() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // validate single field
   const validateField = (name, value) => {
     let temp = { ...errors };
-
     switch (name) {
       case "name":
         if (!value.trim()) temp.name = "Full Name is required";
@@ -68,7 +63,6 @@ export default function RegisterJobSeeker() {
       default:
         break;
     }
-
     setErrors(temp);
   };
 
@@ -77,14 +71,16 @@ export default function RegisterJobSeeker() {
   };
 
   const validate = () => {
-    let temp = {};
     Object.keys(form).forEach((key) => validateField(key, form[key]));
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
 
     setSubmitting(true);
 
@@ -112,6 +108,20 @@ export default function RegisterJobSeeker() {
 
   return (
     <section className="py-5">
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-7 col-lg-6">
