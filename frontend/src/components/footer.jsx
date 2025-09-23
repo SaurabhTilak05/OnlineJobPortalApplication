@@ -39,8 +39,8 @@ export default function Footer() {
           {/* Contact Info */}
           <div className="col-md-4 mb-4">
             <h6 className="fw-bold mb-3">Contact Info</h6>
-            <p><strong>Email:</strong> support@quickstart.com</p>
-            <p><strong>Phone:</strong> +91 98765 43210</p>
+            <p><strong>Email:</strong> quickstartcareer01@gmail.com</p>
+            <p><strong>Phone:</strong> +91 97653 03776</p>
             <p><strong>Address:</strong> 123, Tech Park, Pune, India</p>
           </div>
 
