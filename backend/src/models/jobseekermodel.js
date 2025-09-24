@@ -21,7 +21,7 @@ exports.findById = async (id) => {
        sp.dob, sp.gender, sp.address AS sp_address, sp.qualification, sp.college_name, sp.branch,
        sp.graduation_year, sp.percentage, sp.skills, sp.certifications, sp.projects,
        sp.experience, sp.languages_known, sp.resume_url, sp.profile_picture, sp.preferred_role,
-       sp.preferred_location, sp.expected_salary, sp.updated_at
+       sp.preferred_location, sp.updated_at
      FROM job_seekers js
      LEFT JOIN student_profiles sp 
        ON js.seeker_id = sp.seeker_id
@@ -52,7 +52,6 @@ exports.findById = async (id) => {
    // ✅ added
     preferred_role: user.preferred_role || "",
     preferred_location: user.preferred_location || "",
-    expected_salary: user.expected_salary || "",
     updated_at: user.updated_at || null,
      profile_picture: user.profile_picture || "", 
   };
@@ -214,7 +213,7 @@ exports.findApplicantById = async (seekerId) => {
       sp.resume_url,
       sp.preferred_role,
       sp.preferred_location,
-      sp.expected_salary,
+     
       sp.updated_at,
       a.job_id
     FROM job_seekers js
@@ -238,7 +237,7 @@ exports.upsertProfile = async (seeker_id, data) => {
     "dob","gender","address","qualification","college_name","branch",
     "graduation_year","percentage","skills","certifications","projects",
     "experience","languages_known","resume_url","profile_picture","preferred_role",
-    "preferred_location","expected_salary"
+    "preferred_location"
   ];
 
   const fields = ["seeker_id"];
@@ -273,7 +272,7 @@ exports.findByIdP = async (id) => {
        sp.dob, sp.gender, sp.qualification, sp.college_name, sp.branch,
        sp.graduation_year, sp.percentage, sp.skills, sp.certifications, sp.projects,
        sp.experience, sp.languages_known, sp.resume_url, sp.profile_picture,
-       sp.preferred_role, sp.preferred_location, sp.expected_salary, sp.updated_at
+       sp.preferred_role, sp.preferred_location, sp.updated_at
      FROM job_seekers js
      LEFT JOIN student_profiles sp 
        ON js.seeker_id = sp.seeker_id
@@ -310,7 +309,7 @@ exports.getProfileCompletion = async (seeker_id) => {
     `SELECT dob, gender, address, qualification, college_name, branch,
      graduation_year, percentage, skills, certifications, projects,
      experience, languages_known, resume_url, profile_picture,
-     preferred_role, preferred_location, expected_salary
+     preferred_role, preferred_location 
      FROM student_profiles
      WHERE seeker_id = ?`,
     [seeker_id]

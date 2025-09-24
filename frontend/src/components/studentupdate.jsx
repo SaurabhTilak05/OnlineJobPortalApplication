@@ -20,7 +20,6 @@ export default function StudentUpdate() {
     languages_known: "",
     preferred_role: "",
     preferred_location: "",
-    expected_salary: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -63,10 +62,8 @@ export default function StudentUpdate() {
 
       await AdminAuthService.updateProfile(profile);
 
-     toast.success("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
       navigate("/userProfile/view-profile");
-   
-
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Failed to update profile. Try again."
@@ -93,13 +90,16 @@ export default function StudentUpdate() {
         <div className="row g-3">
           {/* DOB */}
           <div className="col-md-6">
-            <label className="form-label">Date of Birth</label>
+            <label className="form-label">
+              Date of Birth <span className="text-danger">*</span>
+            </label>
             <input
               type="date"
               className="form-control"
               name="dob"
               value={profile.dob || ""}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -115,7 +115,6 @@ export default function StudentUpdate() {
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
-              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -134,7 +133,9 @@ export default function StudentUpdate() {
 
           {/* Qualification */}
           <div className="col-md-6">
-            <label className="form-label">Qualification</label>
+            <label className="form-label">
+              Qualification <span className="text-danger">*</span>
+            </label>
             <input
               type="text"
               className="form-control"
@@ -142,12 +143,15 @@ export default function StudentUpdate() {
               value={profile.qualification || ""}
               onChange={handleChange}
               placeholder="Enter your highest qualification"
+              required
             />
           </div>
 
           {/* College Name */}
           <div className="col-md-6">
-            <label className="form-label">College Name</label>
+            <label className="form-label">
+              College Name <span className="text-danger">*</span>
+            </label>
             <input
               type="text"
               className="form-control"
@@ -155,6 +159,7 @@ export default function StudentUpdate() {
               value={profile.college_name || ""}
               onChange={handleChange}
               placeholder="Enter your college name"
+              required
             />
           </div>
 
@@ -173,27 +178,34 @@ export default function StudentUpdate() {
 
           {/* Graduation Year */}
           <div className="col-md-6">
-            <label className="form-label">Graduation Year</label>
+            <label className="form-label">
+              Graduation Year <span className="text-danger">*</span>
+            </label>
             <input
-              type="text"
+              type="number"
               className="form-control"
               name="graduation_year"
               value={profile.graduation_year || ""}
               onChange={handleChange}
               placeholder="Enter your graduation year"
+              required
             />
           </div>
 
           {/* Percentage */}
           <div className="col-md-6">
-            <label className="form-label">Percentage</label>
+            <label className="form-label">
+              Percentage <span className="text-danger">*</span>
+            </label>
             <input
-              type="text"
+              type="number"
+              step="0.01"
               className="form-control"
               name="percentage"
               value={profile.percentage || ""}
               onChange={handleChange}
               placeholder="Enter your percentage"
+              required
             />
           </div>
 
@@ -285,19 +297,6 @@ export default function StudentUpdate() {
               value={profile.preferred_location || ""}
               onChange={handleChange}
               placeholder="Enter your preferred location"
-            />
-          </div>
-
-          {/* Expected Salary */}
-          <div className="col-md-6">
-            <label className="form-label">Expected Salary</label>
-            <input
-              type="number"
-              className="form-control"
-              name="expected_salary"
-              value={profile.expected_salary || ""}
-              onChange={handleChange}
-              placeholder="Enter expected salary"
             />
           </div>
         </div>

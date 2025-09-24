@@ -54,7 +54,7 @@ exports.getLogJobSeeker = async (req, res) => {
     const token = jwt.sign(
       { seeker_id: user.seeker_id, email: user.email, role: "user" },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "2h" }
     );
 
     res.json({ message: "Login successful", token , seeker_id: user.seeker_id});
