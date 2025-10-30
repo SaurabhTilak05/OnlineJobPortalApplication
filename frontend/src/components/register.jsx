@@ -24,6 +24,10 @@ export default function RegisterJobSeeker() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
+  const handleBlur = (e) => {
+    validateField(e.target.name, form[e.target.name]);
+  };
+
   const validateField = (name, value) => {
     let temp = { ...errors };
     switch (name) {
@@ -66,13 +70,44 @@ export default function RegisterJobSeeker() {
     setErrors(temp);
   };
 
-  const handleBlur = (e) => {
-    validateField(e.target.name, e.target.value);
-  };
-
   const validate = () => {
-    Object.keys(form).forEach((key) => validateField(key, form[key]));
-    return Object.keys(errors).length === 0;
+    let temp = {};
+    Object.keys(form).forEach((key) => {
+      const value = form[key];
+      switch (key) {
+        case "name":
+          if (!value.trim()) temp.name = "Full Name is required";
+          else if (value.length < 3) temp.name = "Name must be at least 3 characters";
+          break;
+        case "email":
+          if (!value) temp.email = "Email is required";
+          else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value))
+            temp.email = "Enter a valid email address";
+          break;
+        case "phone":
+          if (!value) temp.phone = "Phone number is required";
+          else if (!/^\+?[0-9]{10,15}$/.test(value))
+            temp.phone = "Enter a valid phone number (10-15 digits)";
+          break;
+        case "address":
+          if (!value) temp.address = "Address is required";
+          else if (value.length < 5) temp.address = "Address must be at least 5 characters";
+          break;
+        case "password":
+          if (!value) temp.password = "Password is required";
+          else if (value.length < 6 || !/[A-Za-z]/.test(value) || !/[0-9]/.test(value))
+            temp.password = "Password must be at least 6 characters and contain letters & numbers";
+          break;
+        case "confirmPassword":
+          if (!value) temp.confirmPassword = "Confirm your password";
+          else if (value !== form.password) temp.confirmPassword = "Passwords do not match";
+          break;
+        default:
+          break;
+      }
+    });
+    setErrors(temp);
+    return Object.keys(temp).length === 0;
   };
 
   const handleSubmit = (e) => {
@@ -95,6 +130,7 @@ export default function RegisterJobSeeker() {
           phone: "",
           address: "",
         });
+        setErrors({});
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.message) {
@@ -108,10 +144,9 @@ export default function RegisterJobSeeker() {
 
   return (
     <section className="py-5">
-      {/* Toast Container */}
       <ToastContainer
         position="top-center"
-        autoClose={3000}
+        autoClose={3000}  
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
