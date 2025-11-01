@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import RegisterServ from "../service/registerserv.js";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
@@ -24,88 +25,31 @@ export default function RegisterJobSeeker() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleBlur = (e) => {
-    validateField(e.target.name, form[e.target.name]);
-  };
-
-  const validateField = (name, value) => {
-    let temp = { ...errors };
-    switch (name) {
-      case "name":
-        if (!value.trim()) temp.name = "Full Name is required";
-        else if (value.length < 3) temp.name = "Name must be at least 3 characters";
-        else delete temp.name;
-        break;
-      case "email":
-        if (!value) temp.email = "Email is required";
-        else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value))
-          temp.email = "Enter a valid email address";
-        else delete temp.email;
-        break;
-      case "phone":
-        if (!value) temp.phone = "Phone number is required";
-        else if (!/^\+?[0-9]{10,15}$/.test(value))
-          temp.phone = "Enter a valid phone number (10-15 digits)";
-        else delete temp.phone;
-        break;
-      case "address":
-        if (!value) temp.address = "Address is required";
-        else if (value.length < 5) temp.address = "Address must be at least 5 characters";
-        else delete temp.address;
-        break;
-      case "password":
-        if (!value) temp.password = "Password is required";
-        else if (value.length < 6 || !/[A-Za-z]/.test(value) || !/[0-9]/.test(value))
-          temp.password = "Password must be at least 6 characters and contain letters & numbers";
-        else delete temp.password;
-        break;
-      case "confirmPassword":
-        if (!value) temp.confirmPassword = "Confirm your password";
-        else if (value !== form.password) temp.confirmPassword = "Passwords do not match";
-        else delete temp.confirmPassword;
-        break;
-      default:
-        break;
-    }
-    setErrors(temp);
-  };
-
   const validate = () => {
     let temp = {};
-    Object.keys(form).forEach((key) => {
-      const value = form[key];
-      switch (key) {
-        case "name":
-          if (!value.trim()) temp.name = "Full Name is required";
-          else if (value.length < 3) temp.name = "Name must be at least 3 characters";
-          break;
-        case "email":
-          if (!value) temp.email = "Email is required";
-          else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value))
-            temp.email = "Enter a valid email address";
-          break;
-        case "phone":
-          if (!value) temp.phone = "Phone number is required";
-          else if (!/^\+?[0-9]{10,15}$/.test(value))
-            temp.phone = "Enter a valid phone number (10-15 digits)";
-          break;
-        case "address":
-          if (!value) temp.address = "Address is required";
-          else if (value.length < 5) temp.address = "Address must be at least 5 characters";
-          break;
-        case "password":
-          if (!value) temp.password = "Password is required";
-          else if (value.length < 6 || !/[A-Za-z]/.test(value) || !/[0-9]/.test(value))
-            temp.password = "Password must be at least 6 characters and contain letters & numbers";
-          break;
-        case "confirmPassword":
-          if (!value) temp.confirmPassword = "Confirm your password";
-          else if (value !== form.password) temp.confirmPassword = "Passwords do not match";
-          break;
-        default:
-          break;
-      }
-    });
+    if (!form.name.trim()) temp.name = "Full Name is required";
+    else if (form.name.length < 3) temp.name = "Name must be at least 3 characters";
+
+    if (!form.email) temp.email = "Email is required";
+    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email))
+      temp.email = "Enter a valid email address";
+
+    if (!form.phone) temp.phone = "Phone number is required";
+    else if (!/^\+?[0-9]{10,15}$/.test(form.phone))
+      temp.phone = "Enter a valid phone number";
+
+    if (!form.address.trim()) temp.address = "Address is required";
+
+    if (!form.password)
+      temp.password = "Password is required";
+    else if (form.password.length < 6)
+      temp.password = "Password must be at least 6 characters";
+
+    if (!form.confirmPassword)
+      temp.confirmPassword = "Confirm your password";
+    else if (form.password !== form.confirmPassword)
+      temp.confirmPassword = "Passwords do not match";
+
     setErrors(temp);
     return Object.keys(temp).length === 0;
   };
@@ -116,7 +60,6 @@ export default function RegisterJobSeeker() {
       toast.error("Please fix the errors in the form");
       return;
     }
-
     setSubmitting(true);
 
     RegisterServ.register(form)
@@ -132,163 +75,209 @@ export default function RegisterJobSeeker() {
         });
         setErrors({});
       })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.message) {
-          toast.error("❌ " + err.response.data.message);
-        } else {
-          toast.error("❌ Registration Failed!");
-        }
+      .catch(() => {
+        toast.error("❌ Registration Failed! Please try again.");
       })
       .finally(() => setSubmitting(false));
   };
 
   return (
-    <section className="py-5">
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}  
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+    <section
+      className="min-vh-100 d-flex align-items-center"
+      style={{
+        background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+        padding: "60px 0",
+      }}
+    >
+      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
 
       <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-md-7 col-lg-6">
-            <div className="card shadow-sm border-0 rounded-4">
-              <div className="card-body p-4">
-                <h3 className="text-center mb-4">Register as Job Seeker</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 70 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="row justify-content-center"
+        >
+          <div className="col-md-8 col-lg-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="card border-0 shadow-lg p-4 rounded-4"
+              style={{
+                background: "linear-gradient(145deg, #ffffffd9, #e0e7ffcc)",
+                backdropFilter: "blur(12px)",
+                boxShadow: "0 8px 25px rgba(0, 0, 0, 0.2)",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <motion.h3
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-center fw-bold mb-4 text-primary"
+              >
+                Register as Job Seeker
+              </motion.h3>
 
-                <form onSubmit={handleSubmit}>
-                  {/* Full Name */}
-                  <div className="mb-3">
-                    <label className="form-label">Full Name</label>
+              <form onSubmit={handleSubmit}>
+                {[
+                  {
+                    label: "Full Name",
+                    name: "name",
+                    type: "text",
+                    placeholder: "Enter your full name",
+                  },
+                  {
+                    label: "Email Address",
+                    name: "email",
+                    type: "email",
+                    placeholder: "you@example.com",
+                  },
+                  {
+                    label: "Phone",
+                    name: "phone",
+                    type: "tel",
+                    placeholder: "+91XXXXXXXXXX",
+                  },
+                ].map((input, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="mb-3"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.15 }}
+                  >
+                    <label className="form-label fw-semibold">
+                      {input.label}
+                    </label>
                     <input
-                      type="text"
-                      name="name"
-                      value={form.name}
+                      type={input.type}
+                      name={input.name}
+                      value={form[input.name]}
                       onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                      placeholder="Enter your full name"
+                      className={`form-control ${errors[input.name] ? "is-invalid" : ""}`}
+                      placeholder={input.placeholder}
                     />
-                    {errors.name && <div className="invalid-feedback">{errors.name}</div>}
-                  </div>
-
-                  {/* Email */}
-                  <div className="mb-3">
-                    <label className="form-label">Email Address</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                      placeholder="you@example.com"
-                    />
-                    {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                  </div>
-
-                  {/* Phone */}
-                  <div className="mb-3">
-                    <label className="form-label">Phone</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={form.phone}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`form-control ${errors.phone ? "is-invalid" : ""}`}
-                      placeholder="e.g. +919876543210"
-                    />
-                    {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
-                  </div>
-
-                  {/* Address */}
-                  <div className="mb-3">
-                    <label className="form-label">Address</label>
-                    <textarea
-                      name="address"
-                      value={form.address}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`form-control ${errors.address ? "is-invalid" : ""}`}
-                      rows={3}
-                      placeholder="Your full address"
-                    />
-                    {errors.address && <div className="invalid-feedback">{errors.address}</div>}
-                  </div>
-
-                  {/* Password */}
-                  <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <div className="input-group">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                        placeholder="Create a password"
-                      />
-                      <span
-                        className="input-group-text"
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </span>
-                    </div>
-                    {errors.password && (
-                      <div className="invalid-feedback d-block">{errors.password}</div>
+                    {errors[input.name] && (
+                      <div className="invalid-feedback">{errors[input.name]}</div>
                     )}
-                  </div>
+                  </motion.div>
+                ))}
 
-                  {/* Confirm Password */}
-                  <div className="mb-4">
-                    <label className="form-label">Confirm Password</label>
-                    <div className="input-group">
-                      <input
-                        type={showConfirm ? "text" : "password"}
-                        name="confirmPassword"
-                        value={form.confirmPassword}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
-                        placeholder="Re-enter your password"
-                      />
-                      <span
-                        className="input-group-text"
-                        onClick={() => setShowConfirm(!showConfirm)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {showConfirm ? <FaEyeSlash /> : <FaEye />}
-                      </span>
+                {/* Address */}
+                <motion.div
+                  className="mb-3"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <label className="form-label fw-semibold">Address</label>
+                  <textarea
+                    name="address"
+                    value={form.address}
+                    onChange={handleChange}
+                    className={`form-control ${errors.address ? "is-invalid" : ""}`}
+                    rows={3}
+                    placeholder="Your complete address"
+                  />
+                  {errors.address && (
+                    <div className="invalid-feedback">{errors.address}</div>
+                  )}
+                </motion.div>
+
+                {/* Password */}
+                <motion.div
+                  className="mb-3"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <label className="form-label fw-semibold">Password</label>
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={form.password}
+                      onChange={handleChange}
+                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                      placeholder="Create a password"
+                    />
+                    <span
+                      className="input-group-text bg-white"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
+                  {errors.password && (
+                    <div className="invalid-feedback d-block">
+                      {errors.password}
                     </div>
-                    {errors.confirmPassword && (
-                      <div className="invalid-feedback d-block">{errors.confirmPassword}</div>
-                    )}
+                  )}
+                </motion.div>
+
+                {/* Confirm Password */}
+                <motion.div
+                  className="mb-4"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  <label className="form-label fw-semibold">
+                    Confirm Password
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type={showConfirm ? "text" : "password"}
+                      name="confirmPassword"
+                      value={form.confirmPassword}
+                      onChange={handleChange}
+                      className={`form-control ${
+                        errors.confirmPassword ? "is-invalid" : ""
+                      }`}
+                      placeholder="Re-enter your password"
+                    />
+                    <span
+                      className="input-group-text bg-white"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {showConfirm ? <FaEyeSlash /> : <FaEye />}
+                    </span>
                   </div>
+                  {errors.confirmPassword && (
+                    <div className="invalid-feedback d-block">
+                      {errors.confirmPassword}
+                    </div>
+                  )}
+                </motion.div>
 
-                  <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
-                    {submitting ? "Registering..." : "Register"}
-                  </button>
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="btn btn-primary w-100 fw-semibold py-2"
+                  disabled={submitting}
+                >
+                  {submitting ? "Registering..." : "Register"}
+                </motion.button>
 
-                  <p className="text-center mt-3 mb-0">
-                    Already have an account? <a href="/signup">Login</a>
-                  </p>
-                </form>
-              </div>
-            </div>
+                <p className="text-center mt-3 mb-0">
+                  Already have an account?{" "}
+                  <a
+                    href="/signup"
+                    className="text-decoration-none text-primary fw-semibold"
+                  >
+                    Login
+                  </a>
+                </p>
+              </form>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

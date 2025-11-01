@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FaUser, FaBriefcase, FaClipboardCheck } from "react-icons/fa";
 import "./userdashboard.css";
 
@@ -65,63 +66,98 @@ export default function StudentDashboard() {
     },
   ];
 
-
   const tips = [
     "Complete your profile to increase chances of getting hired.",
     "Apply to at least 5 jobs per week for better visibility.",
     "Keep your resume updated with latest skills.",
   ];
 
+  // 🔹 Animation Variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
+  const stagger = {
+    visible: {
+      transition: { staggerChildren: 0.2 },
+    },
+  };
+
   return (
-    <div className="dashboard-container">
+    <motion.div
+      className="dashboard-container"
+      initial="hidden"
+      animate="visible"
+      variants={fadeUp}
+    >
       {/* Welcome Section */}
-      <div className="welcome-section">
+      <motion.div variants={fadeUp} className="welcome-section">
         <h2>Welcome Back, 🎓 Student!</h2>
         <p>Track your profile progress, applied jobs, and new opportunities.</p>
-      </div>
+      </motion.div>
 
       {/* Dashboard Cards */}
-      <div className="cards-wrapper">
+      <motion.div className="cards-wrapper" variants={stagger}>
         {cards.map((card, index) => (
-          <div
+          <motion.div
             key={index}
             className="dashboard-card"
             style={{ background: card.bg }}
+            variants={fadeUp}
+            whileHover={{
+              scale: 1.05,
+              rotate: 1,
+              boxShadow: "0 10px 20px rgba(0,0,0,0.15)",
+            }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => navigate(card.link)}
           >
-            <div className="card-icon">{card.icon}</div>
+            <motion.div
+              className="card-icon"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+            >
+              {card.icon}
+            </motion.div>
             <h3 className="card-count">{card.count}</h3>
             <p className="card-title">{card.title}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Profile Progress Section */}
-      <div className="profile-progress-section">
+      <motion.div variants={fadeUp} className="profile-progress-section">
         <h3>Profile Completion</h3>
         <div className="progress-bar-bg">
-          <div
+          <motion.div
             className="progress-bar-fill"
-            style={{ width: `${stats.profileCompletion}%` }}
+            initial={{ width: "0%" }}
+            animate={{ width: `${stats.profileCompletion}%` }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
           >
             {stats.profileCompletion}%
-          </div>
+          </motion.div>
         </div>
         <p>Complete your profile to increase your chances of getting hired!</p>
-      </div>
-
-      
-      
+      </motion.div>
 
       {/* Tips / Recommendations */}
-      <div className="tips-section">
+      <motion.div variants={fadeUp} className="tips-section">
         <h3>Tips for Success</h3>
-        <ul>
+        <motion.ul variants={stagger}>
           {tips.map((tip, index) => (
-            <li key={index}>{tip}</li>
+            <motion.li
+              key={index}
+              variants={fadeUp}
+              whileHover={{ scale: 1.03, color: "#007bff" }}
+            >
+              {tip}
+            </motion.li>
           ))}
-        </ul>
-      </div>
-    </div>
+        </motion.ul>
+      </motion.div>
+    </motion.div>
   );
 }

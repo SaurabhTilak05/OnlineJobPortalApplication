@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Jobservice from "../service/Jobservice.js";
+import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Jobservice from "../service/Jobservice.js";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -13,16 +14,16 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // handle input change
+  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setErrors({ ...errors, [e.target.name]: "" }); // clear error while typing
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // validation function
+  // Validate inputs
   const validate = () => {
     let temp = {};
 
@@ -40,18 +41,19 @@ export default function Contact() {
 
     if (!formData.message.trim()) {
       temp.message = "Message is required";
-    } else if (formData.message.length < 10) {
-      temp.message = "Message must be at least 10 characters long";
+    } else if (formData.message.length < 1) {
+      temp.message = "Message must be at least 2 characters long";
     }
 
     setErrors(temp);
     return Object.keys(temp).length === 0;
   };
 
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validate()) return; // stop if validation fails
+    if (!validate()) return;
     setSubmitting(true);
 
     try {
@@ -68,24 +70,62 @@ export default function Contact() {
     }
   };
 
+  // Animation variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  };
+
   return (
-    <section className="py-5 bg-light">
+    <motion.section
+      className="py-5 text-light"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(9,9,121,0.9) 35%, rgba(0,212,255,1) 100%)",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
       <div className="container">
-        <h1 className="text-center fw-bold mb-4">
-          Contact <span className="text-danger">Us</span>
-        </h1>
+        <motion.h1
+          className="text-center fw-bold mb-4"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          Contact <span className="text-warning">Us</span>
+        </motion.h1>
         <p className="lead text-center mb-5">
           Have questions or need help? Fill out the form below and we’ll get
-          back to you as soon as possible.
+          back to you soon.
         </p>
 
         <div className="row justify-content-center">
-          <div className="col-md-8">
-            <div className="card shadow-sm border-0 p-4">
+          <motion.div
+            className="col-md-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div
+              className="card shadow-lg border-0 p-4"
+              style={{
+                borderRadius: "15px",
+                background: "rgba(255, 255, 255, 0.15)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
               <form onSubmit={handleSubmit}>
                 {/* Full Name */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Full Name</label>
+                  <label className="form-label fw-bold text-light">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     className={`form-control ${
@@ -103,7 +143,9 @@ export default function Contact() {
 
                 {/* Email */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Email Address</label>
+                  <label className="form-label fw-bold text-light">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     className={`form-control ${
@@ -121,12 +163,14 @@ export default function Contact() {
 
                 {/* Message */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Message</label>
+                  <label className="form-label fw-bold text-light">
+                    Message
+                  </label>
                   <textarea
                     className={`form-control ${
                       errors.message ? "is-invalid" : ""
                     }`}
-                    rows="3"
+                    rows="4"
                     name="message"
                     placeholder="Write your message..."
                     value={formData.message}
@@ -137,30 +181,38 @@ export default function Contact() {
                   )}
                 </div>
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="btn btn-success w-100"
+                  className="btn btn-warning w-100 fw-bold"
                   disabled={submitting}
                 >
                   {submitting ? "Sending..." : "Send Message"}
-                </button>
+                </motion.button>
               </form>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="text-center mt-5">
+        {/* Contact Info */}
+        <motion.div
+          className="text-center mt-5"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
           <p>
             <strong>Email:</strong> quickstartcareer01@gmail.com
           </p>
           <p>
             <strong>Phone:</strong> +91 97653 03776
           </p>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Toast Container */}
+      {/* Toasts */}
       <ToastContainer position="top-center" theme="colored" />
-    </section>
+    </motion.section>
   );
 }

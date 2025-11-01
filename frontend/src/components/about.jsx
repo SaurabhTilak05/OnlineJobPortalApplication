@@ -170,7 +170,7 @@ export default function About() {
           <div className="row">
             {[
               { name: "Jon Deos", role: "Founder & CEO", img: "/images/man1.jpg" },
-              { name: "Kishor Wankhede", role: "Head of Development", img: "/images/kishor.jpeg" },
+              { name: "King Shaha", role: "Head of Development", img: "/images/man2.jpg" },
               { name: "Mike Johnson", role: "Marketing Lead", img: "/images/man4.jpg" },
             ].map((member, i) => (
               <motion.div

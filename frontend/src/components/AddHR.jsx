@@ -13,7 +13,6 @@ export default function AddHR() {
 
   const [errors, setErrors] = useState({});
 
-  // field wise validation
   const validateField = (name, value) => {
     let error = "";
 
@@ -49,19 +48,16 @@ export default function AddHR() {
     return error;
   };
 
-  // onBlur वर validation
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const error = validateField(name, value);
     setErrors({ ...errors, [name]: error });
   };
 
-  // handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // final form validation (on submit साठी)
   const validateForm = () => {
     let temp = {};
     Object.keys(formData).forEach((key) => {
@@ -71,7 +67,6 @@ export default function AddHR() {
     return Object.values(temp).every((x) => x === "");
   };
 
-  // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -81,7 +76,7 @@ export default function AddHR() {
       const res = await AdminAuthService.AddHR(formData);
 
       if (res.data.success) {
-        toast.success(`HR Added Successfully: ${formData.email}`, {
+        toast.success(`✅ HR Added Successfully: ${formData.email}`, {
           position: "top-center",
           autoClose: 3000,
         });
@@ -112,64 +107,120 @@ export default function AddHR() {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
-      <div className="card shadow p-4">
-        <h3 className="text-center mb-4">Add HR</h3>
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #74ebd5, #ACB6E5)",
+      }}
+    >
+      <div
+        className="card shadow-lg p-4"
+        style={{
+          width: "100%",
+          maxWidth: "500px",
+          borderRadius: "15px",
+          animation: "slideUp 0.6s ease",
+          background: "rgba(255,255,255,0.9)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <h3 className="text-center mb-4 fw-bold text-primary">Add HR</h3>
         <form onSubmit={handleSubmit}>
           {/* HR Name */}
-          <input
-            type="text"
-            name="hr_name"
-            placeholder="Enter HR Name"
-            className={`form-control mb-2 ${errors.hr_name ? "is-invalid" : ""}`}
-            value={formData.hr_name}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.hr_name && <div className="invalid-feedback">{errors.hr_name}</div>}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">HR Name</label>
+            <input
+              type="text"
+              name="hr_name"
+              placeholder="Enter HR Name"
+              className={`form-control ${errors.hr_name ? "is-invalid" : ""}`}
+              value={formData.hr_name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.hr_name && (
+              <div className="invalid-feedback">{errors.hr_name}</div>
+            )}
+          </div>
 
           {/* Company Name */}
-          <input
-            type="text"
-            name="company_name"
-            placeholder="Enter Company Name"
-            className={`form-control mb-2 ${errors.company_name ? "is-invalid" : ""}`}
-            value={formData.company_name}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.company_name && <div className="invalid-feedback">{errors.company_name}</div>}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Company Name</label>
+            <input
+              type="text"
+              name="company_name"
+              placeholder="Enter Company Name"
+              className={`form-control ${
+                errors.company_name ? "is-invalid" : ""
+              }`}
+              value={formData.company_name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.company_name && (
+              <div className="invalid-feedback">{errors.company_name}</div>
+            )}
+          </div>
 
           {/* Email */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter Email"
-            className={`form-control mb-2 ${errors.email ? "is-invalid" : ""}`}
-            value={formData.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter Email"
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.email && (
+              <div className="invalid-feedback">{errors.email}</div>
+            )}
+          </div>
 
           {/* Phone */}
-          <input
-            type="text"
-            name="phone"
-            placeholder="Enter Phone Number"
-            className={`form-control mb-3 ${errors.phone ? "is-invalid" : ""}`}
-            value={formData.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+          <div className="mb-4">
+            <label className="form-label fw-semibold">Phone Number</label>
+            <input
+              type="text"
+              name="phone"
+              placeholder="Enter Phone Number"
+              className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+              value={formData.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.phone && (
+              <div className="invalid-feedback">{errors.phone}</div>
+            )}
+          </div>
 
-          <button type="submit" className="btn btn-primary w-100">
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="btn w-100 fw-bold"
+            style={{
+              background: "linear-gradient(135deg, #667eea, #764ba2)",
+              color: "white",
+              transition: "0.3s",
+            }}
+            onMouseOver={(e) =>
+              (e.target.style.background =
+                "linear-gradient(135deg, #6a11cb, #2575fc)")
+            }
+            onMouseOut={(e) =>
+              (e.target.style.background =
+                "linear-gradient(135deg, #667eea, #764ba2)")
+            }
+          >
             Add HR
           </button>
         </form>
       </div>
 
+      {/* Toast Notification */}
       <ToastContainer />
     </div>
   );
