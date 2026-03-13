@@ -1,8 +1,12 @@
 const BASE_URL = "http://localhost:8080";
 
-export const getAllPlacements = async (hrId) => {
+export const getAllPlacements = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/place?hrId=${hrId}`);
+    const res = await fetch(`${BASE_URL}/hr/placements`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     return data;
@@ -20,7 +24,11 @@ export const getAllPlacements = async (hrId) => {
  */
 export const getPlacements = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/admin/placements`);
+    const res = await fetch(`${BASE_URL}/admin/placements`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
