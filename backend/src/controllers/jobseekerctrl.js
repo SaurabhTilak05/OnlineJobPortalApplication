@@ -2,8 +2,9 @@ let jobsctrl = require("../models/jobseekermodel.js");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-
+const db=require("../../db.js");
+const crypto = require("crypto");
+const sendEmail = require("../services/sendEmail.js");
 
 // Register Job Seeker
 exports.regSeekers = async (req, res) => {
@@ -120,7 +121,8 @@ exports.getApplicants = async (req, res) => {
 // service layer (jobskrctrl.js)
 exports.applyJob = async (req, res) => {
   try {
-    const { job_id, seeker_id } = req.body;
+    const { job_id } = req.body;
+    const seeker_id = req.user.seeker_id;
     // 🔹 Check profile completion %
     const percentage = await jobsctrl.getProfileCompletion(seeker_id);
 
@@ -146,7 +148,7 @@ exports.applyJob = async (req, res) => {
 // ✅ Get applied jobs for a student
 exports.getallJobs = async (req, res) => {
   try {
-    const seekerId = req.params.seekerId;
+    const seekerId = req.user.seeker_id;
     const jobs = await jobsctrl.getAppliedJobs(seekerId);
 
     if (!jobs || jobs.length === 0) {
@@ -294,10 +296,133 @@ exports.getDashboardStats = async (req, res) => {
 
 exports.profileStatus = async (req, res) => {
   try {
-    const { seeker_id } = req.params;
+    const seeker_id = req.user.seeker_id;
     const completion = await jobsctrl.getProfileCompletion(seeker_id);
     res.json({ completion }); // return { completion: number }
   } catch (err) {
     res.status(500).json({ error: err.message || "Error fetching profile status" });
+  }
+};
+
+//-----------------------------------------
+
+
+// 🔹 Step 1: Forgot Password (send reset link)
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    // User check
+    const [rows] = await db.query("SELECT * FROM job_seekers WHERE email = ?", [email]);
+    if (!rows.length) {
+      // Updated 2026-03-13: keep the response generic to avoid leaking registered emails.
+      return res.json({ message: "If that email is registered, a password reset link has been sent" });
+    }
+
+    // Token generate
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const expireTime = new Date(Date.now() + 15 * 60 * 1000); // 15 min expiry
+
+    // Save token in DB
+    await db.query(
+      "UPDATE job_seekers SET reset_token = ?, reset_token_expires = ? WHERE email = ?",
+      [resetToken, expireTime, email]
+    );
+
+    // ✅ Use FRONTEND_URL from .env
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // ✅ Beautiful HTML Email
+    const htmlContent = `
+      <div style="
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 30px;
+        text-align: center;
+      ">
+        <div style="
+          background-color: #ffffff;
+          max-width: 500px;
+          margin: auto;
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        ">
+          <h2 style="color: #333;">🔐 Password Reset Request</h2>
+          <p style="color: #555; font-size: 15px;">
+            We received a request to reset your password. <br>
+            Click the button below to reset it:
+          </p>
+
+          <a href="${resetLink}" target="_blank" 
+            style="
+              display: inline-block;
+              margin-top: 20px;
+              background-color: #007bff;
+              color: white;
+              padding: 12px 24px;
+              border-radius: 6px;
+              text-decoration: none;
+              font-weight: bold;
+            ">
+            Reset Password
+          </a>
+
+          <p style="color: #777; font-size: 13px; margin-top: 25px;">
+            This link will expire in 15 minutes. <br>
+            If you didn’t request this, please ignore this email.
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+          <p style="font-size: 12px; color: #999;">
+            © ${new Date().getFullYear()} QuickStart Career. All rights reserved.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const message = `Click the link below to reset your password:\n\n${resetLink}`;
+
+    await sendEmail.sendEmail(email, "Password Reset Request", message, htmlContent);
+
+    res.json({ message: "If that email is registered, a password reset link has been sent" });
+  } catch (err) {
+    console.error("Error in forgotPassword:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// 🔹 Step 2: Reset Password (after clicking link)
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({ message: "Missing token or password" });
+    }
+
+    // Check token
+    const [rows] = await db.query(
+      "SELECT * FROM job_seekers WHERE reset_token = ? AND reset_token_expires > NOW()",
+      [token]
+    );
+
+    if (!rows.length) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.query(
+      "UPDATE job_seekers SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE reset_token = ?",
+      [hashedPassword, token]
+    );
+
+    res.json({ message: "Password reset successful" });
+  } catch (err) {
+    console.error("Error in resetPassword:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

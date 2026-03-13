@@ -14,6 +14,28 @@ exports.saveAdmin = async (req, res) => {
       return res.status(400).json({ message: "Username & Password required" });
     }
 
+    const adminCount = await adminCtrl.getAdminCount();
+    if (adminCount > 0) {
+      const authHeader = req.headers["authorization"];
+      const token = authHeader && authHeader.split(" ")[1];
+
+      if (!token) {
+        return res.status(403).json({ message: "Admin token required" });
+      }
+
+      let decoded;
+      try {
+        decoded = jwt.verify(token, SECRET_KEY);
+      } catch (err) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+      }
+
+      // Updated 2026-03-13: only an authenticated admin can create additional admins.
+      if (decoded.role !== "admin") {
+        return res.status(403).json({ message: "Access denied: Admins only" });
+      }
+    }
+
     // hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 

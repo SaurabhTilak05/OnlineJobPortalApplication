@@ -5,9 +5,20 @@ const { sendEmail } = require("../services/sendEmail.js");
 exports.scheduleInterview = async (req, res) => {
   try {
     const data = { ...req.body };
+    data.hr_id = req.user.id;
 
-    if (!data.job_id || !data.seeker_id || !data.hr_id || !data.interview_date || !data.interview_time) {
+    if (!data.job_id || !data.seeker_id || !data.interview_date || !data.interview_time) {
       return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const job = await InterviewModel.getJobById(data.job_id);
+    if (!job || job.hr_id !== req.user.id) {
+      return res.status(403).json({ error: "You can only schedule interviews for your own jobs" });
+    }
+
+    const hasApplied = await InterviewModel.hasApplication(data.job_id, data.seeker_id);
+    if (!hasApplied) {
+      return res.status(400).json({ error: "Interview can only be scheduled for an existing application" });
     }
 
     // Save interview
@@ -166,7 +177,7 @@ exports.getAllInterviews = async (req, res) => {
 // Get interviews by Seeker
 exports.getBySeeker = async (req, res) => {
   try {
-    const interviews = await InterviewModel.getInterviewsBySeeker(req.params.seekerId);
+    const interviews = await InterviewModel.getInterviewsBySeeker(req.user.seeker_id);
     res.json(interviews);
   } catch (err) {
     console.error("Error fetching interviews by seeker:", err);
@@ -177,6 +188,11 @@ exports.getBySeeker = async (req, res) => {
 // Get interviews by Job
 exports.getByJob = async (req, res) => {
   try {
+    const job = await InterviewModel.getJobById(req.params.jobId);
+    if (!job || job.hr_id !== req.user.id) {
+      return res.status(403).json({ error: "You can only view interviews for your own jobs" });
+    }
+
     const interviews = await InterviewModel.getInterviewsByJob(req.params.jobId);
     res.json(interviews);
   } catch (err) {
@@ -188,7 +204,7 @@ exports.getByJob = async (req, res) => {
 // Get interviews by HR
 exports.getByHR = async (req, res) => {
   try {
-    const interviews = await InterviewModel.getInterviewsByHR(req.params.hrId);
+    const interviews = await InterviewModel.getInterviewsByHR(req.user.id);
     res.json(interviews);
   } catch (err) {
     console.error("Error fetching interviews by HR:", err);
@@ -199,7 +215,15 @@ exports.getByHR = async (req, res) => {
 // Update interview
 exports.updateInterview = async (req, res) => {
   try {
+    const interview = await InterviewModel.getInterviewById(req.params.id);
+    if (!interview || interview.hr_id !== req.user.id) {
+      return res.status(403).json({ error: "You can only update your own interviews" });
+    }
+
     const data = { ...req.body };
+    delete data.hr_id;
+    delete data.seeker_id;
+    delete data.job_id;
     await InterviewModel.updateInterview(req.params.id, data);
     res.json({ message: "Interview updated successfully" });
   } catch (err) {
@@ -211,6 +235,11 @@ exports.updateInterview = async (req, res) => {
 // Delete interview
 exports.deleteInterview = async (req, res) => {
   try {
+    const interview = await InterviewModel.getInterviewById(req.params.id);
+    if (!interview || interview.hr_id !== req.user.id) {
+      return res.status(403).json({ error: "You can only delete your own interviews" });
+    }
+
     await InterviewModel.deleteInterview(req.params.id);
     res.json({ message: "Interview deleted successfully" });
   } catch (err) {
@@ -235,6 +264,11 @@ exports.updateInterviewStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, remarks } = req.body;
+
+    const existingInterview = await InterviewModel.getInterviewById(id);
+    if (!existingInterview || existingInterview.hr_id !== req.user.id) {
+      return res.status(403).json({ error: "You can only update interviews for your own jobs" });
+    }
 
     // Update DB and get interview details
     const interview = await InterviewModel.updateInterviewStatus(id, status, remarks);

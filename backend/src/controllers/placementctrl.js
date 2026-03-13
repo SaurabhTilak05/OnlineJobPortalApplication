@@ -2,13 +2,9 @@ const db = require("../../db.js");
 
 exports.getPlacements = async (req, res) => {
   try {
- 
-    const hrId = req.query.hrId; 
-    if (!hrId) {
-      return res.status(400).json({ error: "HR ID is required" });
-    }
+    const hrId = req.user?.id || req.query.hrId;
 
-    const [rows] = await db.query(`
+    const baseQuery = `
       SELECT 
         p.id AS placement_id,
         p.placement_date,
@@ -35,9 +31,15 @@ exports.getPlacements = async (req, res) => {
       INNER JOIN job_seekers s ON p.seeker_id = s.seeker_id
       LEFT JOIN student_profiles sp ON s.seeker_id = sp.seeker_id
       INNER JOIN jobs j ON p.job_id = j.job_id
-      WHERE j.hr_id = ?  -- filter by HR
-      ORDER BY p.placement_date DESC
-    `, [hrId]);
+    `;
+
+    const query = hrId
+      ? `${baseQuery} WHERE j.hr_id = ? ORDER BY p.placement_date DESC`
+      : `${baseQuery} ORDER BY p.placement_date DESC`;
+
+    const [rows] = hrId
+      ? await db.query(query, [hrId])
+      : await db.query(query);
 
     res.status(200).json(rows);
   } catch (err) {

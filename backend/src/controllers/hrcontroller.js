@@ -79,8 +79,8 @@ exports.hrLogin = async (req, res) => {
 
     const hr = result[0];
 
-    // phone check
-    if (hr.phone.toString() !== password.toString()) {
+    const isMatch = await bcrypt.compare(password.toString(), hr.password);
+    if (!isMatch) {
       return res.status(401).json({ message: "Invalid Email or Password" });
     }
 
@@ -106,7 +106,8 @@ exports.hrLogin = async (req, res) => {
 // ---------- new change -----------------------
 
 exports.addingJob = (req, res) => {
-  const { title, company, opening, experience_required, location, package, skills_required, description, deadline,hr_id } = req.body;
+  const { title, company, opening, experience_required, location, package, skills_required, description, deadline } = req.body;
+  const hr_id = req.user.id;
 
   if (!hr_id) {
     return res.status(403).json({ message: "Access denied. Only HR can post jobs." });
@@ -208,6 +209,10 @@ exports.updateHRProfile = async (req, res) => {
   try {
     const { hr_id } = req.params;
     const { hr_name, company_name, email, phone } = req.body;
+
+    if (Number(hr_id) !== Number(req.user.id)) {
+      return res.status(403).json({ message: "You can only update your own HR profile" });
+    }
 
     if (!hr_id || !hr_name || !company_name || !email || !phone) {
       return res.status(400).json({ message: "All fields are required" });

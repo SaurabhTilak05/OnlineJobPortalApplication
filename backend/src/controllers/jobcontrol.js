@@ -67,6 +67,11 @@ exports.getJobById = async (req, res) => {
 exports.UpdateJobById = async (req, res) => {
   try {
     const { job_id } = req.params;
+    const job = await jobctrl.getJobById(job_id);
+    if (!job?.[0] || Number(job[0].hr_id) !== Number(req.user.id)) {
+      return res.status(403).json({ message: "You can only update your own jobs" });
+    }
+
     const {
       title, company, opening, experience_required,
       location, package, skills_required, description, deadline
@@ -90,6 +95,11 @@ exports.UpdateJobById = async (req, res) => {
 exports.getDeleteJob = async (req, res) => {
   try {
     const { id } = req.params;   // ✅ get from params instead of body
+    const job = await jobctrl.getJobById(id);
+    if (!job?.[0] || Number(job[0].hr_id) !== Number(req.user.id)) {
+      return res.status(403).json({ message: "You can only delete your own jobs" });
+    }
+
     const result = await jobctrl.deleteJob(id);
 
     if (result.affectedRows === 0) {
@@ -107,7 +117,7 @@ exports.getDeleteJob = async (req, res) => {
 // ✅ Search job by title
 exports.searchJobByTitle = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title } = req.query;
     const result = await jobctrl.searchByTitle(title);
     res.status(200).json(result);
   } catch (err) {
@@ -152,6 +162,11 @@ exports.getApplicantsByJob = async (req, res) => {
 
     if (!jobId) {
       return res.status(400).json({ error: "Job ID is required" });
+    }
+
+    const job = await jobctrl.getJobById(jobId);
+    if (!job?.[0] || Number(job[0].hr_id) !== Number(req.user.id)) {
+      return res.status(403).json({ error: "You can only view applicants for your own jobs" });
     }
 
     const applicants = await jobctrl.getApplicantsByJob(jobId);
