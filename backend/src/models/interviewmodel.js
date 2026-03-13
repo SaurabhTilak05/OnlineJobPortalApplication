@@ -100,6 +100,90 @@ const InterviewModel = {
     return rows;
   },
 
+  async getInterviewsByJob(jobId) {
+    const [rows] = await db.query(
+      `SELECT i.*, s.name AS seeker_name, s.email AS seeker_email, j.title AS job_title
+       FROM interview_schedule i
+       JOIN job_seekers s ON i.seeker_id = s.seeker_id
+       JOIN jobs j ON i.job_id = j.job_id
+       WHERE i.job_id = ?
+       ORDER BY i.interview_date, i.interview_time`,
+      [jobId]
+    );
+    return rows;
+  },
+
+  async getInterviewById(interviewId) {
+    const [rows] = await db.query(
+      `SELECT interview_id, job_id, seeker_id, hr_id, status, remarks
+       FROM interview_schedule
+       WHERE interview_id = ?`,
+      [interviewId]
+    );
+    return rows[0] || null;
+  },
+
+  async getJobById(jobId) {
+    const [rows] = await db.query(
+      `SELECT job_id, hr_id
+       FROM jobs
+       WHERE job_id = ?`,
+      [jobId]
+    );
+    return rows[0] || null;
+  },
+
+  async hasApplication(jobId, seekerId) {
+    const [rows] = await db.query(
+      `SELECT application_id
+       FROM applications
+       WHERE job_id = ? AND seeker_id = ?`,
+      [jobId, seekerId]
+    );
+    return rows.length > 0;
+  },
+
+  async updateInterview(interviewId, data) {
+    const allowedFields = [
+      "interview_mode",
+      "interview_date",
+      "interview_time",
+      "interview_link",
+      "location",
+      "status",
+      "remarks",
+    ];
+
+    const updates = [];
+    const values = [];
+
+    allowedFields.forEach((field) => {
+      if (data[field] !== undefined) {
+        updates.push(`${field} = ?`);
+        values.push(data[field]);
+      }
+    });
+
+    if (!updates.length) {
+      return { affectedRows: 0 };
+    }
+
+    values.push(interviewId);
+    const [result] = await db.query(
+      `UPDATE interview_schedule SET ${updates.join(", ")} WHERE interview_id = ?`,
+      values
+    );
+    return result;
+  },
+
+  async deleteInterview(interviewId) {
+    const [result] = await db.query(
+      "DELETE FROM interview_schedule WHERE interview_id = ?",
+      [interviewId]
+    );
+    return result;
+  },
+
   // Update interview status AND sync with applications & placement
   async updateInterviewStatus(interviewId, status, remarks) {
     const conn = await db.getConnection();
