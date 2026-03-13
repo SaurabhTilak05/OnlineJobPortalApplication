@@ -12,10 +12,14 @@ class ApplicantService {
   
   getApplicantsByJob(job_id)
   {
-     return axios.get(`http://localhost:8080/getapplicant/${job_id}/applicants`);
+     return axios.get(`http://localhost:8080/getapplicant/${job_id}/applicants`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+     });
   }
    getApplicantProfile(seekerId) {
-    return axios.get(`http://localhost:8080/applicantprofile/${seekerId}`);
+    return axios.get(`http://localhost:8080/applicantprofile/${seekerId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   }
 }
 
