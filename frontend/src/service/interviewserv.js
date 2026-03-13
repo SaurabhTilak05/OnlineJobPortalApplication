@@ -1,49 +1,63 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/interviews";
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+});
 
 class InterviewService {
-  // Schedule a new interview
   scheduleInterview(data) {
-    // Ensure all IDs are numbers, not undefined
+    // Updated 2026-03-13: the backend now derives hr_id from the authenticated token.
     const payload = {
       job_id: Number(data.job_id),
       seeker_id: Number(data.seeker_id),
-      hr_id: Number(data.hr_id),
       interview_mode: data.interview_mode,
       interview_date: data.interview_date,
       interview_time: data.interview_time,
       interview_link: data.interview_link || null,
       location: data.location || null,
-      status: data.status || "Scheduled",
+      status: data.status || "scheduled",
       remarks: data.remarks || null,
     };
 
-    console.log("Interview payload:", payload); // Debug: check payload before sending
-    return axios.post(`http://localhost:8080/interviews/schedule`, payload);
+    return axios.post(`${API_URL}/schedule`, payload, {
+      headers: getAuthHeaders(),
+    });
   }
 
   getInterviews() {
-    return axios.get("http://localhost:8080/interviews");///interviews
+    return axios.get(API_URL, {
+      headers: getAuthHeaders(),
+    });
   }
 
   getInterviewBySeeker(seekerId) {
-    return axios.get(`http://localhost:8080/interviews/seeker/${seekerId}`);
+    return axios.get(`${API_URL}/seeker/${seekerId}`, {
+      headers: getAuthHeaders(),
+    });
   }
 
   getInterviewByJob(jobId) {
-    return axios.get(`${API_URL}/job/${jobId}`);
+    return axios.get(`${API_URL}/job/${jobId}`, {
+      headers: getAuthHeaders(),
+    });
   }
 
   getInterviewByHR(hrId) {
-    return axios.get(`http://localhost:8080/interviews/hr/${hrId}`);///interviews/hr/:hrId
-
-  }
-    updateInterviewStatus(interviewId, status, remarks = null) {
-    const payload = { status, remarks };
-    return axios.put(`${API_URL}/${interviewId}/status`, payload);
+    return axios.get(`${API_URL}/hr/${hrId}`, {
+      headers: getAuthHeaders(),
+    });
   }
 
+  updateInterviewStatus(interviewId, status, remarks = null) {
+    return axios.put(
+      `${API_URL}/${interviewId}/status`,
+      { status, remarks },
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+  }
 }
 
 export default new InterviewService();
