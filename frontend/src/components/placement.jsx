@@ -5,26 +5,25 @@ export default function PlacementList() {
   const [placements, setPlacements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const hrId = localStorage.getItem("hrId"); // logged-in HR
+  const hrId = localStorage.getItem("hrId");
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    fetchPlacements();
-  }, []);
+    const fetchPlacements = async () => {
+      try {
+        const data = await getAllPlacements(hrId);
+        setPlacements(data);
+      } catch (err) {
+        console.error("Failed to load placements:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchPlacements = async () => {
-    try {
-      const data = await getAllPlacements(hrId);
-      setPlacements(data);
-    } catch (err) {
-      console.error("Failed to load placements:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchPlacements();
+  }, [hrId]);
 
   const totalPages = Math.ceil(placements.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -35,7 +34,6 @@ export default function PlacementList() {
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-  // Function to return badge color based on status
   const getStatusBadge = (status) => {
     switch (status.toLowerCase()) {
       case "placed":
@@ -58,7 +56,6 @@ export default function PlacementList() {
         <p>No placements yet.</p>
       ) : (
         <>
-          {/* Desktop / Laptop Table */}
           <div className="d-none d-md-block">
             <table className="table table-striped mt-3">
               <thead>
@@ -102,9 +99,8 @@ export default function PlacementList() {
             </table>
           </div>
 
-          {/* Mobile / Tablet Card View */}
           <div className="d-md-none">
-            {currentItems.map((p, index) => (
+            {currentItems.map((p) => (
               <div key={p.placement_id} className="card mb-3 shadow-sm">
                 <div className="card-body d-flex align-items-start gap-3">
                   {p.profile_picture ? (
@@ -146,7 +142,6 @@ export default function PlacementList() {
             ))}
           </div>
 
-          {/* Pagination */}
           <nav>
             <ul className="pagination justify-content-center flex-wrap">
               <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Jobservice from "../service/Jobservice.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,7 +7,6 @@ import { FaBuilding, FaBriefcase, FaMapMarkerAlt, FaCalendarAlt, FaUserGraduate,
 const locationOptions = ["Mumbai","Pune","Delhi","Bangalore","Chennai","Hyderabad","Kolkata","Ahmedabad"];
 
 export default function AddJob() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "", company: "", opening: "", experience_required: "",
     location: "", package: "", skills_required: "", description: "", deadline: ""
@@ -68,9 +66,7 @@ export default function AddJob() {
     const newErrors=validateAll();
     if(Object.keys(newErrors).length>0){ setErrors(newErrors); toast.error("⚠️ Fix errors first"); return; }
     try{
-      const hrId=localStorage.getItem("hrId");
-      if(!hrId){ toast.error("❌ Login as HR to post job"); return; }
-      await Jobservice.addJob({...formData, hr_id:Number(hrId)});
+      await Jobservice.addJob(formData);
       toast.success("✅ Job posted successfully!");
       setFormData({ title:"", company:"", opening:"", experience_required:"", location:"", package:"", skills_required:"", description:"", deadline:"" });
     }catch(err){ console.error(err); toast.error("❌ Failed to post job"); }

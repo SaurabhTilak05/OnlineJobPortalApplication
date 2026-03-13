@@ -5,6 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import "./Sign.css";
 
+void motion;
+
 export default function Sign() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", password: "", role: "" });
@@ -153,7 +155,9 @@ export default function Sign() {
                 <div className="invalid-feedback">{errors.role}</div>
               )}
             </div>
-
+                <NavLink to="/forgot-password" className="text-decoration-none">
+          Forgot Password?
+        </NavLink>
             <motion.button
               type="submit"
               className="btn vibrant-btn w-100 mt-3"

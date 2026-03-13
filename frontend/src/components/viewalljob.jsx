@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Jobservice from "../service/Jobservice.js";
 import UpdateJob from "./updateJob.jsx";
 import { Outlet, Link } from "react-router-dom";
@@ -16,11 +16,7 @@ export default function ViewAllJob() {
   // ✅ Get current HR ID from localStorage
   const currentHrId = localStorage.getItem("hrId");
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const fetchJobs = () => {
+  const fetchJobs = useCallback(() => {
     Jobservice.getAllJobs()
       .then((result) => {
         // Filter only jobs of current HR
@@ -31,7 +27,11 @@ export default function ViewAllJob() {
         setMsg("Failed to fetch jobs");
         console.error(err);
       });
-  };
+  }, [currentHrId]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   const toggleDescription = (index) => {
     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));

@@ -22,7 +22,7 @@ export default function ViewHR() {
       setLoading(true);
       const data = await HRService.getAllHR();
       setHrList(data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch HR data.");
     } finally {
       setLoading(false);
@@ -35,7 +35,7 @@ export default function ViewHR() {
       await HRService.deleteHR(id);
       setHrList(hrList.filter((hr) => hr.hr_id !== id));
        toast.success("✅ HR deleted successfully");
-    } catch (err) {
+    } catch {
       alert("Failed to delete HR");
     }
   };

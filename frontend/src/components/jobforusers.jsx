@@ -56,7 +56,7 @@ export default function JobforUsers() {
       return;
     }
 
-    UserJobservice.applyJob(jobId, seekerId)
+    UserJobservice.applyJob(jobId)
       .then((res) => {
         console.log("Apply Job Response:", res.data);
 

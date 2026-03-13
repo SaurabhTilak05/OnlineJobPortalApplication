@@ -50,6 +50,10 @@ import ContactDetails from "./components/contactdetail.jsx";
 import UpdateInterviewStatus from "./components/updateinterviewstatus.jsx";
 import Placement from "./components/placement.jsx";
 import PlacementList from "./components/placementlist.jsx";
+
+import ResetPassword from "./components/ResetPassword";
+import ForgotPassword from "./components/ForgotPassword.jsx";
+import CheckEmail from "./components/CheckEmail.jsx";
 // Navbar Layout
 // Navbar Layout
 function LayoutWithNavbar({ children }) {
@@ -272,7 +276,10 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-
+          
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/check-email" element={<CheckEmail />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
           {/* Admin routes */}
           <Route
             path="/adminhome"

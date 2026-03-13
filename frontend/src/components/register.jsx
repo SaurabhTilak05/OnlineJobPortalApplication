@@ -5,6 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+void motion;
+
 export default function RegisterJobSeeker() {
   const [form, setForm] = useState({
     name: "",

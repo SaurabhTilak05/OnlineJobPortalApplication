@@ -4,7 +4,11 @@ import axios from "axios";
 const HRService = {
   getAllHR: async () => {
     try {
-      const res = await axios.get("http://localhost:8080/viewHr");
+      const res = await axios.get("http://localhost:8080/viewHr", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       return res.data; 
     } catch (err) {
       throw err.response?.data || "Failed to fetch HR data";
@@ -13,7 +17,11 @@ const HRService = {
 
   
     deleteHR: async (hr_id) => {
-    const res = await axios.delete(`http://localhost:8080/deleteHR/${hr_id}`);
+    const res = await axios.delete(`http://localhost:8080/deleteHR/${hr_id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return res.data;
   },
 

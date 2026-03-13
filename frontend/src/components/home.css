@@ -17,7 +17,7 @@
 
 /* ✨ Heading gradient text */
 .text-gradient {
-  background: linear-gradient(90deg, #007bff, #00c6ff);
+  background: linear-gradient(90deg, #eac474, #f3c075);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -73,7 +73,7 @@
   inset: 0;
   border-radius: 16px;
   padding: 1px;
-  background: linear-gradient(90deg, #007bff, #00c6ff);
+  background: linear-gradient(90deg, #fdf062, #eb9635);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;

@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import AdminDashboardService from "../service/admindashboardserv.js";
 
-// Count animation hook
 function useCountAnimation(target, duration = 1000) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     let start = 0;
-    const increment = target / (duration / 30);
+    const increment = target / (duration / 30 || 1);
     const interval = setInterval(() => {
       start += increment;
       if (start >= target) {
@@ -46,10 +45,18 @@ export default function AdminDashboard() {
     fetchCounts();
   }, []);
 
+  // Updated 2026-03-13: call hooks at the component top level to follow React hook rules.
+  const animatedCounts = {
+    hrs: useCountAnimation(counts.hrs, 1200),
+    students: useCountAnimation(counts.students, 1200),
+    applications: useCountAnimation(counts.applications, 1200),
+  };
+
   const cards = [
     {
       title: "HRs Registered",
       count: counts.hrs,
+      animatedCount: animatedCounts.hrs,
       icon: <FaUsers size={50} />,
       gradient: "linear-gradient(135deg, #667eea, #764ba2)",
       path: "viewshr",
@@ -59,6 +66,7 @@ export default function AdminDashboard() {
     {
       title: "Students Enrolled",
       count: counts.students,
+      animatedCount: animatedCounts.students,
       icon: <FaUserGraduate size={50} />,
       gradient: "linear-gradient(135deg, #43e97b, #38f9d7)",
       path: "jobseekers",
@@ -68,6 +76,7 @@ export default function AdminDashboard() {
     {
       title: "Applications Received",
       count: counts.applications,
+      animatedCount: animatedCounts.applications,
       icon: <FaClipboardList size={50} />,
       gradient: "linear-gradient(135deg, #f7971e, #ffd200)",
       path: "application",
@@ -82,7 +91,8 @@ export default function AdminDashboard() {
     { name: "Applications", value: counts.applications, color: "#f7971e" },
   ];
 
-  const COLORS = pieData.map((d) => d.color);
+  const colors = pieData.map((d) => d.color);
+  const maxCount = Math.max(...cards.map((card) => card.count), 1);
 
   return (
     <div className="container-fluid mt-5">
@@ -91,46 +101,43 @@ export default function AdminDashboard() {
         Overview of HRs, Students, and Applications
       </p>
 
-      {/* Dashboard Cards */}
       <div className="row g-4 justify-content-center">
-        {cards.map((c, idx) => {
-          const animatedCount = useCountAnimation(c.count, 1200);
-          return (
-            <div className="col-12 col-sm-6 col-lg-4" key={idx}>
-              <div
-                className="dashboard-card shadow-lg text-white text-center p-4"
-                onClick={() => navigate(`/adminhome/${c.path}`)}
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "20px",
-                  background: c.gradient,
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                }}
-                title={c.tooltip}
-              >
-                <div className="icon mb-3">{c.icon}</div>
-                <h3 className="fw-bold display-5">{animatedCount}</h3>
-                <p className="fs-5 mt-2">{c.title}</p>
+        {cards.map((c, idx) => (
+          <div className="col-12 col-sm-6 col-lg-4" key={idx}>
+            <div
+              className="dashboard-card shadow-lg text-white text-center p-4"
+              onClick={() => navigate(`/adminhome/${c.path}`)}
+              style={{
+                cursor: "pointer",
+                borderRadius: "20px",
+                background: c.gradient,
+                transition: "transform 0.3s, box-shadow 0.3s",
+              }}
+              title={c.tooltip}
+            >
+              <div className="icon mb-3">{c.icon}</div>
+              <h3 className="fw-bold display-5">{c.animatedCount}</h3>
+              <p className="fs-5 mt-2">{c.title}</p>
 
-                {/* Progress Bar */}
-                <div className="progress mt-3" style={{ height: "8px", borderRadius: "5px" }}>
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{
-                      width: `${Math.min((animatedCount / Math.max(...cards.map((card) => card.count))) * 100, 100)}%`,
-                      backgroundColor: "#ffffff99",
-                      transition: "width 1s ease-in-out",
-                    }}
-                  ></div>
-                </div>
+              <div
+                className="progress mt-3"
+                style={{ height: "8px", borderRadius: "5px" }}
+              >
+                <div
+                  className="progress-bar"
+                  role="progressbar"
+                  style={{
+                    width: `${Math.min((c.animatedCount / maxCount) * 100, 100)}%`,
+                    backgroundColor: "#ffffff99",
+                    transition: "width 1s ease-in-out",
+                  }}
+                ></div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
-      {/* Pie Chart */}
       <div className="row mt-5 justify-content-center">
         <div className="col-12 col-md-6">
           <PieChart width={400} height={300}>
@@ -145,7 +152,7 @@ export default function AdminDashboard() {
               label
             >
               {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                <Cell key={`cell-${index}`} fill={colors[index]} />
               ))}
             </Pie>
             <Tooltip />
@@ -154,7 +161,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Custom CSS */}
       <style jsx>{`
         .dashboard-card:hover {
           transform: translateY(-10px) scale(1.05);

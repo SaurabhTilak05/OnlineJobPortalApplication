@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Jobservice from "../service/Jobservice.js";
 
+void motion;
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     full_name: "",

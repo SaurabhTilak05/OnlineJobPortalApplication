@@ -12,41 +12,45 @@ export default function UpdateInterviewStatus() {
   const [status, setStatus] = useState(interview?.status || "scheduled");
   const [remarks, setRemarks] = useState("");
 
-  // ✅ Only middle remarks (no Dear / no Best regards)
-  const generateDefaultRemark = (statusVal) => {
-    const job = interview?.job_title || "[Job Title]";
-
-    switch (statusVal) {
-      case "scheduled":
-        return `Your interview for the position of ${job} has been scheduled. Please attend on the specified date and time.`;
-      case "completed":
-        return `Your interview for the position of ${job} has been completed successfully.`;
-      case "selected":
-        return `🎉 Congratulations! You have been selected for the position of ${job}.`;
-      case "rejected":
-        return `We regret to inform you that you have not been selected for the position of ${job}.`;
-      case "cancelled":
-        return `Your interview for the position of ${job} has been cancelled.`;
-      default:
-        return "";
-    }
-  };
-
   useEffect(() => {
-    setRemarks(interview?.remarks || generateDefaultRemark(status));
+    const job = interview?.job_title || "[Job Title]";
+    let defaultRemark = "";
+
+    switch (status) {
+      case "scheduled":
+        defaultRemark = `Your interview for the position of ${job} has been scheduled. Please attend on the specified date and time.`;
+        break;
+      case "completed":
+        defaultRemark = `Your interview for the position of ${job} has been completed successfully.`;
+        break;
+      case "selected":
+        defaultRemark = `Congratulations! You have been selected for the position of ${job}.`;
+        break;
+      case "rejected":
+        defaultRemark = `We regret to inform you that you have not been selected for the position of ${job}.`;
+        break;
+      case "cancelled":
+        defaultRemark = `Your interview for the position of ${job} has been cancelled.`;
+        break;
+      default:
+        defaultRemark = "";
+        break;
+    }
+
+    setRemarks(interview?.remarks || defaultRemark);
   }, [interview, status]);
 
   const handleUpdate = async () => {
     try {
       await interviewServ.updateInterviewStatus(id, status, remarks);
-      toast.success("Interview & application updated successfully ✅", {
+      toast.success("Interview and application updated successfully", {
         position: "top-right",
         autoClose: 3000,
       });
       setTimeout(() => navigate("/hrdashboard/view-schedule"), 3000);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update interview ❌", {
+      toast.error("Failed to update interview", {
         position: "top-right",
         autoClose: 4000,
       });
@@ -92,15 +96,14 @@ export default function UpdateInterviewStatus() {
             value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
           ></textarea>
-         
         </div>
 
         <div className="d-flex gap-2 flex-wrap">
           <button className="btn btn-success" onClick={handleUpdate}>
-            ✅ Save Changes
+            Save Changes
           </button>
           <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-            ⬅ Back
+            Back
           </button>
         </div>
       </div>

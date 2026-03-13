@@ -5,26 +5,24 @@ export default function PlacementList() {
   const [placements, setPlacements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
+    const fetchPlacements = async () => {
+      try {
+        const data = await getPlacements();
+        setPlacements(data);
+      } catch (err) {
+        console.error("Failed to load placements:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchPlacements();
   }, []);
 
-  const fetchPlacements = async () => {
-    try {
-      const data = await getPlacements(); // fetch all placements
-      setPlacements(data);
-    } catch (err) {
-      console.error("Failed to load placements:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPlacements = placements.slice(indexOfFirstItem, indexOfLastItem);
@@ -39,7 +37,6 @@ export default function PlacementList() {
         <p>No placements yet.</p>
       ) : (
         <>
-          {/* Desktop / Laptop Table View */}
           <div className="d-none d-md-block">
             <table className="table table-striped mt-3">
               <thead>
@@ -87,13 +84,9 @@ export default function PlacementList() {
             </table>
           </div>
 
-          {/* Mobile Card View */}
           <div className="d-md-none">
-            {currentPlacements.map((p, index) => (
-              <div
-                key={p.placement_id}
-                className="card mb-3 shadow-sm"
-              >
+            {currentPlacements.map((p) => (
+              <div key={p.placement_id} className="card mb-3 shadow-sm">
                 <div className="card-body d-flex align-items-start gap-3">
                   {p.profile_picture ? (
                     <img
@@ -135,7 +128,6 @@ export default function PlacementList() {
             ))}
           </div>
 
-          {/* Pagination controls */}
           <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
             <button
               className="btn btn-sm btn-outline-primary"

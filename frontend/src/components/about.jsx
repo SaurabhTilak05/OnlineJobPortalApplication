@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FaLightbulb, FaHandshake, FaUsers, FaGlobe } from "react-icons/fa";
 
+void motion;
+
 export default function About() {
   // Animation variants
   const fadeUp = {

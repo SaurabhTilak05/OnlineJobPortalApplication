@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 export default function ScheduleInterview() {
   const { seekerId, jobId } = useParams();
   const navigate = useNavigate();
-  const hrId = localStorage.getItem("hrId");
 
   const [form, setForm] = useState({
     interview_mode: "Online",
@@ -26,34 +25,32 @@ export default function ScheduleInterview() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!seekerId || !jobId || !hrId) {
+    if (!seekerId || !jobId) {
       setMsg("Missing IDs for interview scheduling!");
-      toast.error("❌ Missing IDs for interview scheduling!");
+      toast.error("Missing IDs for interview scheduling!");
       return;
     }
 
     const payload = {
       job_id: Number(jobId),
       seeker_id: Number(seekerId),
-      hr_id: Number(hrId),
       ...form,
-      status: "Scheduled",
+      status: "scheduled",
     };
 
     try {
       await interviewServ.scheduleInterview(payload);
-      toast.success("✅ Interview scheduled successfully!");
+      toast.success("Interview scheduled successfully!");
       navigate(-1);
     } catch (err) {
       console.error("Schedule interview error:", err.response || err.message);
       const errorMsg =
         err.response?.data?.error || "Failed to schedule interview";
       setMsg(errorMsg);
-      toast.error(`❌ ${errorMsg}`);
+      toast.error(errorMsg);
     }
   };
 
-  // Utility to display IST formatted date & time preview
   const formatIST = (date, time) => {
     if (!date || !time) return "";
     const istDate = new Date(`${date}T${time}`);
@@ -72,7 +69,7 @@ export default function ScheduleInterview() {
     <div className="container py-4">
       <div className="card shadow border-0 rounded-4">
         <div className="card-header bg-success text-white">
-          <h5 className="mb-0">📅 Schedule Interview</h5>
+          <h5 className="mb-0">Schedule Interview</h5>
         </div>
         <div className="card-body">
           {msg && <div className="alert alert-danger">{msg}</div>}
@@ -166,14 +163,14 @@ export default function ScheduleInterview() {
 
             <div className="d-flex flex-wrap gap-2">
               <button type="submit" className="btn btn-success flex-grow-1">
-                ✅ Schedule
+                Schedule
               </button>
               <button
                 type="button"
                 onClick={() => navigate(-1)}
                 className="btn btn-secondary flex-grow-1"
               >
-                ⬅ Cancel
+                Cancel
               </button>
             </div>
           </form>

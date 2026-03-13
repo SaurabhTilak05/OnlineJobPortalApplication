@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import HRService from "../service/HrService.js";
 import "./UpdateHrProfile.css";
@@ -20,8 +20,8 @@ export default function UpdateHRProfile() {
       try {
         const hrData = await HRService.getHRDetails();
         setFormData(hrData);
-      } catch (err) {
-        toast.error("Failed to load profile for editing ❌");
+      } catch {
+        toast.error("Failed to load profile for editing");
       }
     })();
   }, []);
@@ -30,33 +30,28 @@ export default function UpdateHRProfile() {
     setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const id = formData.hr_id || formData.id || formData.hrId;
-    if (!id) {
-      toast.error("Missing HR id");
-      return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const id = formData.hr_id || formData.id || formData.hrId;
+      if (!id) {
+        toast.error("Missing HR id");
+        return;
+      }
+
+      await HRService.updateHRProfile(id, formData);
+      toast.success("Profile updated");
+      navigate("/hrdashboard/profile");
+    } catch (err) {
+      console.error("Failed to update HR profile", err);
+      toast.error("Update failed");
     }
-    console.log(formData);
-     navigate("/hrdashboard/profile");
-    await HRService.updateHRProfile(id, formData);
-    toast.success("Profile updated ✅");
-    console.log("Run this logic ");
-    
-    // ✅ absolute navigation back
-  } catch (err) {
-    console.error("❌ Failed to update HR profile", err);
-    toast.error("Update failed");
-  }
-};
-
-
+  };
 
   return (
     <div className="update-hr-container">
       <div className="update-hr-card">
-        <h2 className="form-title">✏️ Update Profile</h2>
+        <h2 className="form-title">Update Profile</h2>
         <p className="form-subtitle">Edit your details and save changes</p>
 
         <form onSubmit={handleSubmit} className="row g-4 mt-3">

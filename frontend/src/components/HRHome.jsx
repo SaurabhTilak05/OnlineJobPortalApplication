@@ -13,7 +13,7 @@ export default function HRHome() {
     try {
       const res = await HRService.getRecentJobsByHR();
       setJobs(res.data || []); // backend returns array
-    } catch (err) {
+    } catch {
       setMsg("Failed to fetch jobs");
     }
   };

@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { FaUser, FaBriefcase, FaClipboardCheck } from "react-icons/fa";
 import "./userdashboard.css";
 
+void motion;
+
 export default function StudentDashboard() {
   const navigate = useNavigate();
 

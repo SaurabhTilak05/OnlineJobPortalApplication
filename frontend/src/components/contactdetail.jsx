@@ -21,7 +21,7 @@ export default function ContactDetails() {
       try {
         const data = await AdminAuthService.getAllContacts();
         setContacts(data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch contact details");
       } finally {
         setLoading(false);

@@ -11,7 +11,11 @@ class AdminAuthService {
   }
 
   AddHR(hrdata) {
-    return axios.post("http://localhost:8080/AddHr", hrdata);
+    return axios.post("http://localhost:8080/addHr", hrdata, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
   }
   
 
@@ -113,7 +117,9 @@ uploadResume(resumeData) {
   // ========================
   getAllSeekers() {
     return axios
-      .get("http://localhost:8080/getAllJobSeeker")
+      .get("http://localhost:8080/getAllJobSeeker", {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      })
       .then((res) => res.data)
       .catch((err) => {
         console.error("Error fetching job seekers:", err);
@@ -123,7 +129,9 @@ uploadResume(resumeData) {
 
   getAllApplications() {
     return axios
-      .get("http://localhost:8080/applications")
+      .get("http://localhost:8080/applications", {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      })
       .then((res) => res.data)
       .catch((err) => {
         console.error("Error fetching applications:", err);

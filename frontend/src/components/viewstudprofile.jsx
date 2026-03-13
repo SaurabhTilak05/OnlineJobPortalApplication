@@ -59,7 +59,7 @@ export default function ViewStudProfile() {
       setSelectedFile(null);
 
       toast.success("✅ Profile picture updated successfully!");
-    } catch (err) {
+    } catch {
       toast.error("❌ Error uploading profile picture");
     } finally {
       setUploading(false);
