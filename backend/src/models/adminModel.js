@@ -16,6 +16,11 @@ exports.addAdmin = (username, password, role) => {
     });
 };
 
+exports.getAdminCount = async () => {
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM admin");
+    return rows[0]?.total || 0;
+};
+
 
 
 exports.adminLogin = async (username) => {
