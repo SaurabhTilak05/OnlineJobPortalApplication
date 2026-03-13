@@ -1,22 +1,31 @@
 // src/service/AdminDashboardService.js
 
 const BASE_URL = "http://localhost:8080/count";
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+});
 
 const AdminDashboardService = {
   getHRCount: async () => {
-    const res = await fetch(`${BASE_URL}/hr`);
+    const res = await fetch(`${BASE_URL}/hr`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Failed to fetch HR count");
     return res.json();
   },
 
   getStudentCount: async () => {
-    const res = await fetch(`${BASE_URL}/students`);
+    const res = await fetch(`${BASE_URL}/students`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Failed to fetch student count");
     return res.json();
   },
 
   getApplicationCount: async () => {
-    const res = await fetch(`${BASE_URL}/applications`);
+    const res = await fetch(`${BASE_URL}/applications`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Failed to fetch application count");
     return res.json();
   },
