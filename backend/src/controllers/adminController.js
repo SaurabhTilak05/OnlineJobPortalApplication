@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 let adminCtrl = require("../models/adminModel.js");
-
-const SECRET_KEY = process.env.JWT_SECRET || "kishor@123"; 
+const { JWT_SECRET } = require("../config/jwt.js");
 
 
 
@@ -25,7 +24,7 @@ exports.saveAdmin = async (req, res) => {
 
       let decoded;
       try {
-        decoded = jwt.verify(token, SECRET_KEY);
+        decoded = jwt.verify(token, JWT_SECRET);
       } catch (err) {
         return res.status(401).json({ message: "Invalid or expired token" });
       }
@@ -79,7 +78,7 @@ exports.adminLogin = async (req, res) => {
     // generate JWT with dynamic role from DB
     const token = jwt.sign(
       { id: admin.admin_id, role: admin.role }, // 👈 role comes from DB now
-      SECRET_KEY,
+      JWT_SECRET,
       { expiresIn: "2h" }
     );
 
@@ -122,6 +121,9 @@ exports.searchHrByid = async (req, res) => {
   try {
    let { hr_id } = req.params;
     let result = await adminCtrl.SearchHR(hr_id);
+    if (!result || result.length === 0) {
+      return res.status(404).json({ message: "HR not found" });
+    }
     res.json(result);
   } catch (err) {
     console.error("Error searching HR:", err);
