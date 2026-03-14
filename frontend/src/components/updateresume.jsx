@@ -1,40 +1,52 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AdminAuthService from "../service/AdminAuthService";
 import { toast } from "react-toastify";
 
 export default function ResumeUpload() {
   const [resumeFile, setResumeFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [statusType, setStatusType] = useState("");
+  const fileInputRef = useRef(null);
 
-  // ✅ Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ];
+    if (!file) return;
 
-      if (!allowedTypes.includes(file.type)) {
-        toast.error("❌ Only PDF, DOC, DOCX files are allowed.");
-        return;
-      }
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
 
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("❌ File size should not exceed 5MB.");
-        return;
-      }
-
-      setResumeFile(file);
+    if (!allowedTypes.includes(file.type)) {
+      setResumeFile(null);
+      setStatusType("error");
+      setStatusMessage("Only PDF, DOC, DOCX files are allowed.");
+      toast.error("Only PDF, DOC, DOCX files are allowed.");
+      return;
     }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setResumeFile(null);
+      setStatusType("error");
+      setStatusMessage("File size should not exceed 5MB.");
+      toast.error("File size should not exceed 5MB.");
+      return;
+    }
+
+    setResumeFile(file);
+    setStatusMessage("");
+    setStatusType("");
   };
 
-  // ✅ Handle resume upload
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!resumeFile) {
-      toast.warning("⚠️ Please select a resume file first!");
+      setStatusType("error");
+      setStatusMessage("Please select a resume file first.");
+      toast.warning("Please select a resume file first.");
       return;
     }
 
@@ -43,20 +55,27 @@ export default function ResumeUpload() {
 
     try {
       setUploading(true);
-      const response = await AdminAuthService.uploadResume(formData); // await response
+      setStatusMessage("");
+      setStatusType("");
 
-      if (response && response.message) {
-        toast.success("✅ " + response.message); // Show toast after success
-      } else {
-        toast.success("✅ Resume uploaded successfully!");
-      }
+      const response = await AdminAuthService.uploadResume(formData);
+      const successMessage = response?.message || "Resume uploaded successfully!";
 
+      toast.success(successMessage);
+      setStatusType("success");
+      setStatusMessage(successMessage);
       setResumeFile(null);
-      e.target.reset();
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "❌ Failed to upload resume. Try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || "Failed to upload resume. Try again.";
+
+      toast.error(errorMessage);
+      setStatusType("error");
+      setStatusMessage(errorMessage);
     } finally {
       setUploading(false);
     }
@@ -77,6 +96,7 @@ export default function ResumeUpload() {
                     Choose Resume (PDF / DOC / DOCX)
                   </label>
                   <input
+                    ref={fileInputRef}
                     type="file"
                     className="form-control"
                     accept=".pdf,.doc,.docx"
@@ -87,6 +107,16 @@ export default function ResumeUpload() {
                 {resumeFile && (
                   <div className="alert alert-info py-2">
                     Selected File: <strong>{resumeFile.name}</strong>
+                  </div>
+                )}
+
+                {statusMessage && (
+                  <div
+                    className={`alert ${
+                      statusType === "success" ? "alert-success" : "alert-danger"
+                    } py-2`}
+                  >
+                    {statusMessage}
                   </div>
                 )}
 
