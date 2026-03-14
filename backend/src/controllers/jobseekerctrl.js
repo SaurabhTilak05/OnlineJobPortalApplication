@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const db=require("../../db.js");
 const crypto = require("crypto");
 const sendEmail = require("../services/sendEmail.js");
+const { JWT_SECRET } = require("../config/jwt.js");
 
 // Register Job Seeker
 exports.regSeekers = async (req, res) => {
@@ -54,7 +55,7 @@ exports.getLogJobSeeker = async (req, res) => {
 
     const token = jwt.sign(
       { seeker_id: user.seeker_id, email: user.email, role: "user" },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: "2h" }
     );
 
