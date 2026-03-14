@@ -65,6 +65,8 @@ exports.SearchHR=(hr_id)=>{
             {
                 return reject("Hr Not found...");
             }
+
+            return resolve(result);
         })
     })
 }
@@ -72,7 +74,14 @@ exports.SearchHR=(hr_id)=>{
 //for the view all applications for the admin
 exports.viewallApplication=()=>{
     return new Promise((resolve,reject)=>{
-        db.query("select * from job_seekers ",(err,result)=>{
+        db.query(
+            `SELECT a.application_id, s.name AS seeker_name, s.email, s.phone,
+                    j.title AS job_title, a.status, a.applied_at
+             FROM applications a
+             JOIN job_seekers s ON a.seeker_id = s.seeker_id
+             JOIN jobs j ON a.job_id = j.job_id
+             ORDER BY a.application_id DESC`,
+            (err,result)=>{
             if(err){
                 reject(err);
             }else{
