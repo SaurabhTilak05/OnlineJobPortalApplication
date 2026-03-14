@@ -1,6 +1,5 @@
-// middlewares/authmiddleware.js
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = process.env.JWT_SECRET; // Make sure JWT_SECRET is set in .env
+const { JWT_SECRET } = require("../config/jwt.js");
 
 // ✅ Verify JWT (generic for any user)
 const verifyToken = (req, res, next) => {
@@ -15,7 +14,7 @@ const verifyToken = (req, res, next) => {
       return res.status(403).json({ message: "Token missing" });
     }
 
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded; // store user info in request
     next();
   } catch (err) {
