@@ -1,13 +1,10 @@
 import axios from "axios";
 
 class AdminAuthService {
-  // ========================
-  // 🔹 AUTH & LOGIN
-  // ========================
   login(credentials) {
     return axios
       .post("http://localhost:8080/adminLogin", credentials)
-      .then((res) => res.data); // {message, token, role, username}
+      .then((res) => res.data);
   }
 
   AddHR(hrdata) {
@@ -17,11 +14,9 @@ class AdminAuthService {
       },
     });
   }
-  
 
   hrLogin(data) {
     return axios.post("http://localhost:8080/hr/login", data).then((res) => {
-      // Save HR info in localStorage for later
       localStorage.setItem("hrId", res.data.hr_id);
       localStorage.setItem("role", "hr");
       return res.data;
@@ -32,12 +27,9 @@ class AdminAuthService {
     return axios
       .post("http://localhost:8080/loginseeker", udata)
       .then((res) => {
-        console.log("Full response:", res);
-
         localStorage.setItem("seeker_id", res.data.seeker_id);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", "user");
-
         return res.data;
       })
       .catch((err) => {
@@ -49,9 +41,6 @@ class AdminAuthService {
       });
   }
 
-  // ========================
-  // 🔹 PROFILE
-  // ========================
   getProfile() {
     const token = this.getToken();
     return axios
@@ -68,31 +57,26 @@ class AdminAuthService {
       });
   }
 
- // Profile update (JSON)
-updateProfile(profileData) {
-  return axios.put(`http://localhost:8080/update-profile`, profileData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json", // ✅ Must be JSON
-    },
-  });
-}
+  updateProfile(profileData) {
+    return axios.put("http://localhost:8080/update-profile", profileData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
 
-// Resume upload (FormData)
-uploadResume(resumeData) {
-  return axios.put(`http://localhost:8080/upload-resume`, resumeData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "multipart/form-data", // ✅ FormData
-    },
-  });
-}
+  uploadResume(resumeData) {
+    return axios
+      .put("http://localhost:8080/upload-resume", resumeData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => res.data);
+  }
 
-
-
-  // ========================
-  // 🔹 UTILS
-  // ========================
   logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -112,9 +96,6 @@ uploadResume(resumeData) {
     return localStorage.getItem("role");
   }
 
-  // ========================
-  // 🔹 ADMIN DATA
-  // ========================
   getAllSeekers() {
     return axios
       .get("http://localhost:8080/getAllJobSeeker", {
@@ -138,9 +119,7 @@ uploadResume(resumeData) {
         throw err;
       });
   }
-    // ========================
-  // 🔹 CONTACT DETAILS
-  // ========================
+
   getAllContacts() {
     const token = this.getToken();
     return axios
@@ -154,16 +133,16 @@ uploadResume(resumeData) {
       });
   }
 
-
   uploadProfilePicture(formData) {
-  return axios.put(`http://localhost:8080/upload-profile-picture`, formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "multipart/form-data",
-    },
-  });
-}
-  ///getallcontact
+    return axios
+      .put("http://localhost:8080/upload-profile-picture", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => res.data);
+  }
 }
 
 export default new AdminAuthService();
