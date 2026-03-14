@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = process.env.JWT_SECRET ;
+const { JWT_SECRET } = require("../config/jwt.js");
 
 function verifyToken1(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -7,7 +7,7 @@ function verifyToken1(req, res, next) {
 
   if (!token) return res.status(403).json({ message: "Access denied" });
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
+  jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
     // Updated 2026-03-13: restrict HR routes to authenticated HR accounts only.
     if (user.role !== "hr") {

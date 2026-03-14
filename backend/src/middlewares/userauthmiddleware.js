@@ -1,7 +1,6 @@
 // middleware/auth.js
 const jwt = require("jsonwebtoken");
-
-const SECRET_KEY = process.env.JWT_SECRET;
+const { JWT_SECRET } = require("../config/jwt.js");
 
 exports.verifyUser = (req, res, next) => {
   try {
@@ -15,7 +14,7 @@ exports.verifyUser = (req, res, next) => {
       return res.status(403).json({ message: "Token missing" });
     }
 
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     if (decoded.role !== "user") {
       return res.status(403).json({ message: "Access denied: Users only" });
