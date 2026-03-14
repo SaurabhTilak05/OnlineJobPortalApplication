@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
-const hrModel = require("../models/hrModel.js"); 
+const hrModel = require("../models/hrmodel.js");
 const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../services/sendEmail.js");
-const SECRET = process.env.JWT_SECRET || "mySecretKey";
+const { JWT_SECRET } = require("../config/jwt.js");
 
 // Admin adds HR (phone will be used as password, stored hashed)
 
@@ -87,7 +87,7 @@ exports.hrLogin = async (req, res) => {
     // JWT
     const token = jwt.sign(
       { id: hr.hr_id, email: hr.email, role: hr.role },
-      process.env.JWT_SECRET || "mySecretKey",
+      JWT_SECRET,
       { expiresIn: "2h" }
     );
 
