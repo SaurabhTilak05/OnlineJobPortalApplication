@@ -1,151 +1,252 @@
 import React, { useState } from "react";
-import Jobservice from "../service/Jobservice.js";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import {
+  FaBriefcase,
+  FaBuilding,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaDollarSign,
+  FaLightbulb,
+  FaMapMarkerAlt,
+  FaTools,
+  FaUserGraduate,
+} from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import { FaBuilding, FaBriefcase, FaMapMarkerAlt, FaCalendarAlt, FaUserGraduate, FaDollarSign, FaTools } from "react-icons/fa";
+import Jobservice from "../service/Jobservice.js";
 
-const locationOptions = ["Mumbai","Pune","Delhi","Bangalore","Chennai","Hyderabad","Kolkata","Ahmedabad"];
+const locationOptions = [
+  "Mumbai",
+  "Pune",
+  "Delhi",
+  "Bangalore",
+  "Chennai",
+  "Hyderabad",
+  "Kolkata",
+  "Ahmedabad",
+];
 
 export default function AddJob() {
   const [formData, setFormData] = useState({
-    title: "", company: "", opening: "", experience_required: "",
-    location: "", package: "", skills_required: "", description: "", deadline: ""
+    title: "",
+    company: "",
+    opening: "",
+    experience_required: "",
+    location: "",
+    package: "",
+    skills_required: "",
+    description: "",
+    deadline: "",
   });
   const [errors, setErrors] = useState({});
   const [locationSuggestions, setLocationSuggestions] = useState([]);
 
   const validateField = (name, value) => {
     let error = "";
-    switch(name){
-      case "title": if(!value.trim()) error="Job Title is required"; break;
-      case "company": if(!value.trim()) error="Company name is required"; break;
-      case "opening": if(!value) error="Openings required"; else if(isNaN(value)||value<=0) error="Must be positive number"; break;
-      case "experience_required": if(!value.trim()) error="Experience is required"; break;
-      case "location": if(!value.trim()) error="Location is required"; break;
-      case "package": if(!value.trim()) error="Package is required"; break;
-      case "skills_required": if(!value.trim()) error="Skills required"; break;
-      case "description": if(!value.trim()) error="Description required"; else if(value.length<10) error="Min 10 characters"; break;
-      case "deadline": 
-        if(!value) error="Deadline required"; 
-        else { const today=new Date().toISOString().split("T")[0]; if(value<today) error="Cannot select past date"; }
+
+    switch (name) {
+      case "title":
+        if (!value.trim()) error = "Job title is required";
         break;
-      default: break;
+      case "company":
+        if (!value.trim()) error = "Company name is required";
+        break;
+      case "opening":
+        if (!value) error = "Openings are required";
+        else if (isNaN(value) || value <= 0) error = "Enter a positive number";
+        break;
+      case "experience_required":
+        if (!value.trim()) error = "Experience is required";
+        break;
+      case "location":
+        if (!value.trim()) error = "Location is required";
+        break;
+      case "package":
+        if (!value.trim()) error = "Package is required";
+        break;
+      case "skills_required":
+        if (!value.trim()) error = "Skills are required";
+        break;
+      case "description":
+        if (!value.trim()) error = "Description is required";
+        else if (value.length < 10) error = "Description must be at least 10 characters";
+        break;
+      case "deadline":
+        if (!value) error = "Deadline is required";
+        else {
+          const today = new Date().toISOString().split("T")[0];
+          if (value < today) error = "Past dates are not allowed";
+        }
+        break;
+      default:
+        break;
     }
+
     return error;
   };
 
-  const handleChange = (e)=>{
-    const {name,value}=e.target;
-    setFormData({...formData,[name]:value});
-    setErrors({...errors,[name]:""});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
 
-    if(name==="location"){
-      const filtered=locationOptions.filter(loc=>loc.toLowerCase().includes(value.toLowerCase()));
+    if (name === "location") {
+      const filtered = locationOptions.filter((loc) =>
+        loc.toLowerCase().includes(value.toLowerCase())
+      );
       setLocationSuggestions(filtered);
     }
   };
 
-  const handleBlur = (e)=>{
-    const {name,value}=e.target;
-    const error=validateField(name,value);
-    setErrors({...errors,[name]:error});
-    if(name==="location") setTimeout(()=>setLocationSuggestions([]),100);
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+
+    if (name === "location") {
+      setTimeout(() => setLocationSuggestions([]), 120);
+    }
   };
 
-  const validateAll=()=>{
-    const newErrors={};
-    Object.keys(formData).forEach(key=>{
-      const error=validateField(key,formData[key]);
-      if(error) newErrors[key]=error;
+  const validateAll = () => {
+    const nextErrors = {};
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, formData[key]);
+      if (error) nextErrors[key] = error;
     });
-    return newErrors;
+    return nextErrors;
   };
 
-  const handleSubmit=async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors=validateAll();
-    if(Object.keys(newErrors).length>0){ setErrors(newErrors); toast.error("⚠️ Fix errors first"); return; }
-    try{
+    const nextErrors = validateAll();
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      toast.error("Please fix the highlighted fields first.");
+      return;
+    }
+
+    try {
       await Jobservice.addJob(formData);
-      toast.success("✅ Job posted successfully!");
-      setFormData({ title:"", company:"", opening:"", experience_required:"", location:"", package:"", skills_required:"", description:"", deadline:"" });
-    }catch(err){ console.error(err); toast.error("❌ Failed to post job"); }
+      toast.success("Job posted successfully.");
+      setFormData({
+        title: "",
+        company: "",
+        opening: "",
+        experience_required: "",
+        location: "",
+        package: "",
+        skills_required: "",
+        description: "",
+        deadline: "",
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to post job.");
+    }
   };
 
-  return(
-    <div className="container py-5">
-      <div className="card shadow-lg rounded-5 p-4 p-md-5 mx-auto bg-white" style={{maxWidth:"950px"}}>
-        <h2 className="text-center fw-bold text-primary mb-4">➕ Add New Job</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="row g-4">
+  return (
+    <div className="hr-page-shell">
+      <section className="hr-page-header">
+        <div>
+          <span className="hr-section-kicker">Recruitment</span>
+          <h1 className="hr-page-title">Post a new job</h1>
+          <p className="hr-page-subtitle">
+            Create a polished opening with the right details so strong candidates know exactly what you need.
+          </p>
+        </div>
+      </section>
 
-            <div className="col-md-6 position-relative">
-              <label className="form-label fw-bold"><FaBriefcase className="me-2"/>Job Title</label>
-              <input type="text" name="title" value={formData.title} onChange={handleChange} onBlur={handleBlur} placeholder="Enter job title" className={`form-control shadow-sm ${errors.title?"is-invalid":""}`} />
-              {errors.title && <div className="invalid-feedback">{errors.title}</div>}
+      <section className="hr-form-layout">
+        <div className="hr-surface-card hr-form-card">
+          <form onSubmit={handleSubmit}>
+            <div className="hr-form-grid">
+              <div className="hr-form-group">
+                <label className="form-label"><FaBriefcase /> Job Title</label>
+                <input type="text" name="title" value={formData.title} onChange={handleChange} onBlur={handleBlur} placeholder="Frontend Developer" className={`form-control ${errors.title ? "is-invalid" : ""}`} />
+                {errors.title && <div className="invalid-feedback">{errors.title}</div>}
+              </div>
+
+              <div className="hr-form-group">
+                <label className="form-label"><FaBuilding /> Company</label>
+                <input type="text" name="company" value={formData.company} onChange={handleChange} onBlur={handleBlur} placeholder="QuickStart Technologies" className={`form-control ${errors.company ? "is-invalid" : ""}`} />
+                {errors.company && <div className="invalid-feedback">{errors.company}</div>}
+              </div>
+
+              <div className="hr-form-group">
+                <label className="form-label"><FaUserGraduate /> Openings</label>
+                <input type="number" name="opening" value={formData.opening} onChange={handleChange} onBlur={handleBlur} placeholder="3" className={`form-control ${errors.opening ? "is-invalid" : ""}`} />
+                {errors.opening && <div className="invalid-feedback">{errors.opening}</div>}
+              </div>
+
+              <div className="hr-form-group">
+                <label className="form-label"><FaBriefcase /> Experience</label>
+                <input type="text" name="experience_required" value={formData.experience_required} onChange={handleChange} onBlur={handleBlur} placeholder="2+ years" className={`form-control ${errors.experience_required ? "is-invalid" : ""}`} />
+                {errors.experience_required && <div className="invalid-feedback">{errors.experience_required}</div>}
+              </div>
+
+              <div className="hr-form-group hr-form-group-location">
+                <label className="form-label"><FaMapMarkerAlt /> Location</label>
+                <input type="text" name="location" value={formData.location} onChange={handleChange} onBlur={handleBlur} placeholder="Pune" autoComplete="off" className={`form-control ${errors.location ? "is-invalid" : ""}`} />
+                {errors.location && <div className="invalid-feedback">{errors.location}</div>}
+                {locationSuggestions.length > 0 && (
+                  <ul className="hr-suggestion-list">
+                    {locationSuggestions.map((loc) => (
+                      <li key={loc} onMouseDown={() => { setFormData((prev) => ({ ...prev, location: loc })); setLocationSuggestions([]); }}>
+                        {loc}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="hr-form-group">
+                <label className="form-label"><FaDollarSign /> Package</label>
+                <input type="text" name="package" value={formData.package} onChange={handleChange} onBlur={handleBlur} placeholder="6 LPA" className={`form-control ${errors.package ? "is-invalid" : ""}`} />
+                {errors.package && <div className="invalid-feedback">{errors.package}</div>}
+              </div>
+
+              <div className="hr-form-group hr-form-group-full">
+                <label className="form-label"><FaTools /> Skills Required</label>
+                <input type="text" name="skills_required" value={formData.skills_required} onChange={handleChange} onBlur={handleBlur} placeholder="React, Node.js, SQL" className={`form-control ${errors.skills_required ? "is-invalid" : ""}`} />
+                {errors.skills_required && <div className="invalid-feedback">{errors.skills_required}</div>}
+              </div>
+
+              <div className="hr-form-group hr-form-group-full">
+                <label className="form-label"><FaLightbulb /> Job Description</label>
+                <textarea name="description" value={formData.description} onChange={handleChange} onBlur={handleBlur} rows="5" placeholder="Describe responsibilities, requirements, and expectations." className={`form-control ${errors.description ? "is-invalid" : ""}`} />
+                {errors.description && <div className="invalid-feedback">{errors.description}</div>}
+              </div>
+
+              <div className="hr-form-group">
+                <label className="form-label"><FaCalendarAlt /> Application Deadline</label>
+                <input type="date" name="deadline" value={formData.deadline} min={new Date().toISOString().split("T")[0]} onChange={handleChange} onBlur={handleBlur} className={`form-control ${errors.deadline ? "is-invalid" : ""}`} />
+                {errors.deadline && <div className="invalid-feedback">{errors.deadline}</div>}
+              </div>
             </div>
 
-            <div className="col-md-6">
-              <label className="form-label fw-bold"><FaBuilding className="me-2"/>Company</label>
-              <input type="text" name="company" value={formData.company} onChange={handleChange} onBlur={handleBlur} placeholder="Enter company name" className={`form-control shadow-sm ${errors.company?"is-invalid":""}`} />
-              {errors.company && <div className="invalid-feedback">{errors.company}</div>}
+            <div className="hr-form-actions">
+              <button type="submit" className="btn hr-hero-primary hr-submit-btn">
+                <FaCheckCircle className="me-2" />
+                Post Job
+              </button>
             </div>
+          </form>
+        </div>
 
-            <div className="col-md-4">
-              <label className="form-label fw-bold"><FaUserGraduate className="me-2"/>Openings</label>
-              <input type="number" name="opening" value={formData.opening} onChange={handleChange} onBlur={handleBlur} placeholder="No. of openings" className={`form-control shadow-sm ${errors.opening?"is-invalid":""}`} />
-              {errors.opening && <div className="invalid-feedback">{errors.opening}</div>}
-            </div>
+        <aside className="hr-surface-card hr-side-note">
+          <span className="hr-section-kicker">Publishing Tips</span>
+          <h3>Make the role easier to say yes to.</h3>
+          <ul className="hr-note-list">
+            <li>Use a clear title and realistic experience requirement.</li>
+            <li>Mention the exact skills you actually need for screening.</li>
+            <li>Write a short, direct description instead of a long generic one.</li>
+            <li>Set a deadline that gives candidates enough time to respond.</li>
+          </ul>
+        </aside>
+      </section>
 
-            <div className="col-md-4">
-              <label className="form-label fw-bold"><FaBriefcase className="me-2"/>Experience</label>
-              <input type="text" name="experience_required" value={formData.experience_required} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. 2+ years" className={`form-control shadow-sm ${errors.experience_required?"is-invalid":""}`} />
-              {errors.experience_required && <div className="invalid-feedback">{errors.experience_required}</div>}
-            </div>
-
-            <div className="col-md-4 position-relative">
-              <label className="form-label fw-bold"><FaMapMarkerAlt className="me-2"/>Location</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange} onBlur={handleBlur} placeholder="Enter job location" className={`form-control shadow-sm ${errors.location?"is-invalid":""}`} autoComplete="off"/>
-              {errors.location && <div className="invalid-feedback">{errors.location}</div>}
-              {locationSuggestions.length>0 && 
-                <ul className="list-group position-absolute w-100 shadow" style={{zIndex:1000,maxHeight:"150px",overflowY:"auto"}}>
-                  {locationSuggestions.map((loc,idx)=>(
-                    <li key={idx} className="list-group-item list-group-item-action" style={{cursor:"pointer"}} onMouseDown={()=>{setFormData({...formData,location:loc}); setLocationSuggestions([]);}}>{loc}</li>
-                  ))}
-                </ul>
-              }
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-bold"><FaDollarSign className="me-2"/>Package</label>
-              <input type="text" name="package" value={formData.package} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. 6 LPA" className={`form-control shadow-sm ${errors.package?"is-invalid":""}`} />
-              {errors.package && <div className="invalid-feedback">{errors.package}</div>}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-bold"><FaTools className="me-2"/>Skills Required</label>
-              <input type="text" name="skills_required" value={formData.skills_required} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. React, Java, SQL" className={`form-control shadow-sm ${errors.skills_required?"is-invalid":""}`} />
-              {errors.skills_required && <div className="invalid-feedback">{errors.skills_required}</div>}
-            </div>
-
-            <div className="col-12">
-              <label className="form-label fw-bold"><FaBriefcase className="me-2"/>Job Description</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} onBlur={handleBlur} rows="4" placeholder="Enter job description" className={`form-control shadow-sm ${errors.description?"is-invalid":""}`} style={{resize:"none"}}/>
-              {errors.description && <div className="invalid-feedback">{errors.description}</div>}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-bold"><FaCalendarAlt className="me-2"/>Application Deadline</label>
-              <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} onBlur={handleBlur} min={new Date().toISOString().split("T")[0]} className={`form-control shadow-sm ${errors.deadline?"is-invalid":""}`} />
-              {errors.deadline && <div className="invalid-feedback">{errors.deadline}</div>}
-            </div>
-
-          </div>
-
-          <button type="submit" className="btn btn-gradient w-100 fw-bold py-2 mt-4" style={{fontSize:"18px",borderRadius:"10px",background:"linear-gradient(90deg,#007bff,#00c6ff)",color:"#fff",border:"none"}}>➕ Post Job</button>
-        </form>
-      </div>
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={2500} theme="colored" />
     </div>
-  )
+  );
 }
