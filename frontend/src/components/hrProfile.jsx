@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/fa";
 import HRService from "../service/HrService.js";
 import "./HrProfile.css";
-import { FaUserTie, FaEnvelope, FaBuilding, FaPhone, FaEdit } from "react-icons/fa";
 
 export default function HRProfile() {
   const [hr, setHR] = useState({});
@@ -15,54 +15,69 @@ export default function HRProfile() {
         const hrData = await HRService.getHRDetails();
         setHR(hrData);
       } catch {
-        toast.error("Failed to load HR profile data ❌");
+        toast.error("Failed to load HR profile data.");
       }
     })();
   }, []);
 
-  const handleEditProfile = () => {
-  navigate("/hrdashboard/profile/update"); // ✅ Absolute path
-};
-
-
   return (
-    <div className="hr-profile-container">
-      <div className="hr-profile-card">
-        <div className="hr-header">
-          <div className="hr-header-left">
-            <div className="hr-avatar"><FaUserTie size={32} /></div>
-            <div>
-              <h2>{hr.hr_name || "HR Name"}</h2>
-              <p>{hr.company_name || "Company Name"}</p>
-            </div>
+    <div className="hr-page-shell">
+      <section className="hr-page-header">
+        <div>
+          <span className="hr-section-kicker">Profile</span>
+          <h1 className="hr-page-title">HR profile</h1>
+          <p className="hr-page-subtitle">
+            Keep your recruiter information current so students and admins always see the right contact details.
+          </p>
+        </div>
+        <button className="btn hr-hero-primary" onClick={() => navigate("/hrdashboard/profile/update")}>
+          <FaEdit className="me-2" />
+          Edit Profile
+        </button>
+      </section>
+
+      <section className="hr-profile-hero">
+        <div className="hr-surface-card hr-profile-summary">
+          <div className="hr-profile-avatar">
+            <FaUserTie />
           </div>
-          <button onClick={handleEditProfile} className="edit-btn">
-            <FaEdit /> Edit Profile
-          </button>
+          <div>
+            <h2>{hr.hr_name || "HR Name"}</h2>
+            <p>{hr.company_name || "Company Name"}</p>
+          </div>
         </div>
 
-        <div className="contact-section">
-          <h3>Contact Information</h3>
-          <div className="contact-grid">
-            <div className="contact-card">
-              <div className="contact-icon"><FaUserTie /></div>
-              <div><p className="label">Name</p><p className="value">{hr.hr_name || "N/A"}</p></div>
+        <div className="hr-surface-card hr-profile-grid">
+          <div className="hr-profile-info-card">
+            <FaUserTie />
+            <div>
+              <span>Name</span>
+              <strong>{hr.hr_name || "N/A"}</strong>
             </div>
-            <div className="contact-card">
-              <div className="contact-icon"><FaEnvelope /></div>
-              <div><p className="label">Email</p><p className="value">{hr.email || "N/A"}</p></div>
+          </div>
+          <div className="hr-profile-info-card">
+            <FaEnvelope />
+            <div>
+              <span>Email</span>
+              <strong>{hr.email || "N/A"}</strong>
             </div>
-            <div className="contact-card">
-              <div className="contact-icon"><FaPhone /></div>
-              <div><p className="label">Phone</p><p className="value">{hr.phone || "N/A"}</p></div>
+          </div>
+          <div className="hr-profile-info-card">
+            <FaPhone />
+            <div>
+              <span>Phone</span>
+              <strong>{hr.phone || "N/A"}</strong>
             </div>
-            <div className="contact-card">
-              <div className="contact-icon"><FaBuilding /></div>
-              <div><p className="label">Company</p><p className="value">{hr.company_name || "N/A"}</p></div>
+          </div>
+          <div className="hr-profile-info-card">
+            <FaBuilding />
+            <div>
+              <span>Company</span>
+              <strong>{hr.company_name || "N/A"}</strong>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
