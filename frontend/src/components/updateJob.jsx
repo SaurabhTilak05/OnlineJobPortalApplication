@@ -1,7 +1,18 @@
-// src/components/UpdateJob.jsx
-import React, { useState, useEffect } from "react";
-import Jobservice from "../service/Jobservice.js"; 
- import "./UpdateJob.css"; // custom CSS
+import React, { useEffect, useState } from "react";
+import {
+  FaBriefcase,
+  FaBuilding,
+  FaCalendarAlt,
+  FaDollarSign,
+  FaMapMarkerAlt,
+  FaSave,
+  FaTimes,
+  FaTools,
+  FaUserGraduate,
+} from "react-icons/fa";
+import { toast } from "react-toastify";
+import Jobservice from "../service/Jobservice.js";
+import "./UpdateJob.css";
 
 export default function UpdateJob({ job, onUpdated, onClose }) {
   const [formData, setFormData] = useState({
@@ -27,14 +38,15 @@ export default function UpdateJob({ job, onUpdated, onClose }) {
   }, [job]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleUpdate = (e) => {
     e.preventDefault();
+
     const formattedData = {
       ...formData,
       deadline: formData.deadline ? formData.deadline.split("T")[0] : null,
@@ -42,137 +54,85 @@ export default function UpdateJob({ job, onUpdated, onClose }) {
 
     Jobservice.updateJob(formData.job_id, formattedData)
       .then(() => {
+        toast.success("Job updated successfully.");
         onUpdated(formattedData);
         onClose();
       })
       .catch((err) => {
-        console.error("Failed to update job ❌", err);
+        console.error("Failed to update job", err);
+        toast.error("Failed to update job.");
       });
   };
 
   return (
-    <div className="update-job-container">
-      <div className="update-job-card shadow-lg">
-        <h4 className="text-center mb-4">✏️ Update Job Details</h4>
-        <form onSubmit={handleUpdate}>
-          <div className="row g-3">
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Title</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Company</label>
-              <input
-                type="text"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Openings</label>
-              <input
-                type="number"
-                name="opening"
-                value={formData.opening}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Experience Required</label>
-              <input
-                type="text"
-                name="experience_required"
-                value={formData.experience_required}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Location</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Package</label>
-              <input
-                type="text"
-                name="package"
-                value={formData.package}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Skills Required</label>
-              <input
-                type="text"
-                name="skills_required"
-                value={formData.skills_required}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Deadline</label>
-              <input
-                type="date"
-                name="deadline"
-                value={formData.deadline}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="col-12">
-              <label className="form-label fw-semibold">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="form-control"
-                rows="3"
-              />
-            </div>
-          </div>
-
-          <div className="d-flex justify-content-end mt-4">
-            <button
-              type="button"
-              className="btn btn-outline-secondary me-2 px-4"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary px-4">
-              Update Job
-            </button>
-          </div>
-        </form>
+    <div className="update-job-shell">
+      <div className="update-job-header">
+        <div>
+          <span className="update-job-kicker">Edit Opening</span>
+          <h3>Update job details</h3>
+          <p>Refine the opening before candidates continue applying.</p>
+        </div>
       </div>
+
+      <form onSubmit={handleUpdate}>
+        <div className="update-job-grid">
+          <div className="update-job-field">
+            <label className="form-label"><FaBriefcase /> Title</label>
+            <input type="text" name="title" value={formData.title} onChange={handleChange} className="form-control" required />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaBuilding /> Company</label>
+            <input type="text" name="company" value={formData.company} onChange={handleChange} className="form-control" required />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaUserGraduate /> Openings</label>
+            <input type="number" name="opening" value={formData.opening} onChange={handleChange} className="form-control" required />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaBriefcase /> Experience Required</label>
+            <input type="text" name="experience_required" value={formData.experience_required} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaMapMarkerAlt /> Location</label>
+            <input type="text" name="location" value={formData.location} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaDollarSign /> Package</label>
+            <input type="text" name="package" value={formData.package} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="update-job-field update-job-field-full">
+            <label className="form-label"><FaTools /> Skills Required</label>
+            <input type="text" name="skills_required" value={formData.skills_required} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="update-job-field">
+            <label className="form-label"><FaCalendarAlt /> Deadline</label>
+            <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="update-job-field update-job-field-full">
+            <label className="form-label"><FaBriefcase /> Description</label>
+            <textarea name="description" value={formData.description} onChange={handleChange} className="form-control" rows="4" />
+          </div>
+        </div>
+
+        <div className="update-job-actions">
+          <button type="button" className="btn update-job-cancel" onClick={onClose}>
+            <FaTimes className="me-2" />
+            Cancel
+          </button>
+          <button type="submit" className="btn update-job-save">
+            <FaSave className="me-2" />
+            Update Job
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

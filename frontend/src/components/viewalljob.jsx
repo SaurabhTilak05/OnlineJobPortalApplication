@@ -194,14 +194,14 @@ export default function ViewAllJob() {
       </section>
 
       {selectedJob && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog">
-          <div className="modal-dialog modal-lg" role="document">
-            <div className="modal-content rounded-4 shadow-lg border-0">
-              <div className="modal-header">
+        <div className="modal fade show d-block hr-modal-backdrop" tabIndex="-1" role="dialog">
+          <div className="modal-dialog modal-lg modal-dialog-centered hr-update-modal-dialog" role="document">
+            <div className="modal-content rounded-4 shadow-lg border-0 hr-custom-modal">
+              <div className="modal-header hr-custom-modal-header">
                 <h5 className="modal-title">Update job</h5>
                 <button type="button" className="btn-close" onClick={() => setSelectedJob(null)}></button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body hr-custom-modal-body">
                 <UpdateJob
                   job={selectedJob}
                   onClose={() => setSelectedJob(null)}

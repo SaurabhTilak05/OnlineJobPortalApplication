@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
   FaBars,
   FaBell,
   FaBriefcase,
@@ -19,6 +21,9 @@ import "./hrdashboard.css";
 
 export default function HRDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    localStorage.getItem("hrSidebarCollapsed") === "true"
+  );
   const navigate = useNavigate();
 
   const hrId = localStorage.getItem("hrId");
@@ -34,6 +39,13 @@ export default function HRDashboard() {
   };
 
   const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebarWidth = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("hrSidebarCollapsed", String(next));
+      return next;
+    });
+  };
 
   const navItems = [
     { to: ".", label: "Dashboard", icon: <FaChartLine />, end: true },
@@ -45,7 +57,7 @@ export default function HRDashboard() {
   ];
 
   return (
-    <div className="hr-dashboard-shell">
+    <div className={`hr-dashboard-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <nav className="hr-topbar">
         <div className="container-fluid hr-topbar-inner">
           <button
@@ -81,6 +93,15 @@ export default function HRDashboard() {
       </nav>
 
       <aside className={`hr-sidebar ${sidebarOpen ? "open" : ""}`}>
+        <button
+          type="button"
+          className="hr-sidebar-toggle d-none d-lg-inline-flex"
+          onClick={toggleSidebarWidth}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {sidebarCollapsed ? <FaAngleDoubleRight /> : <FaAngleDoubleLeft />}
+        </button>
+
         <div className="hr-sidebar-header">
           <p className="hr-sidebar-kicker">HR Workspace</p>
           <h2>Manage hiring with clarity</h2>
@@ -97,9 +118,10 @@ export default function HRDashboard() {
               end={item.end}
               className={({ isActive }) => `hr-nav-link ${isActive ? "active" : ""}`}
               onClick={closeSidebar}
+              title={item.label}
             >
               <span className="hr-nav-icon">{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="hr-nav-text">{item.label}</span>
             </NavLink>
           ))}
 
@@ -108,19 +130,27 @@ export default function HRDashboard() {
               to="profile"
               className={({ isActive }) => `hr-nav-link ${isActive ? "active" : ""}`}
               onClick={closeSidebar}
+              title="Profile"
             >
               <span className="hr-nav-icon">
                 <FaUserCog />
               </span>
-              <span>Profile</span>
+              <span className="hr-nav-text">Profile</span>
             </NavLink>
           </div>
         </div>
 
         <div className="hr-sidebar-footer">
-          <button className="btn hr-logout-btn w-100 fw-bold" onClick={handleLogout}>
-            <FaSignOutAlt className="me-2" />
-            Logout
+          <button
+            className="btn hr-logout-btn w-100 fw-bold"
+            onClick={handleLogout}
+            title="Logout"
+            aria-label="Logout"
+          >
+            <span className="hr-logout-icon">
+              <FaSignOutAlt />
+            </span>
+            <span className="hr-nav-text">Logout</span>
           </button>
         </div>
       </aside>
