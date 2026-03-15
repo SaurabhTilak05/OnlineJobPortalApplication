@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  FaUsers,
-  FaBriefcase,
-  FaUserPlus,
-  FaSignOutAlt,
   FaBars,
-  FaUserCog,
-  FaHistory,
-  FaEnvelope,
-  FaUserCircle,
+  FaBell,
+  FaBriefcase,
+  FaBuilding,
   FaCalendarAlt,
-  FaCheckCircle ,
+  FaChartLine,
+  FaCheckCircle,
+  FaClipboardList,
+  FaHistory,
+  FaSignOutAlt,
+  FaUserCircle,
+  FaUserCog,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./hrdashboard.css";
 
 export default function HRDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,224 +35,101 @@ export default function HRDashboard() {
 
   const closeSidebar = () => setSidebarOpen(false);
 
+  const navItems = [
+    { to: ".", label: "Dashboard", icon: <FaChartLine />, end: true },
+    { to: "addjob", label: "Post Job", icon: <FaBriefcase /> },
+    { to: "view-applicants", label: "Applicants", icon: <FaClipboardList /> },
+    { to: "view-schedule", label: "Interview Schedule", icon: <FaCalendarAlt /> },
+    { to: "job-history", label: "Job History", icon: <FaHistory /> },
+    { to: "placement", label: "Placement Records", icon: <FaCheckCircle /> },
+  ];
+
   return (
-    <div style={{ "--hr-topnav": "70px" }}>
-      {/* ✅ Top Navbar */}
-      <nav
-        className="navbar shadow-sm fixed-top"
-        style={{
-          height: "var(--hr-topnav)",
-          zIndex: 1030,
-          background: "linear-gradient(90deg, #1e3a8a, #2563eb)",
-        }}
-      >
-        <div className="container-fluid">
+    <div className="hr-dashboard-shell">
+      <nav className="hr-topbar">
+        <div className="container-fluid hr-topbar-inner">
           <button
-            className="btn btn-light d-lg-none"
-            onClick={() => setSidebarOpen((s) => !s)}
+            className="btn hr-menu-toggle d-lg-none"
+            onClick={() => setSidebarOpen((open) => !open)}
             aria-label="Toggle sidebar"
           >
             <FaBars />
           </button>
 
-          <NavLink
-            to="/hrdashboard"
-            className="navbar-brand fw-bold text-white"
-          >
-            QuickStart <span className="text-warning">Career</span>
+          <NavLink to="/hrdashboard" className="hr-brand">
+            <span className="hr-brand-badge">
+              <FaBuilding />
+            </span>
+            <span>
+              QuickStart <span>Career</span>
+            </span>
           </NavLink>
 
-          <div className="d-none d-lg-flex align-items-center gap-3">
-            <NavLink end to="." className="btn btn-outline-light btn-sm">
-              Dashboard
+          <div className="hr-topbar-actions">
+            <div className="hr-topbar-chip d-none d-md-flex">
+              <FaBell />
+              <span>Recruit smarter</span>
+            </div>
+            <NavLink end to="." className="hr-topbar-link d-none d-lg-inline-flex">
+              Overview
             </NavLink>
-            <NavLink to="profile" className="text-white fs-1 mr-3">
+            <NavLink to="profile" className="hr-profile-link" aria-label="HR profile">
               <FaUserCircle />
             </NavLink>
           </div>
         </div>
       </nav>
 
-      {/* ✅ Sidebar */}
-      <aside
-        className={`bg-dark text-white position-fixed start-0 h-100 px-3 py-4 hr-sidebar ${
-          sidebarOpen ? "open" : ""
-        }`}
-      >
-        <h6 className="text-uppercase text-secondary mb-4 px-2 fw-bold">
-          HR Panel
-        </h6>
+      <aside className={`hr-sidebar ${sidebarOpen ? "open" : ""}`}>
+        <div className="hr-sidebar-header">
+          <p className="hr-sidebar-kicker">HR Workspace</p>
+          <h2>Manage hiring with clarity</h2>
+          <p className="hr-sidebar-copy">
+            Post jobs, track applicants, and keep interviews moving from one clean place.
+          </p>
+        </div>
 
-        <ul className="nav flex-column gap-2">
-          <li>
+        <div className="hr-sidebar-nav">
+          {navItems.map((item) => (
             <NavLink
-              end
-              to="."
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `hr-nav-link ${isActive ? "active" : ""}`}
               onClick={closeSidebar}
             >
-              <FaUsers className="me-2" /> Dashboard
+              <span className="hr-nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
             </NavLink>
-          </li>
+          ))}
 
-          <li>
-            <NavLink
-              to="addjob"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
-              onClick={closeSidebar}
-            >
-              <FaBriefcase className="me-2" /> Post Job
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="view-applicants"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
-              onClick={closeSidebar}
-            >
-              <FaUserPlus className="me-2" /> View Applicants
-            </NavLink>
-          </li>
-
-          {/* ✅ New View Schedule */}
-          <li>
-            <NavLink
-              to="view-schedule"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
-              onClick={closeSidebar}
-            >
-              <FaCalendarAlt className="me-2" /> View Schedule
-            </NavLink>
-          </li>
-
-          <li className="d-lg-none">
+          <div className="d-lg-none">
             <NavLink
               to="profile"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
+              className={({ isActive }) => `hr-nav-link ${isActive ? "active" : ""}`}
               onClick={closeSidebar}
             >
-              <FaUserCog className="me-2" /> Profile
+              <span className="hr-nav-icon">
+                <FaUserCog />
+              </span>
+              <span>Profile</span>
             </NavLink>
-          </li>
+          </div>
+        </div>
 
-          <li>
-            <NavLink
-              to="job-history"
-              className={({ isActive }) =>
-                `nav-link d-flex align-items-center ${
-                  isActive ? "active" : "text-white"
-                }`
-              }
-              onClick={closeSidebar}
-            >
-              <FaHistory className="me-2" /> Job History
-            </NavLink>
-          </li>
-          <li>
-  <NavLink
-    to="placement"
-    className={({ isActive }) =>
-      `nav-link d-flex align-items-center ${
-        isActive ? "active" : "text-white"
-      }`
-    }
-    onClick={closeSidebar}
-  >
-    <FaCheckCircle className="me-2" /> Placement Records
-  </NavLink>
-</li>
-
-
-         
-        </ul>
-
-        <div className="mt-auto pt-4">
-          <button
-            className="btn btn-danger w-100 fw-bold"
-            onClick={handleLogout}
-          >
+        <div className="hr-sidebar-footer">
+          <button className="btn hr-logout-btn w-100 fw-bold" onClick={handleLogout}>
             <FaSignOutAlt className="me-2" />
             Logout
           </button>
         </div>
       </aside>
 
-      {sidebarOpen && (
-        <div
-          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
-          onClick={closeSidebar}
-          style={{ zIndex: 1035 }}
-        />
-      )}
+      {sidebarOpen && <div className="hr-sidebar-overlay" onClick={closeSidebar} />}
 
-      <main className="hr-main">
+      <main className="hr-main-content">
         <Outlet />
       </main>
-
-      <style>{`
-        .hr-main {
-          margin-top: var(--hr-topnav);
-          padding: 20px;
-          min-height: 100vh;
-          background: linear-gradient(135deg, #e0f2fe, #f8fafc); 
-          transition: margin-left 0.3s ease;
-        }
-        .hr-sidebar {
-          width: 250px;
-          top: var(--hr-topnav);
-          left: 0;
-          transform: translateX(-100%);
-          transition: transform 0.3s ease-in-out;
-          z-index: 1040;
-        }
-        .hr-sidebar.open {
-          transform: translateX(0);
-        }
-        @media (min-width: 992px) {
-          .hr-sidebar {
-            transform: translateX(0);
-          }
-          .hr-main {
-            margin-left: 250px;
-          }
-        }
-        .nav-link {
-          padding: 10px 15px;
-          border-radius: 8px;
-          font-size: 0.95rem;
-          transition: background 0.3s, color 0.3s;
-        }
-        .nav-link:hover {
-          background: rgba(255,255,255,0.1);
-          color: #ffc107 !important;
-        }
-        .nav-link.active {
-          background: #ffc107;
-          color: #000 !important;
-          font-weight: bold;
-        }
-      `}</style>
     </div>
   );
 }
