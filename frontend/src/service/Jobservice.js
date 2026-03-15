@@ -75,7 +75,11 @@ getAppliedJobs(seekerId) {
 };
 
    getApplicantsByJob(jobId) {
-  return axios.get(`http://localhost:8080/getapplicant/${jobId}/applicants`);//getapplicant/:id/applicants
+  return axios.get(`http://localhost:8080/getapplicant/${jobId}/applicants`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
 }
 
   // search job for hr by title location company skills 
