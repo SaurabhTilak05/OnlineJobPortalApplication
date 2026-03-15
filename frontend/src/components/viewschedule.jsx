@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaCalendarAlt, FaSearch } from "react-icons/fa";
 import interviewServ from "../service/interviewserv.js";
-import "./ViewSchedule.css"; // custom CSS
+import "./ViewSchedule.css";
+
+const normalizeStatus = (status) => (status || "pending").toLowerCase();
 
 export default function ViewSchedule() {
   const [schedules, setSchedules] = useState([]);
@@ -42,14 +45,10 @@ export default function ViewSchedule() {
         setLoading(false);
       }
     };
+
     if (hrId) fetchSchedules();
   }, [hrId]);
 
-  const handleNextProcess = (interview) => {
-    navigate(`/hrdashboard/interviewstatus/${interview.interview_id}`, { state: interview });
-  };
-
-  // 🔍 Search filter
   const filteredSchedules = schedules.filter((s) => {
     const search = searchTerm.toLowerCase();
     return (
@@ -60,53 +59,53 @@ export default function ViewSchedule() {
     );
   });
 
-  // Pagination
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex = lastIndex - recordsPerPage;
   const records = filteredSchedules.slice(firstIndex, lastIndex);
   const npage = Math.ceil(filteredSchedules.length / recordsPerPage);
   const numbers = [...Array(npage).keys()].map((i) => i + 1);
 
-  if (loading)
-    return (
-      <div className="loader-container">
-        <div className="spinner-border text-primary" role="status"></div>
-        <p>Loading schedules...</p>
-      </div>
-    );
-
   return (
-    <div className="container mt-4">
-      <div className="card shadow-lg border-0 rounded-4">
-        <div className="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">📅 Your Scheduled Interviews</h5>
-          <span className="badge bg-warning text-dark fs-6">
-            Total: {filteredSchedules.length}
-          </span>
+    <div className="hr-page-shell">
+      <section className="hr-page-header">
+        <div>
+          <span className="hr-section-kicker">Interview Schedule</span>
+          <h1 className="hr-page-title">Scheduled interviews</h1>
+          <p className="hr-page-subtitle">
+            Track upcoming interviews, scan statuses quickly, and continue the next hiring step from one table.
+          </p>
         </div>
+        <div className="hr-page-chip">
+          <FaCalendarAlt />
+          <span>{filteredSchedules.length} records</span>
+        </div>
+      </section>
 
-        <div className="card-body">
-          {/* 🔍 Search */}
-          <div className="d-flex justify-content-end mb-3">
+      <section className="hr-surface-card hr-table-card">
+        <div className="hr-table-toolbar">
+          <div className="hr-search-wrap">
+            <FaSearch />
             <input
               type="text"
-              className="form-control w-50"
-              placeholder="🔍 Search by Job, Seeker, Status, Mode..."
+              className="form-control hr-search-input"
+              placeholder="Search by job, seeker, status, or mode"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
 
-          {filteredSchedules.length === 0 ? (
-            <div className="alert alert-info text-center">
-              No matching schedules found.
-            </div>
-          ) : (
+        {loading ? (
+          <div className="hr-empty-state">Loading schedules...</div>
+        ) : filteredSchedules.length === 0 ? (
+          <div className="hr-empty-state">No matching schedules found.</div>
+        ) : (
+          <>
             <div className="table-responsive">
-              <table className="table table-hover align-middle text-center custom-table">
-                <thead className="table-dark">
+              <table className="table hr-jobs-table align-middle mb-0">
+                <thead>
                   <tr>
-                    <th>Sr.NO</th>
+                    <th>Sr.No</th>
                     <th>Job Title</th>
                     <th>Seeker</th>
                     <th>Mode</th>
@@ -123,37 +122,25 @@ export default function ViewSchedule() {
                       <td>{firstIndex + index + 1}</td>
                       <td>{s.job_title}</td>
                       <td>{s.seeker_name}</td>
-                      <td>
-                        <span className="badge bg-info">{s.interview_mode}</span>
-                      </td>
+                      <td>{s.interview_mode}</td>
                       <td>{formatDate(s.interview_date)}</td>
                       <td>{formatTime(s.interview_time)}</td>
+                      <td>{s.interview_mode === "Offline" ? s.location : s.interview_link}</td>
                       <td>
-                        {s.interview_mode === "Offline"
-                          ? s.location
-                          : s.interview_link}
-                      </td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            s.status === "Scheduled"
-                              ? "bg-success"
-                              : s.status === "Selected"
-                              ? "bg-primary"
-                              : s.status === "Rejected"
-                              ? "bg-danger"
-                              : "bg-secondary"
-                          }`}
-                        >
+                        <span className={`hr-status-pill status-${normalizeStatus(s.status)}`}>
                           {s.status}
                         </span>
                       </td>
                       <td>
                         <button
-                          className="btn btn-sm btn-outline-warning"
-                          onClick={() => handleNextProcess(s)}
+                          className="btn hr-inline-btn"
+                          onClick={() =>
+                            navigate(`/hrdashboard/interviewstatus/${s.interview_id}`, {
+                              state: s,
+                            })
+                          }
                         >
-                          Next →
+                          Next
                         </button>
                       </td>
                     </tr>
@@ -161,46 +148,33 @@ export default function ViewSchedule() {
                 </tbody>
               </table>
             </div>
-          )}
 
-          {/* Pagination */}
-          {npage > 1 && (
-            <nav>
-              <ul className="pagination justify-content-center">
-                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                  >
-                    ⬅ Prev
-                  </button>
-                </li>
-                {numbers.map((n) => (
-                  <li
-                    key={n}
-                    className={`page-item ${currentPage === n ? "active" : ""}`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(n)}
-                    >
-                      {n}
+            {npage > 1 && (
+              <nav className="mt-4">
+                <ul className="pagination justify-content-center hr-pagination">
+                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                    <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
+                      Prev
                     </button>
                   </li>
-                ))}
-                <li className={`page-item ${currentPage === npage ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    Next ➡
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          )}
-        </div>
-      </div>
+                  {numbers.map((n) => (
+                    <li key={n} className={`page-item ${currentPage === n ? "active" : ""}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(n)}>
+                        {n}
+                      </button>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === npage ? "disabled" : ""}`}>
+                    <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </>
+        )}
+      </section>
     </div>
   );
 }
