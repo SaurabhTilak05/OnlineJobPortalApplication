@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { FaAward } from "react-icons/fa";
 import { getPlacements } from "../service/placementserv.js";
+import "./adminpanel.css";
+
+const normalizeStatus = (status) => (status || "pending").toLowerCase();
 
 export default function PlacementList() {
   const [placements, setPlacements] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -19,7 +22,6 @@ export default function PlacementList() {
         setLoading(false);
       }
     };
-
     fetchPlacements();
   }, []);
 
@@ -28,135 +30,100 @@ export default function PlacementList() {
   const currentPlacements = placements.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(placements.length / itemsPerPage);
 
-  if (loading) return <p>Loading placements...</p>;
+  if (loading) return <div className="admin-page"><p className="admin-empty">Loading placements...</p></div>;
 
   return (
-    <div className="container mt-4">
-      <h2>All Placed Jobseekers</h2>
-      {placements.length === 0 ? (
-        <p>No placements yet.</p>
-      ) : (
-        <>
-          <div className="d-none d-md-block">
-            <table className="table table-striped mt-3">
-              <thead>
-                <tr>
-                  <th>Sr.No</th>
-                  <th>Profile</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Job Title</th>
-                  <th>Company</th>
-                  <th>Placement Date</th>
-                  <th>Status</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentPlacements.map((p, index) => (
-                  <tr key={p.placement_id}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>
-                      {p.profile_picture ? (
-                        <img
-                          src={`http://localhost:8080${p.profile_picture}`}
-                          alt={p.seeker_name}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      ) : (
-                        <span>No Image</span>
-                      )}
-                    </td>
-                    <td>{p.seeker_name}</td>
-                    <td>{p.seeker_email}</td>
-                    <td>{p.job_title}</td>
-                    <td>{p.company}</td>
-                    <td>{new Date(p.placement_date).toLocaleDateString()}</td>
-                    <td>{p.placement_status}</td>
-                    <td>{p.remarks || "-"}</td>
+    <div className="admin-page">
+      <section className="admin-page-header">
+        <div>
+          <span className="admin-section-kicker">Placements</span>
+          <h1 className="admin-page-title">All placed jobseekers</h1>
+          <p className="admin-page-subtitle">
+            Review successful outcomes across the platform and track final placement records.
+          </p>
+        </div>
+        <div className="admin-chip">
+          <FaAward />
+          <span>{placements.length} placements</span>
+        </div>
+      </section>
+
+      <section className="admin-surface admin-table-wrap">
+        {placements.length === 0 ? (
+          <p className="admin-empty">No placements yet.</p>
+        ) : (
+          <>
+            <div className="table-responsive d-none d-md-block">
+              <table className="table admin-table align-middle">
+                <thead>
+                  <tr>
+                    <th>Sr.No</th>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Placement Date</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
                   </tr>
+                </thead>
+                <tbody>
+                  {currentPlacements.map((p, index) => (
+                    <tr key={p.placement_id}>
+                      <td>{indexOfFirstItem + index + 1}</td>
+                      <td>
+                        {p.profile_picture ? (
+                          <img src={`http://localhost:8080${p.profile_picture}`} alt={p.seeker_name} style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover" }} />
+                        ) : (
+                          <span className="admin-avatar" style={{ width: 50, height: 50, fontSize: "0.9rem" }}>N/A</span>
+                        )}
+                      </td>
+                      <td>{p.seeker_name}</td>
+                      <td>{p.seeker_email}</td>
+                      <td>{p.job_title}</td>
+                      <td>{p.company}</td>
+                      <td>{new Date(p.placement_date).toLocaleDateString()}</td>
+                      <td><span className={`admin-status-pill status-${normalizeStatus(p.placement_status)}`}>{p.placement_status}</span></td>
+                      <td>{p.remarks || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="admin-card-grid d-md-none">
+              {currentPlacements.map((p) => (
+                <article key={p.placement_id} className="admin-info-card">
+                  <h3>{p.seeker_name}</h3>
+                  <p><strong>Email:</strong> {p.seeker_email}</p>
+                  <p><strong>Job:</strong> {p.job_title}</p>
+                  <p><strong>Company:</strong> {p.company}</p>
+                  <p><strong>Date:</strong> {new Date(p.placement_date).toLocaleDateString()}</p>
+                  <p><strong>Remarks:</strong> {p.remarks || "-"}</p>
+                  <span className={`admin-status-pill status-${normalizeStatus(p.placement_status)}`}>{p.placement_status}</span>
+                </article>
+              ))}
+            </div>
+
+            <div className="d-flex justify-content-center mt-4">
+              <ul className="pagination pagination-sm admin-pagination">
+                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                  <button className="page-link" onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>Prev</button>
+                </li>
+                {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((page) => (
+                  <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
+                    <button className="page-link" onClick={() => setCurrentPage(page)}>{page}</button>
+                  </li>
                 ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="d-md-none">
-            {currentPlacements.map((p) => (
-              <div key={p.placement_id} className="card mb-3 shadow-sm">
-                <div className="card-body d-flex align-items-start gap-3">
-                  {p.profile_picture ? (
-                    <img
-                      src={`http://localhost:8080${p.profile_picture}`}
-                      alt={p.seeker_name}
-                      style={{
-                        width: "60px",
-                        height: "60px",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "60px",
-                        height: "60px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ccc",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                      }}
-                    >
-                      No Image
-                    </div>
-                  )}
-
-                  <div className="flex-grow-1">
-                    <h5 className="card-title mb-1">{p.seeker_name}</h5>
-                    <p className="mb-0"><strong>Email:</strong> {p.seeker_email}</p>
-                    <p className="mb-0"><strong>Job:</strong> {p.job_title} - {p.company}</p>
-                    <p className="mb-0"><strong>Date:</strong> {new Date(p.placement_date).toLocaleDateString()}</p>
-                    <p className="mb-0"><strong>Status:</strong> {p.placement_status}</p>
-                    <p className="mb-0"><strong>Remarks:</strong> {p.remarks || "-"}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-            {[...Array(totalPages)].map((_, idx) => (
-              <button
-                key={idx}
-                className={`btn btn-sm ${
-                  currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"
-                }`}
-                onClick={() => setCurrentPage(idx + 1)}
-              >
-                {idx + 1}
-              </button>
-            ))}
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
+                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                  <button className="page-link" onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}>Next</button>
+                </li>
+              </ul>
+            </div>
+          </>
+        )}
+      </section>
     </div>
   );
 }
