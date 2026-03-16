@@ -1,19 +1,16 @@
 let db = require("../../db.js");
 
-exports.addAdmin = (username, password, role) => {
-    return new Promise((resolve, reject) => {
-        db.query(
+exports.addAdmin = async (username, password, role) => {
+    try {
+        const [result] = await db.query(
             "INSERT INTO admin (username, password, role) VALUES (?, ?, ?)",
-            [username, password, role],
-            (err, result) => {
-                if (err) {
-                    console.error("DB error:", err);
-                    return reject("Data Not Saved");
-                }
-                return resolve("Admin Saved Successfully");
-            }
+            [username, password, role]
         );
-    });
+        return result;
+    } catch (err) {
+        console.error("DB error:", err);
+        throw err;
+    }
 };
 
 exports.getAdminCount = async () => {
