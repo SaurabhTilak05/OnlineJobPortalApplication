@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
+import {
+  FaBriefcase,
+  FaBuilding,
+  FaCalendarAlt,
+  FaChartLine,
+  FaMapMarkerAlt,
+  FaSearch,
+  FaTools,
+  FaUserGraduate,
+  FaUsers,
+} from "react-icons/fa";
 import UserJobservice from "../service/userJobServ.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./jobforusers.css";
 
 export default function JobforUsers() {
   const [jobs, setJobs] = useState([]);
@@ -14,8 +26,9 @@ export default function JobforUsers() {
 
   const seekerId = localStorage.getItem("seeker_id");
   const role = localStorage.getItem("role");
+  const isAdminView = role === "admin";
+  const isUserView = role === "user";
 
-  // Fetch all jobs
   useEffect(() => {
     UserJobservice.getAllJobsuser()
       .then((res) => {
@@ -29,12 +42,10 @@ export default function JobforUsers() {
       });
   }, []);
 
-  // Fetch profile completion %
   useEffect(() => {
-    if (seekerId && role === "user") {
+    if (seekerId && isUserView) {
       UserJobservice.getProfileCompletion(seekerId)
         .then((res) => {
-          // Backend should return { completion: number }
           setProfileCompletion(res.data.completion || 0);
         })
         .catch((err) => {
@@ -42,12 +53,11 @@ export default function JobforUsers() {
           setProfileCompletion(0);
         });
     }
-  }, [seekerId, role]);
+  }, [seekerId, isUserView]);
 
-  // Apply for job
   const handleApply = (jobId) => {
     if (!seekerId) {
-      toast.error(" Please login as a student first!");
+      toast.error("Please login as a student first!");
       return;
     }
 
@@ -58,42 +68,41 @@ export default function JobforUsers() {
 
     UserJobservice.applyJob(jobId)
       .then((res) => {
-        console.log("Apply Job Response:", res.data);
-
         if (res.data.success) {
           toast[res.data.message.toLowerCase().includes("already") ? "warning" : "success"](
             res.data.message
           );
           setAppliedJobs((prev) => [...prev, jobId]);
         } else {
-          toast.warning(res.data.message || " Cannot apply for this job");
+          toast.warning(res.data.message || "Cannot apply for this job");
         }
       })
       .catch((err) => {
         console.error("Error applying job:", err);
-        toast.error("❌ Something went wrong. Try again!");
+        toast.error("Something went wrong. Try again!");
       });
   };
 
-  // Handle search input
   const handleSearchChange = (e) => {
     const value = e.target.value.trimStart();
     if (value.length > 30) {
       toast.warning("Search term too long (max 50 characters)");
       return;
     }
+
     const validPattern = /^[a-zA-Z0-9\s.,-]*$/;
     if (!validPattern.test(value)) {
-      toast.error("❌ Invalid character in search");
+      toast.error("Invalid character in search");
       return;
     }
+
     setSearchTerm(value);
   };
 
-  // Filter jobs based on search
   const filteredJobs = jobs.filter((job) => {
     const searchLower = searchTerm.toLowerCase().trim();
     if (!searchLower) return true;
+
     return (
       job.title?.toLowerCase().includes(searchLower) ||
       job.company?.toLowerCase().includes(searchLower) ||
@@ -102,84 +111,178 @@ export default function JobforUsers() {
     );
   });
 
-  if (loading) return <p className="text-center mt-5">⏳ Loading jobs...</p>;
-  if (error) return <p className="text-center text-danger mt-5">❌ {error}</p>;
+  const totalOpenings = jobs.reduce((sum, job) => sum + Number(job.opening || 0), 0);
+  const uniqueCompanies = new Set(jobs.map((job) => job.company).filter(Boolean)).size;
+  const searchResultsLabel =
+    filteredJobs.length === jobs.length
+      ? `${jobs.length} live roles`
+      : `${filteredJobs.length} filtered roles`;
+
+  if (loading) return <p className="text-center mt-5">Loading jobs...</p>;
+  if (error) return <p className="text-center text-danger mt-5">{error}</p>;
 
   return (
-    <div className="container mt-4">
-      <h2 className="fw-bold text-primary text-center mb-4">💼 Available Jobs</h2>
-
-    
-
-      {/* Search Field */}
-      <div className="row mb-4">
-        <div className="col-md-6 offset-md-3">
-          <input
-            type="text"
-            className="form-control shadow-sm"
-            placeholder="🔍 Search jobs by title, company, skills or location..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
+    <div className={`jobs-page ${isAdminView ? "jobs-page-admin" : ""}`}>
+      <section className="jobs-hero">
+        <div className="jobs-hero-copy">
+          <span className="jobs-kicker">{isAdminView ? "Admin Job Board" : "Career Openings"}</span>
+          <h1>{isAdminView ? "Monitor live roles across the platform" : "Discover roles that fit your skills"}</h1>
+          <p>
+            Search by title, company, location, or skills and review every opening from one focused workspace.
+          </p>
         </div>
-      </div>
+        <div className="jobs-hero-badge">
+          <span>Visible now</span>
+          <strong>{searchResultsLabel}</strong>
+        </div>
+      </section>
 
-      <div className="row g-4">
-        {filteredJobs.length === 0 ? (
-          <p className="text-center">No jobs found</p>
-        ) : (
-          filteredJobs.map((job) => (
-            <div className="col-md-4" key={job.job_id}>
-              <div className="card shadow-lg border-0 h-100">
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title fw-bold">{job.title}</h5>
-                  <h6 className="card-subtitle mb-2 text-muted">{job.company}</h6>
-                  <p className="card-text flex-grow-1">
-                    📍 <strong>Location:</strong> {job.location} <br />
-                    🏢 <strong>Openings:</strong> {job.opening || "N/A"} <br />
-                    ⏳ <strong>Experience:</strong> {job.experience_required || "Fresher"} <br />
-                    💰 <strong>Package:</strong> {job.package || "Not Disclosed"} <br />
-                    🛠 <strong>Skills:</strong> {job.skills_required || "Not Specified"} <br />
-                    📝 <strong>Description:</strong>{" "}
+      <section className="jobs-metrics">
+        <article className="jobs-metric-card">
+          <div className="jobs-metric-icon">
+            <FaBriefcase />
+          </div>
+          <div>
+            <span>Total jobs</span>
+            <strong>{jobs.length}</strong>
+          </div>
+        </article>
+        <article className="jobs-metric-card">
+          <div className="jobs-metric-icon jobs-metric-accent">
+            <FaBuilding />
+          </div>
+          <div>
+            <span>Companies hiring</span>
+            <strong>{uniqueCompanies}</strong>
+          </div>
+        </article>
+        <article className="jobs-metric-card">
+          <div className="jobs-metric-icon jobs-metric-highlight">
+            <FaUsers />
+          </div>
+          <div>
+            <span>Total openings</span>
+            <strong>{totalOpenings}</strong>
+          </div>
+        </article>
+        {isUserView && (
+          <article className="jobs-metric-card">
+            <div className="jobs-metric-icon jobs-metric-soft">
+              <FaChartLine />
+            </div>
+            <div>
+              <span>Profile completion</span>
+              <strong>{profileCompletion}%</strong>
+            </div>
+          </article>
+        )}
+      </section>
+
+      <section className="jobs-surface">
+        <div className="jobs-toolbar">
+          <div className="jobs-search-wrap">
+            <FaSearch />
+            <input
+              type="text"
+              className="form-control jobs-search-input"
+              placeholder="Search jobs by title, company, skills, or location"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
+
+        <div className="jobs-grid">
+          {filteredJobs.length === 0 ? (
+            <p className="jobs-empty">No jobs found</p>
+          ) : (
+            filteredJobs.map((job) => (
+              <article className="jobs-card" key={job.job_id}>
+                <div className="jobs-card-top">
+                  <div>
+                    <span className="jobs-card-eyebrow">Role #{job.job_id}</span>
+                    <h3>{job.title}</h3>
+                  </div>
+                  <span className="jobs-company-pill">{job.company}</span>
+                </div>
+
+                <div className="jobs-meta">
+                  <p>
+                    <FaMapMarkerAlt />
+                    <span>{job.location || "Location not specified"}</span>
+                  </p>
+                  <p>
+                    <FaUsers />
+                    <span>{job.opening || "N/A"} openings</span>
+                  </p>
+                  <p>
+                    <FaUserGraduate />
+                    <span>{job.experience_required || "Fresher"}</span>
+                  </p>
+                  <p>
+                    <FaCalendarAlt />
+                    <span>Deadline: {job.deadline || "Open until filled"}</span>
+                  </p>
+                </div>
+
+                <div className="jobs-skill-chip">
+                  <FaTools />
+                  <span>{job.skills_required || "Skills not specified"}</span>
+                </div>
+
+                <div className="jobs-package-row">
+                  <span>Package</span>
+                  <strong>{job.package || "Not disclosed"}</strong>
+                </div>
+
+                <div className="jobs-description">
+                  <span>Description</span>
+                  <p>
                     {expandedJob === job.job_id ? (
                       <>
-                        {job.description}{" "}
-                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(null)}>
-                          Show Less
+                        {job.description || "No description provided."}{" "}
+                        <button type="button" className="jobs-inline-btn" onClick={() => setExpandedJob(null)}>
+                          Show less
                         </button>
                       </>
                     ) : (
                       <>
-                        {job.description?.substring(0, 60)}...
-                        <button className="btn btn-link p-0" onClick={() => setExpandedJob(job.job_id)}>
-                          Read More
-                        </button>
+                        {job.description
+                          ? `${job.description.substring(0, 110)}${job.description.length > 110 ? "..." : ""}`
+                          : "No description provided."}{" "}
+                        {job.description?.length > 110 && (
+                          <button
+                            type="button"
+                            className="jobs-inline-btn"
+                            onClick={() => setExpandedJob(job.job_id)}
+                          >
+                            Read more
+                          </button>
+                        )}
                       </>
                     )}
-                    <br />
-                    📅 <strong>Deadline:</strong> {job.deadline}
                   </p>
-
-                  {role === "user" && (
-                    appliedJobs.includes(job.job_id) ? (
-                      <button className="btn btn-secondary w-100 mt-auto" disabled>
-                        ✅ Applied
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-success w-100 mt-auto"
-                        onClick={() => handleApply(job.job_id)}
-                      >
-                        🚀 Apply Now
-                      </button>
-                    )
-                  )}
                 </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+
+                {isUserView && (
+                  appliedJobs.includes(job.job_id) ? (
+                    <button className="btn jobs-apply-btn jobs-apply-btn-disabled mt-auto" disabled>
+                      Applied
+                    </button>
+                  ) : (
+                    <button
+                      className="btn jobs-apply-btn mt-auto"
+                      onClick={() => handleApply(job.job_id)}
+                    >
+                      Apply now
+                    </button>
+                  )
+                )}
+              </article>
+            ))
+          )}
+        </div>
+      </section>
 
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
