@@ -1,1 +1,223 @@
 @import "./adminpanel.css";
+
+.viewhr-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.8rem;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.62), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(219, 111, 66, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(18, 58, 51, 0.98), rgba(31, 92, 79, 0.92));
+  color: #f6efe7;
+  box-shadow: 0 24px 50px rgba(18, 58, 51, 0.2);
+}
+
+.viewhr-hero .admin-section-kicker,
+.viewhr-hero .admin-page-title,
+.viewhr-hero .admin-page-subtitle {
+  color: inherit;
+}
+
+.viewhr-hero .admin-section-kicker {
+  color: #ffd7c7;
+}
+
+.viewhr-hero .admin-page-subtitle {
+  max-width: 58ch;
+  color: rgba(246, 239, 231, 0.82);
+}
+
+.viewhr-hero-copy {
+  max-width: 760px;
+}
+
+.viewhr-hero-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+}
+
+.viewhr-inline-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+}
+
+.viewhr-hero-panel {
+  min-width: 280px;
+  max-width: 320px;
+  padding: 1.2rem;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+}
+
+.viewhr-hero-panel-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.viewhr-panel-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #ffd7c7;
+}
+
+.viewhr-hero-panel strong {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.viewhr-hero-panel p {
+  margin: 0;
+  color: rgba(246, 239, 231, 0.8);
+  line-height: 1.6;
+}
+
+.viewhr-panel-microstats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.viewhr-panel-microstats div {
+  padding: 0.85rem 0.9rem;
+  border-radius: 18px;
+  background: rgba(10, 27, 24, 0.28);
+}
+
+.viewhr-panel-microstats span {
+  display: block;
+  font-size: 0.82rem;
+  color: rgba(246, 239, 231, 0.72);
+}
+
+.viewhr-panel-microstats strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.35rem;
+}
+
+.viewhr-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.viewhr-metric-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(18, 58, 51, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 247, 240, 0.98));
+}
+
+.viewhr-metric-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -38% auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(31, 92, 79, 0.06);
+}
+
+.viewhr-directory-shell {
+  padding: 1.35rem;
+}
+
+.viewhr-toolbar-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(31, 92, 79, 0.08);
+  color: var(--admin-brand-strong);
+  font-weight: 600;
+}
+
+.viewhr-table {
+  margin-bottom: 0;
+}
+
+.viewhr-table tbody tr {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.viewhr-table tbody tr:hover {
+  background: rgba(255, 248, 241, 0.88);
+}
+
+.viewhr-company-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(31, 92, 79, 0.08);
+  color: var(--admin-brand-strong);
+  font-weight: 600;
+}
+
+.viewhr-delete-btn {
+  min-width: 118px;
+}
+
+.viewhr-mobile-card {
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(219, 111, 66, 0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #fcf7f0 100%);
+}
+
+.viewhr-mobile-company {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: rgba(31, 92, 79, 0.06);
+  color: var(--admin-brand-strong);
+  font-weight: 700;
+}
+
+.viewhr-mobile-company svg {
+  color: var(--admin-accent);
+}
+
+@media (max-width: 1199px) {
+  .viewhr-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .viewhr-hero {
+    padding: 1.3rem;
+  }
+
+  .viewhr-hero-panel {
+    min-width: 100%;
+    max-width: none;
+  }
+
+  .viewhr-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .viewhr-toolbar-note {
+    justify-content: center;
+  }
+}
