@@ -1,0 +1,196 @@
+.student-update-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  padding: 1.25rem;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(212, 106, 61, 0.1), transparent 22%),
+    radial-gradient(circle at bottom left, rgba(17, 88, 96, 0.1), transparent 24%),
+    linear-gradient(180deg, #f7f4ee 0%, #eef3f2 100%);
+}
+
+.student-update-hero {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.8rem;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 24%),
+    linear-gradient(135deg, #123844 0%, #1f5c4f 58%, #d46a3d 170%);
+  color: #f8f3ec;
+  box-shadow: 0 24px 52px rgba(18, 56, 68, 0.18);
+}
+
+.student-update-hero-copy {
+  max-width: 760px;
+}
+
+.student-update-kicker {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffd5c4;
+}
+
+.student-update-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.student-update-hero p {
+  margin: 0.85rem 0 0;
+  max-width: 58ch;
+  color: rgba(248, 243, 236, 0.84);
+  line-height: 1.7;
+}
+
+.student-update-hero-panel {
+  min-width: 280px;
+  max-width: 330px;
+  padding: 1.2rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.student-update-panel-label {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffd5c4;
+}
+
+.student-update-hero-panel strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1.28;
+}
+
+.student-update-hero-panel p {
+  margin: 0.55rem 0 0;
+}
+
+.student-update-form-shell {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.student-update-section {
+  padding: 1.3rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(18, 58, 51, 0.08);
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.05);
+}
+
+.student-update-section-head h2 {
+  margin: 0;
+  color: #163237;
+  font-size: 1.3rem;
+}
+
+.student-update-section-head p {
+  margin: 0.35rem 0 0;
+  color: #687684;
+}
+
+.student-update-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.student-update-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.student-update-field-full {
+  grid-column: 1 / -1;
+}
+
+.student-update-field label {
+  font-weight: 700;
+  color: #163237;
+}
+
+.student-update-field .form-control,
+.student-update-field .form-select {
+  min-height: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(18, 58, 51, 0.12);
+  box-shadow: none !important;
+}
+
+.student-update-field textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.student-update-field .form-control:focus,
+.student-update-field .form-select:focus {
+  border-color: rgba(31, 92, 79, 0.35);
+}
+
+.student-update-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.student-update-primary-btn,
+.student-update-secondary-btn {
+  border-radius: 999px;
+  padding: 0.82rem 1.3rem;
+  font-weight: 700;
+}
+
+.student-update-primary-btn {
+  border: 0;
+  background: linear-gradient(135deg, #1f7a62, #2ea881);
+  color: #fff;
+  box-shadow: 0 16px 26px rgba(46, 168, 129, 0.2);
+}
+
+.student-update-secondary-btn {
+  border: 1px solid rgba(18, 58, 51, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: #163237;
+}
+
+@media (max-width: 1199px) {
+  .student-update-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .student-update-page {
+    padding: 1rem 0.85rem;
+  }
+
+  .student-update-hero,
+  .student-update-section {
+    padding: 1.2rem;
+  }
+
+  .student-update-hero-panel {
+    min-width: 100%;
+    max-width: none;
+  }
+}
