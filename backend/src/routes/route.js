@@ -27,6 +27,7 @@ router.post("/AddJob", verifyToken1, hrCtrl.addingJob);
 router.get("/view-applicants",verifyToken1,jobskrctrl.getApplicants);
 router.put("/updateJob/:job_id",verifyToken1,jobctrl.UpdateJobById);
 router.put("/updatehrProfile/:hr_id", verifyToken1, hrCtrl.updateHRProfile);
+router.put("/updatehrProfile", verifyToken1, hrCtrl.updateHRProfile);
 router.delete("/deleteJob/:id",verifyToken1,jobctrl.getDeleteJob);
 router.get("/getapplicant/:id/applicants", verifyToken1, jobctrl.getApplicantsByJob);
 router.get("/searchJob",jobctrl.searchJob);
