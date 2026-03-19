@@ -207,24 +207,34 @@ exports.loginHr=(req, res)=>{
 
 exports.updateHRProfile = async (req, res) => {
   try {
-    const { hr_id } = req.params;
+    const tokenHrId = Number(req.user.id);
+    const requestedHrId = Number(req.params.hr_id || req.body.hr_id || tokenHrId);
     const { hr_name, company_name, email, phone } = req.body;
 
-    if (Number(hr_id) !== Number(req.user.id)) {
+    if (!tokenHrId) {
+      return res.status(401).json({ message: "Unauthorized HR session" });
+    }
+
+    if (requestedHrId !== tokenHrId) {
       return res.status(403).json({ message: "You can only update your own HR profile" });
     }
 
-    if (!hr_id || !hr_name || !company_name || !email || !phone) {
+    if (!hr_name || !company_name || !email || !phone) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const result = await hrModel.updateHR(hr_id, hr_name, company_name, email, phone);
+    const result = await hrModel.updateHR(tokenHrId, hr_name, company_name, email, phone);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "HR not found" });
     }
 
-    res.status(200).json({ message: "HR Profile updated successfully" });
+    const updatedHr = await hrModel.getById(tokenHrId);
+
+    res.status(200).json({
+      message: "HR Profile updated successfully",
+      hr: updatedHr,
+    });
   } catch (error) {
     console.error("Error updating HR profile:", error);
     res.status(500).json({ message: "Internal server error" });
