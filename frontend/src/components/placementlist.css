@@ -1,0 +1,318 @@
+@import "./adminpanel.css";
+
+.placementlist-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.8rem;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(219, 111, 66, 0.18), transparent 28%),
+    linear-gradient(135deg, #103f42 0%, #1b5f58 58%, #d46a3d 160%);
+  color: #f6f1e8;
+  box-shadow: 0 24px 56px rgba(16, 63, 66, 0.22);
+}
+
+.placementlist-hero .admin-section-kicker,
+.placementlist-hero .admin-page-title,
+.placementlist-hero .admin-page-subtitle {
+  color: inherit;
+}
+
+.placementlist-hero .admin-section-kicker {
+  color: #ffd7c7;
+}
+
+.placementlist-hero .admin-page-subtitle {
+  max-width: 60ch;
+  color: rgba(246, 241, 232, 0.82);
+}
+
+.placementlist-hero-copy {
+  max-width: 760px;
+}
+
+.placementlist-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
+.placementlist-hero-tags span {
+  padding: 0.68rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+}
+
+.placementlist-hero-panel {
+  min-width: 300px;
+  max-width: 340px;
+  padding: 1.25rem;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.placementlist-panel-kicker {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #ffd7c7;
+}
+
+.placementlist-hero-panel strong {
+  display: block;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.placementlist-hero-panel p {
+  margin: 0.55rem 0 0;
+  color: rgba(246, 241, 232, 0.82);
+  line-height: 1.6;
+}
+
+.placementlist-panel-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 0.72rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(6, 24, 25, 0.2);
+  font-weight: 600;
+}
+
+.placementlist-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.placementlist-metric-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(219, 111, 66, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 247, 240, 0.98));
+  border: 1px solid rgba(18, 58, 51, 0.08);
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.05);
+}
+
+.placementlist-metric-icon {
+  width: 58px;
+  height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: rgba(31, 92, 79, 0.1);
+  color: var(--admin-brand);
+  font-size: 1.3rem;
+}
+
+.placementlist-metric-card strong {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--admin-brand-strong);
+}
+
+.placementlist-metric-card p {
+  margin: 0.28rem 0 0;
+  color: var(--admin-muted);
+}
+
+.placementlist-surface {
+  padding: 1.35rem;
+}
+
+.placementlist-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.placementlist-toolbar h2 {
+  margin: 0;
+  color: var(--admin-brand-strong);
+  font-size: 1.3rem;
+}
+
+.placementlist-toolbar p {
+  margin: 0.3rem 0 0;
+  color: var(--admin-muted);
+}
+
+.placementlist-toolbar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(31, 92, 79, 0.08);
+  color: var(--admin-brand-strong);
+  font-weight: 700;
+}
+
+.placementlist-table {
+  margin-bottom: 0;
+}
+
+.placementlist-table tbody tr:hover {
+  background: rgba(255, 248, 241, 0.88);
+}
+
+.placementlist-serial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(31, 92, 79, 0.08);
+  color: var(--admin-brand-strong);
+  font-weight: 700;
+}
+
+.placementlist-avatar,
+.placementlist-avatar-fallback {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.placementlist-avatar-fallback {
+  font-size: 1rem;
+}
+
+.placementlist-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.placementlist-name-cell strong {
+  color: var(--admin-brand-strong);
+}
+
+.placementlist-name-cell span {
+  font-size: 0.82rem;
+  color: var(--admin-muted);
+}
+
+.placementlist-role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(219, 111, 66, 0.1);
+  color: #9c4b26;
+  font-weight: 700;
+}
+
+.placementlist-mobile-card {
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(219, 111, 66, 0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #fcf7f0 100%);
+}
+
+.placementlist-mobile-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.placementlist-mobile-person {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.placementlist-mobile-person h3 {
+  margin: 0 0 0.2rem;
+}
+
+.placementlist-mobile-person p {
+  margin: 0;
+  color: var(--admin-muted);
+}
+
+.placementlist-mobile-meta {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.placementlist-mobile-meta p {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.placementlist-mobile-meta svg {
+  margin-top: 0.18rem;
+  color: var(--admin-accent);
+  flex-shrink: 0;
+}
+
+.placementlist-mobile-remarks {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--admin-line);
+}
+
+.placementlist-mobile-remarks strong {
+  color: var(--admin-brand-strong);
+}
+
+.placementlist-mobile-remarks p {
+  margin: 0.35rem 0 0;
+}
+
+@media (max-width: 1199px) {
+  .placementlist-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .placementlist-hero {
+    padding: 1.35rem;
+  }
+
+  .placementlist-hero-panel {
+    min-width: 100%;
+    max-width: none;
+  }
+
+  .placementlist-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .placementlist-toolbar,
+  .placementlist-mobile-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .placementlist-toolbar-chip {
+    justify-content: center;
+  }
+}
