@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -264,10 +264,31 @@ function LayoutWithNavbar({ children }) {
   );
 }
 
+function ScrollToTopOnRouteChange() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const scrollContainers = document.querySelectorAll(
+      ".main-wrapper, .admin-main, .hr-main-content, .user-main"
+    );
+
+    scrollContainers.forEach((container) => {
+      container.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+      container.scrollTop = 0;
+    });
+  }, [location.pathname, location.search]);
+
+  return null;
+}
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTopOnRouteChange />
       <LayoutWithNavbar>
         <Routes>
           {/* Public routes */}
