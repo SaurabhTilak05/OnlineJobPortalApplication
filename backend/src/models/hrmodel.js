@@ -235,19 +235,20 @@ exports.getCountApplications = async () => {
 
 
 // Update HR profile (only name, email, phone)
-exports.updateHR = (hr_id, hr_name, company_name, email, phone) => {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      UPDATE hr 
-      SET hr_name = ?, company_name = ?, email = ?, phone = ?
-      WHERE hr_id = ?
-    `;
+exports.updateHR = async (hr_id, hr_name, company_name, email, phone) => {
+  const sql = `
+    UPDATE hr
+    SET hr_name = ?, company_name = ?, email = ?, phone = ?
+    WHERE hr_id = ?
+  `;
 
-    db.query(sql, [hr_name, company_name, email, phone, hr_id], (err, result) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(result);
-    });
-  });
+  const [result] = await db.query(sql, [
+    hr_name,
+    company_name,
+    email,
+    phone,
+    hr_id,
+  ]);
+
+  return result;
 };
