@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   FaBriefcase,
   FaBuilding,
@@ -24,6 +24,18 @@ const locationOptions = [
   "Kolkata",
   "Ahmedabad",
 ];
+
+const fieldLabels = {
+  title: "Job title",
+  company: "Company name",
+  opening: "Openings",
+  experience_required: "Experience",
+  location: "Location",
+  package: "Package",
+  skills_required: "Skills required",
+  description: "Job description",
+  deadline: "Application deadline",
+};
 
 export default function AddJob() {
   const [formData, setFormData] = useState({
@@ -115,19 +127,40 @@ export default function AddJob() {
     return nextErrors;
   };
 
+  const getValidationToastMessage = (nextErrors) => {
+    const invalidFields = Object.keys(nextErrors).map(
+      (field) => fieldLabels[field] || field
+    );
+
+    if (invalidFields.length === 1) {
+      return `${invalidFields[0]} is invalid. ${nextErrors[Object.keys(nextErrors)[0]]}`;
+    }
+
+    const previewFields = invalidFields.slice(0, 3).join(", ");
+    const remainingCount = invalidFields.length - 3;
+
+    return remainingCount > 0
+      ? `Please check these fields: ${previewFields}, and ${remainingCount} more.`
+      : `Please check these fields: ${previewFields}.`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const nextErrors = validateAll();
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
-      toast.error("Please fix the highlighted fields first.");
+      toast.error(getValidationToastMessage(nextErrors), {
+        autoClose: 2500,
+      });
       return;
     }
 
     try {
       await Jobservice.addJob(formData);
-      toast.success("Job posted successfully.");
+      toast.success("Job posted successfully.", {
+        autoClose: 2500,
+      });
       setFormData({
         title: "",
         company: "",
@@ -141,7 +174,9 @@ export default function AddJob() {
       });
     } catch (err) {
       console.error(err);
-      toast.error("Failed to post job.");
+      toast.error("Failed to post job.", {
+        autoClose: 2500,
+      });
     }
   };
 
@@ -245,8 +280,6 @@ export default function AddJob() {
           </ul>
         </aside>
       </section>
-
-      <ToastContainer position="top-center" autoClose={2500} theme="colored" />
     </div>
   );
 }
