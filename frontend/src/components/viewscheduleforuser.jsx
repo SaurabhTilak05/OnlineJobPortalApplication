@@ -1,8 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import interviewserv from "../service/interviewserv";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  FaBuilding,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaClock,
+  FaSearch,
+  FaVideo,
+} from "react-icons/fa";
+import "./viewscheduleforuser.css";
+
+const normalizeStatus = (status) => (status || "pending").toLowerCase();
 
 export default function ViewScheduleForUser() {
   const [schedule, setSchedule] = useState([]);
@@ -10,8 +21,7 @@ export default function ViewScheduleForUser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchError, setSearchError] = useState(""); // Validation message
-
+  const [searchError, setSearchError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -19,7 +29,7 @@ export default function ViewScheduleForUser() {
 
   useEffect(() => {
     if (!seekerId) {
-      setError("⚠️ Please login as a user first!");
+      setError("Please login as a user first!");
       setLoading(false);
       return;
     }
@@ -33,12 +43,11 @@ export default function ViewScheduleForUser() {
       })
       .catch((err) => {
         console.error("Error fetching schedule:", err);
-        setError("❌ Failed to fetch schedule");
+        setError("Failed to fetch schedule");
         setLoading(false);
       });
   }, [seekerId]);
 
-  // ✅ Handle search with validation
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -52,7 +61,7 @@ export default function ViewScheduleForUser() {
 
     const regex = /^[a-zA-Z0-9\s]*$/;
     if (!regex.test(value)) {
-      setSearchError("⚠️ Only letters and numbers are allowed.");
+      setSearchError("Only letters and numbers are allowed.");
       setFilteredSchedule([]);
       return;
     }
@@ -63,18 +72,24 @@ export default function ViewScheduleForUser() {
 
     setFilteredSchedule(filtered);
     setCurrentPage(1);
-
-    if (filtered.length === 0) {
-      setSearchError("❌ No matching jobs found.");
-    } else {
-      setSearchError("");
-    }
+    setSearchError(filtered.length === 0 ? "No matching jobs found." : "");
   };
 
-  if (loading)
-    return <p className="text-center mt-5">⏳ Loading schedule...</p>;
-  if (error)
-    return <p className="text-center text-danger mt-5">{error}</p>;
+  const metrics = useMemo(() => {
+    const confirmed = schedule.filter((item) => normalizeStatus(item.status) === "confirmed").length;
+    const pending = schedule.filter((item) => normalizeStatus(item.status) === "pending").length;
+    const companies = new Set(schedule.map((item) => item.company).filter(Boolean)).size;
+
+    return {
+      total: schedule.length,
+      confirmed,
+      pending,
+      companies,
+    };
+  }, [schedule]);
+
+  if (loading) return <p className="text-center mt-5">Loading schedule...</p>;
+  if (error) return <p className="text-center text-danger mt-5">{error}</p>;
 
   const totalPages = Math.ceil(filteredSchedule.length / itemsPerPage);
   const paginatedData = filteredSchedule.slice(
@@ -86,170 +101,201 @@ export default function ViewScheduleForUser() {
     if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
   };
 
+  const latestInterview = schedule.length
+    ? [...schedule]
+        .filter((item) => item.interview_date)
+        .sort((a, b) => new Date(a.interview_date) - new Date(b.interview_date))[0]
+    : null;
+
   return (
-    <div className="container mt-4">
-      <h2 className="fw-bold text-primary text-center mb-4">📅 My Schedule</h2>
-
-      {/* Search Bar */}
-      <div className="row justify-content-center mb-2">
-        <div className="col-md-6">
-          <input
-            type="text"
-            className={`form-control shadow-sm rounded-3 ${
-              searchError ? "border-danger" : ""
-            }`}
-            placeholder="🔍 Search by Job Title..."
-            value={searchTerm}
-            onChange={handleSearch}
-          />
+    <div className="user-schedule-page">
+      <section className="user-schedule-hero">
+        <div className="user-schedule-hero-copy">
+          <span className="user-schedule-kicker">Interview Tracker</span>
+          <h1>Keep every interview schedule visible and organized from one place.</h1>
+          <p>
+            Review upcoming interviews, track statuses, and search by job title so you never miss an
+            important interview slot.
+          </p>
+          <div className="user-schedule-tags">
+            <span>{metrics.total} interviews scheduled</span>
+            <span>{metrics.confirmed} confirmed</span>
+          </div>
         </div>
-      </div>
 
-      {/* Display validation or empty messages inside table/card area */}
-      {searchError && (
-        <div className="text-center text-danger fw-semibold my-3">
-          {searchError}
+        <aside className="user-schedule-hero-panel">
+          <span className="user-schedule-panel-label">Nearest interview</span>
+          <strong>{latestInterview ? latestInterview.job_title : "No interview yet"}</strong>
+          <p>{latestInterview ? latestInterview.company : "Upcoming interview details will appear here."}</p>
+          {latestInterview && (
+            <span className="user-schedule-panel-date">
+              {new Date(latestInterview.interview_date).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
+          )}
+        </aside>
+      </section>
+
+      <section className="user-schedule-metrics">
+        <article className="user-schedule-metric-card">
+          <span className="user-schedule-metric-icon"><FaCalendarAlt /></span>
+          <div>
+            <strong>{metrics.total}</strong>
+            <p>Total interviews</p>
+          </div>
+        </article>
+        <article className="user-schedule-metric-card">
+          <span className="user-schedule-metric-icon accent-confirmed"><FaCheckCircle /></span>
+          <div>
+            <strong>{metrics.confirmed}</strong>
+            <p>Confirmed</p>
+          </div>
+        </article>
+        <article className="user-schedule-metric-card">
+          <span className="user-schedule-metric-icon accent-pending"><FaClock /></span>
+          <div>
+            <strong>{metrics.pending}</strong>
+            <p>Pending</p>
+          </div>
+        </article>
+        <article className="user-schedule-metric-card">
+          <span className="user-schedule-metric-icon accent-company"><FaBuilding /></span>
+          <div>
+            <strong>{metrics.companies}</strong>
+            <p>Companies</p>
+          </div>
+        </article>
+      </section>
+
+      <section className="user-schedule-surface">
+        <div className="user-schedule-toolbar">
+          <div className="user-schedule-toolbar-copy">
+            <h2>My schedule</h2>
+            <p>Search interviews by job title and review all upcoming schedule details.</p>
+          </div>
+
+          <div className="user-schedule-search-wrap">
+            <FaSearch />
+            <input
+              type="text"
+              className={`form-control user-schedule-search-input ${searchError ? "is-invalid" : ""}`}
+              placeholder="Search by job title..."
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+          </div>
         </div>
-      )}
 
-      {!searchError && paginatedData.length === 0 && (
-        <p className="text-center mt-3">No schedule available</p>
-      )}
+        {searchError && (
+          <div className="user-schedule-feedback error">{searchError}</div>
+        )}
 
-      {/* Table for Desktop */}
-      {!searchError && paginatedData.length > 0 && (
-        <div className="table-responsive shadow-sm rounded-4 overflow-hidden d-none d-md-block">
-          <table className="table table-hover table-bordered align-middle mb-0">
-            <thead className="table-dark text-center">
-              <tr>
-                <th>Sr.No</th>
-                <th>Job Title</th>
-                <th>Company</th>
-                <th>Schedule Date</th>
-                <th>Time</th>
-                <th>Mode</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
+        {!searchError && paginatedData.length === 0 && (
+          <p className="user-schedule-empty">No schedule available.</p>
+        )}
+
+        {!searchError && paginatedData.length > 0 && (
+          <>
+            <div className="table-responsive shadow-sm rounded-4 overflow-hidden d-none d-md-block">
+              <table className="table user-schedule-table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Sr.No</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Schedule Date</th>
+                    <th>Time</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td>{item.job_title}</td>
+                      <td>{item.company}</td>
+                      <td>
+                        {new Date(item.interview_date).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td>{item.interview_time}</td>
+                      <td>{item.interview_mode || "Not specified"}</td>
+                      <td>
+                        <span className={`user-schedule-status status-${normalizeStatus(item.status)}`}>
+                          {item.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="user-schedule-card-list d-md-none">
               {paginatedData.map((item, index) => (
-                <tr key={index} className="text-center">
-                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                  <td>{item.job_title}</td>
-                  <td>{item.company}</td>
-                  <td>
-                    {new Date(`${item.interview_date}`).toLocaleDateString(
-                      "en-IN",
-                      { day: "2-digit", month: "short", year: "numeric" }
-                    )}
-                  </td>
-                  <td>{item.interview_time}</td>
-                  <td>{item.interview_mode || "Not Specified"}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        item.status === "Confirmed"
-                          ? "bg-success"
-                          : item.status === "Pending"
-                          ? "bg-warning text-dark"
-                          : "bg-secondary"
-                      }`}
-                    >
+                <article key={index} className="user-schedule-card">
+                  <div className="user-schedule-card-head">
+                    <div>
+                      <span className="user-schedule-card-id">
+                        Interview #{(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                      <h3>{item.job_title}</h3>
+                      <p>{item.company}</p>
+                    </div>
+                    <span className={`user-schedule-status status-${normalizeStatus(item.status)}`}>
                       {item.status}
                     </span>
-                  </td>
-                </tr>
+                  </div>
+
+                  <div className="user-schedule-card-meta">
+                    <p><FaCalendarAlt /> <span>{new Date(item.interview_date).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}</span></p>
+                    <p><FaClock /> <span>{item.interview_time}</span></p>
+                    <p><FaVideo /> <span>{item.interview_mode || "Not specified"}</span></p>
+                    <p><FaBuilding /> <span>{item.company}</span></p>
+                  </div>
+                </article>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Card layout for Mobile */}
-      {!searchError &&
-        paginatedData.length > 0 &&
-        paginatedData.map((item, index) => (
-          <div key={index} className="card shadow-sm mb-3 d-block d-md-none">
-            <div className="card-body">
-              <h5 className="card-title fw-bold">{item.job_title}</h5>
-              <p className="card-text mb-1">
-                <strong>Company:</strong> {item.company}
-              </p>
-              <p className="card-text mb-1">
-                <strong>Date:</strong>{" "}
-                {new Date(`${item.interview_date}`).toLocaleDateString(
-                  "en-IN",
-                  { day: "2-digit", month: "short", year: "numeric" }
-                )}
-              </p>
-              <p className="card-text mb-1">
-                <strong>Time:</strong> {item.interview_time}
-              </p>
-              <p className="card-text mb-1">
-                <strong>Mode:</strong> {item.interview_mode || "Not Specified"}
-              </p>
-              <p className="card-text mb-0">
-                <strong>Status:</strong>{" "}
-                <span
-                  className={`badge ${
-                    item.status === "Confirmed"
-                      ? "bg-success"
-                      : item.status === "Pending"
-                      ? "bg-warning text-dark"
-                      : "bg-secondary"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </p>
             </div>
-          </div>
-        ))}
+          </>
+        )}
 
-      {/* Pagination Controls */}
-      {!searchError && totalPages > 1 && (
-        <nav className="d-flex justify-content-center mt-3">
-          <ul className="pagination pagination-sm flex-wrap">
-            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={() => handlePageChange(currentPage - 1)}
-              >
-                &laquo;
-              </button>
-            </li>
-
-            {[...Array(totalPages)].map((_, idx) => (
-              <li
-                key={idx}
-                className={`page-item ${
-                  currentPage === idx + 1 ? "active" : ""
-                }`}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => handlePageChange(idx + 1)}
-                >
-                  {idx + 1}
+        {!searchError && totalPages > 1 && (
+          <nav className="d-flex justify-content-center mt-4">
+            <ul className="pagination pagination-sm flex-wrap user-schedule-pagination">
+              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                  &laquo;
                 </button>
               </li>
-            ))}
 
-            <li
-              className={`page-item ${
-                currentPage === totalPages ? "disabled" : ""
-              }`}
-            >
-              <button
-                className="page-link"
-                onClick={() => handlePageChange(currentPage + 1)}
-              >
-                &raquo;
-              </button>
-            </li>
-          </ul>
-        </nav>
-      )}
+              {[...Array(totalPages)].map((_, idx) => (
+                <li key={idx} className={`page-item ${currentPage === idx + 1 ? "active" : ""}`}>
+                  <button className="page-link" onClick={() => handlePageChange(idx + 1)}>
+                    {idx + 1}
+                  </button>
+                </li>
+              ))}
+
+              <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                  &raquo;
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
+      </section>
 
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
