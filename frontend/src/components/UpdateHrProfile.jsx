@@ -20,9 +20,13 @@ export default function UpdateHRProfile() {
     (async () => {
       try {
         const hrData = await HRService.getHRDetails();
-        setFormData(hrData);
-      } catch {
-        toast.error("Failed to load profile for editing.");
+        setFormData((prev) => ({
+          ...prev,
+          ...hrData,
+          hr_id: hrData.hr_id || localStorage.getItem("hrId") || prev.hr_id,
+        }));
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to load profile for editing.");
       }
     })();
   }, []);
@@ -34,18 +38,30 @@ export default function UpdateHRProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const id = formData.hr_id || formData.id || formData.hrId;
+      const id = formData.hr_id || formData.id || formData.hrId || localStorage.getItem("hrId");
       if (!id) {
         toast.error("Missing HR ID.");
         return;
       }
 
-      await HRService.updateHRProfile(id, formData);
+      const payload = {
+        hr_name: formData.hr_name?.trim(),
+        email: formData.email?.trim(),
+        phone: formData.phone?.trim(),
+        company_name: formData.company_name?.trim(),
+      };
+
+      if (!payload.hr_name || !payload.email || !payload.phone || !payload.company_name) {
+        toast.error("Please complete name, email, phone, and company before saving.");
+        return;
+      }
+
+      await HRService.updateHRProfile(id, payload);
       toast.success("Profile updated successfully.");
       navigate("/hrdashboard/profile");
     } catch (err) {
       console.error("Failed to update HR profile", err);
-      toast.error("Update failed.");
+      toast.error(err.response?.data?.message || "Update failed.");
     }
   };
 
@@ -76,12 +92,12 @@ export default function UpdateHRProfile() {
 
             <div className="hr-form-group">
               <label className="form-label">Phone</label>
-              <input type="text" name="phone" value={formData.phone || ""} onChange={handleChange} className="form-control" />
+              <input type="text" name="phone" value={formData.phone || ""} onChange={handleChange} className="form-control" required />
             </div>
 
             <div className="hr-form-group">
               <label className="form-label">Company</label>
-              <input type="text" name="company_name" value={formData.company_name || ""} onChange={handleChange} className="form-control" />
+              <input type="text" name="company_name" value={formData.company_name || ""} onChange={handleChange} className="form-control" required />
             </div>
           </div>
 
