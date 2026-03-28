@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import AdminAuthService from "../service/AdminAuthService";
 import {
-  FaUserGraduate,
   FaEnvelope,
-  FaPhone,
+  FaGlobe,
   FaMapMarkerAlt,
+  FaPhone,
   FaUpload,
+  FaUserGraduate,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./viewstudprofile.css";
+
+const profileField = (value, suffix = "") => (value ? `${value}${suffix}` : "N/A");
 
 export default function ViewStudProfile() {
   const [profile, setProfile] = useState(null);
@@ -41,7 +45,7 @@ export default function ViewStudProfile() {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      toast.warning("⚠️ Please select an image first");
+      toast.warning("Please select an image first");
       return;
     }
 
@@ -50,215 +54,251 @@ export default function ViewStudProfile() {
 
     try {
       setUploading(true);
-      const res = await AdminAuthService.uploadProfilePicture(formData);
+      const response = await AdminAuthService.uploadProfilePicture(formData);
+      const uploadedProfilePicture = response?.profile_picture;
+
+      if (!uploadedProfilePicture) {
+        throw new Error("Profile picture path missing in upload response");
+      }
 
       setProfile((prev) => ({
         ...prev,
-        profile_picture: res.data.profile_picture,
+        profile_picture: uploadedProfilePicture,
       }));
       setSelectedFile(null);
 
-      toast.success("✅ Profile picture updated successfully!");
-    } catch {
-      toast.error("❌ Error uploading profile picture");
+      toast.success("Profile picture updated successfully!");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || err.message || "Error uploading profile picture"
+      );
     } finally {
       setUploading(false);
     }
   };
 
-  if (loading)
-    return <h3 className="text-center mt-5">⏳ Loading profile...</h3>;
-  if (error) return <h3 className="text-danger text-center mt-5">{error}</h3>;
+  if (loading) {
+    return <h3 className="text-center mt-5">Loading profile...</h3>;
+  }
+
+  if (error) {
+    return <h3 className="text-danger text-center mt-5">{error}</h3>;
+  }
+
+  if (!profile) {
+    return <h4 className="text-muted text-center mt-5">No profile found.</h4>;
+  }
 
   return (
-    <div className="container-fluid p-4 bg-light" style={{ minHeight: "100vh" }}>
-  {profile ? (
-    <div className="row">
-      {/* Left Sidebar - Profile Pic & Upload */}
-      <div className="col-md-3 col-lg-3 mb-4">
-        <div className="card shadow-sm border-0 p-4 text-center h-100">
-          {profile.profile_picture ? (
-            <img
-              src={`http://localhost:8080${profile.profile_picture}`}
-              alt="Profile"
-              className="rounded-circle shadow mb-3"
-              style={{ width: "160px", height: "160px", objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              className="rounded-circle bg-secondary d-flex justify-content-center align-items-center text-white mb-3"
-              style={{ width: "160px", height: "160px" }}
-            >
-              No Photo
-            </div>
-          )}
-
-          {/* Upload New Picture */}
-          <input
-            type="file"
-            accept="image/*"
-            className="form-control mb-2"
-            onChange={handleFileChange}
-          />
-          <button
-            className="btn btn-outline-success btn-sm w-100"
-            disabled={uploading}
-            onClick={handleUpload}
-          >
-            <FaUpload /> {uploading ? "Uploading..." : "Update Picture"}
-          </button>
-
-          <h4 className="fw-bold text-dark mt-3">{profile.name || "Student"}</h4>
-          <p className="text-muted">
-            <FaUserGraduate className="me-2 text-success" /> Student
+    <div className="student-profile-page">
+      <section className="student-profile-hero">
+        <div className="student-profile-hero-copy">
+          <span className="student-profile-kicker">Student Profile</span>
+          <h1>{profile.name || "Student"}</h1>
+          <p>
+            Keep your personal details, academic background, skills, and resume updated so recruiters
+            can evaluate you faster and with more confidence.
           </p>
-          <span className="badge bg-success px-3 py-2">
-            {profile.branch || "Branch Not Assigned"}
-          </span>
-        </div>
-      </div>
 
-      {/* Right Content */}
-      <div className="col-md-9 col-lg-9">
-        <div className="card shadow-sm border-0 p-4 h-100">
-          {/* Basic Info */}
-          <h5 className="fw-bold mb-3 section-title">Basic Information</h5>
-          <div className="row g-3">
-            <div className="col-md-6">
-              <p>
-                <FaEnvelope className="text-success me-2" />
-                <b>Email:</b> {profile.email}
-              </p>
-              <p>
-                <FaPhone className="text-success me-2" />
-                <b>Phone:</b> {profile.phone || "N/A"}
-              </p>
-              <p>
-                <FaMapMarkerAlt className="text-success me-2" />
-                <b>Address:</b> {profile.address || "N/A"}
-              </p>
-              <p>
-                <b>Date of Birth:</b>{" "}
-                {profile.dob
-                  ? new Date(profile.dob).toLocaleDateString("en-IN")
-                  : "N/A"}
-              </p>
-              <p>
-                <b>Gender:</b> {profile.gender || "N/A"}
-              </p>
-            </div>
-            <div className="col-md-6">
-              <p>
-                <b>Qualification:</b> {profile.qualification || "N/A"}
-              </p>
-              <p>
-                <b>College:</b> {profile.college_name || "N/A"}
-              </p>
-              <p>
-                <b>Branch:</b> {profile.branch || "N/A"}
-              </p>
-              <p>
-                <b>Graduation Year:</b> {profile.graduation_year || "N/A"}
-              </p>
-              <p>
-                <b>Percentage:</b> {profile.percentage || "N/A"}%
-              </p>
-            </div>
+          <div className="student-profile-hero-tags">
+            <span>{profile.branch || "Branch not assigned"}</span>
+            <span>{profile.qualification || "Qualification not added"}</span>
+            <span>{profile.preferred_role || "Preferred role not set"}</span>
+          </div>
+        </div>
+
+        <aside className="student-profile-hero-panel">
+          <div className="student-profile-avatar-wrap">
+            {profile.profile_picture ? (
+              <img
+                src={`http://localhost:8080${profile.profile_picture}`}
+                alt="Profile"
+                className="student-profile-avatar"
+              />
+            ) : (
+              <div className="student-profile-avatar student-profile-avatar-fallback">
+                {profile.name?.charAt(0)?.toUpperCase() || "S"}
+              </div>
+            )}
           </div>
 
-          {/* Skills */}
-          <h5 className="fw-bold mt-4 mb-3 section-title">Skills & Projects</h5>
-          <p>
-            <b>Skills:</b> {profile.skills || "N/A"}
-          </p>
-          <p>
-            <b>Certifications:</b> {profile.certifications || "N/A"}
-          </p>
-          <p>
-            <b>Projects:</b> {profile.projects || "N/A"}
-          </p>
-          <p>
-            <b>Experience:</b> {profile.experience || "N/A"}
-          </p>
-          <p>
-            <b>Languages Known:</b> {profile.languages_known || "N/A"}
-          </p>
+          <div className="student-profile-role">
+            <FaUserGraduate />
+            <span>Student</span>
+          </div>
 
-          {/* Career Preferences */}
-          <h5 className="fw-bold mt-4 mb-3 section-title">
-            Career Preferences
-          </h5>
-          <p>
-            <b>Preferred Role:</b> {profile.preferred_role || "N/A"}
-          </p>
-          <p>
-            <b>Preferred Location:</b> {profile.preferred_location || "N/A"}
-          </p>
-          <p>
-            <b>Expected Salary:</b> {profile.expected_salary || "N/A"}
-          </p>
+          <div className="student-profile-upload">
+            <input
+              type="file"
+              accept="image/*"
+              className="form-control student-profile-upload-input"
+              onChange={handleFileChange}
+            />
+            <button
+              className="btn student-profile-upload-btn"
+              disabled={uploading}
+              onClick={handleUpload}
+            >
+              <FaUpload />
+              {uploading ? "Uploading..." : "Update Picture"}
+            </button>
+          </div>
+        </aside>
+      </section>
 
-          {/* Resume */}
-          <h5 className="fw-bold mt-4 mb-3 section-title">Resume</h5>
+      <section className="student-profile-grid">
+        <article className="student-profile-panel">
+          <div className="student-profile-section-head">
+            <h2>Basic information</h2>
+            <p>Your core profile and contact details.</p>
+          </div>
+
+          <div className="student-profile-info-grid">
+            <div className="student-profile-info-card">
+              <strong>Email</strong>
+              <span><FaEnvelope /> {profileField(profile.email)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Phone</strong>
+              <span><FaPhone /> {profileField(profile.phone)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Address</strong>
+              <span><FaMapMarkerAlt /> {profileField(profile.address)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Date of birth</strong>
+              <span>{profile.dob ? new Date(profile.dob).toLocaleDateString("en-IN") : "N/A"}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Gender</strong>
+              <span>{profileField(profile.gender)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Languages known</strong>
+              <span><FaGlobe /> {profileField(profile.languages_known)}</span>
+            </div>
+          </div>
+        </article>
+
+        <article className="student-profile-panel">
+          <div className="student-profile-section-head">
+            <h2>Academic background</h2>
+            <p>Your education and qualification summary.</p>
+          </div>
+
+          <div className="student-profile-info-grid">
+            <div className="student-profile-info-card">
+              <strong>Qualification</strong>
+              <span>{profileField(profile.qualification)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>College</strong>
+              <span>{profileField(profile.college_name)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Branch</strong>
+              <span>{profileField(profile.branch)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Graduation year</strong>
+              <span>{profileField(profile.graduation_year)}</span>
+            </div>
+            <div className="student-profile-info-card">
+              <strong>Percentage</strong>
+              <span>{profileField(profile.percentage, "%")}</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section className="student-profile-grid">
+        <article className="student-profile-panel">
+          <div className="student-profile-section-head">
+            <h2>Skills and experience</h2>
+            <p>Highlight the technical, project, and practical strengths that support your applications.</p>
+          </div>
+
+          <div className="student-profile-stack">
+            <div className="student-profile-content-box">
+              <strong>Skills</strong>
+              <p>{profileField(profile.skills)}</p>
+            </div>
+            <div className="student-profile-content-box">
+              <strong>Certifications</strong>
+              <p>{profileField(profile.certifications)}</p>
+            </div>
+            <div className="student-profile-content-box">
+              <strong>Projects</strong>
+              <p>{profileField(profile.projects)}</p>
+            </div>
+            <div className="student-profile-content-box">
+              <strong>Experience</strong>
+              <p>{profileField(profile.experience)}</p>
+            </div>
+          </div>
+        </article>
+
+        <article className="student-profile-panel">
+          <div className="student-profile-section-head">
+            <h2>Career preferences</h2>
+            <p>These preferences help you stay aligned with the right job opportunities.</p>
+          </div>
+
+          <div className="student-profile-stack">
+            <div className="student-profile-content-box">
+              <strong>Preferred role</strong>
+              <p>{profileField(profile.preferred_role)}</p>
+            </div>
+            <div className="student-profile-content-box">
+              <strong>Preferred location</strong>
+              <p>{profileField(profile.preferred_location)}</p>
+            </div>
+            <div className="student-profile-content-box">
+              <strong>Expected salary</strong>
+              <p>{profileField(profile.expected_salary)}</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section className="student-profile-panel student-profile-resume-panel">
+        <div className="student-profile-section-head">
+          <h2>Resume and actions</h2>
+          <p>Review your uploaded resume and keep your profile ready for upcoming applications.</p>
+        </div>
+
+        <div className="student-profile-resume-actions">
           {profile.resume_url ? (
-            <div className="d-flex gap-3 flex-wrap">
+            <>
               <a
                 href={`http://localhost:8080${profile.resume_url}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline-success"
+                className="btn student-profile-outline-btn"
               >
                 View Resume
               </a>
               <a
                 href={`http://localhost:8080${profile.resume_url}`}
                 download
-                className="btn btn-outline-primary"
+                className="btn student-profile-outline-btn secondary"
               >
                 Download Resume
               </a>
-            </div>
+            </>
           ) : (
-            <p>No Resume Uploaded</p>
+            <p className="student-profile-no-resume">No resume uploaded yet.</p>
           )}
-          <hr />
 
-          {/* Update Profile Btn */}
-          <div className="text-center">
-            <button
-              className="btn btn-primary px-4 py-2 rounded-pill shadow-sm update-btn"
-              onClick={() => navigate("/userProfile/update-profile")}
-            >
-              Update Profile
-            </button>
-          </div>
+          <button
+            className="btn student-profile-primary-btn"
+            onClick={() => navigate("/userProfile/update-profile")}
+          >
+            Update Profile
+          </button>
         </div>
-      </div>
+      </section>
     </div>
-  ) : (
-    <h4 className="text-muted">No profile found.</h4>
-  )}
-
-  <style>
-    {`
-      .section-title {
-        color: #2c3e50;
-        border-left: 4px solid #28a745;
-        padding-left: 10px;
-      }
-      .update-btn {
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease-in-out;
-      }
-      .update-btn:hover {
-        background-color: #212529;
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      }
-    `}
-  </style>
-</div>
-
   );
 }

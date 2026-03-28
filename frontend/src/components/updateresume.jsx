@@ -1,6 +1,13 @@
 import React, { useRef, useState } from "react";
 import AdminAuthService from "../service/AdminAuthService";
 import { toast } from "react-toastify";
+import {
+  FaCheckCircle,
+  FaCloudUploadAlt,
+  FaFileAlt,
+  FaShieldAlt,
+} from "react-icons/fa";
+import "./updateresume.css";
 
 export default function ResumeUpload() {
   const [resumeFile, setResumeFile] = useState(null);
@@ -82,71 +89,108 @@ export default function ResumeUpload() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-7">
-          <div className="card shadow-lg border-0">
-            <div className="card-header text-center bg-primary text-white">
-              <h3 className="mb-0">Upload Your Resume</h3>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <div className="mb-4">
-                  <label className="form-label fw-bold">
-                    Choose Resume (PDF / DOC / DOCX)
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="form-control"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleFileChange}
-                  />
-                </div>
-
-                {resumeFile && (
-                  <div className="alert alert-info py-2">
-                    Selected File: <strong>{resumeFile.name}</strong>
-                  </div>
-                )}
-
-                {statusMessage && (
-                  <div
-                    className={`alert ${
-                      statusType === "success" ? "alert-success" : "alert-danger"
-                    } py-2`}
-                  >
-                    {statusMessage}
-                  </div>
-                )}
-
-                <div className="d-grid gap-2">
-                  <button
-                    type="submit"
-                    className="btn btn-success btn-lg"
-                    disabled={uploading}
-                  >
-                    {uploading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                        ></span>
-                        Uploading...
-                      </>
-                    ) : (
-                      "Upload Resume"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div className="card-footer text-center text-muted">
-              Max file size: 5MB
-            </div>
+    <div className="resume-upload-page">
+      <section className="resume-upload-hero">
+        <div className="resume-upload-hero-copy">
+          <span className="resume-upload-kicker">Resume Center</span>
+          <h1>Upload a polished resume that is ready for your next application.</h1>
+          <p>
+            Keep your latest resume available in one place so you can apply faster and present the most
+            current version of your experience to recruiters.
+          </p>
+          <div className="resume-upload-tags">
+            <span>Accepted: PDF, DOC, DOCX</span>
+            <span>Maximum file size: 5MB</span>
           </div>
         </div>
-      </div>
+
+        <aside className="resume-upload-hero-panel">
+          <span className="resume-upload-panel-label">Best practice</span>
+          <strong>Use your latest, role-focused resume.</strong>
+          <p>Keep your projects, internships, certifications, and skills updated before uploading.</p>
+        </aside>
+      </section>
+
+      <section className="resume-upload-grid">
+        <article className="resume-upload-panel">
+          <div className="resume-upload-section-head">
+            <h2>Upload your resume</h2>
+            <p>Select a valid file and save it to your student profile.</p>
+          </div>
+
+          <form onSubmit={handleSubmit} encType="multipart/form-data" className="resume-upload-form">
+            <label className="resume-upload-dropzone">
+              <div className="resume-upload-dropzone-icon">
+                <FaCloudUploadAlt />
+              </div>
+              <div className="resume-upload-dropzone-copy">
+                <strong>{resumeFile ? resumeFile.name : "Choose resume file"}</strong>
+                <span>Click to browse your PDF, DOC, or DOCX file</span>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+              />
+            </label>
+
+            {resumeFile && (
+              <div className="resume-upload-file-chip">
+                <FaFileAlt />
+                <span>{resumeFile.name}</span>
+              </div>
+            )}
+
+            {statusMessage && (
+              <div className={`resume-upload-alert ${statusType === "success" ? "success" : "error"}`}>
+                {statusMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="btn resume-upload-primary-btn"
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Upload Resume"}
+            </button>
+          </form>
+        </article>
+
+        <article className="resume-upload-panel resume-upload-info-panel">
+          <div className="resume-upload-section-head">
+            <h2>Upload guidelines</h2>
+            <p>Make sure your file is recruiter-ready before saving it.</p>
+          </div>
+
+          <div className="resume-upload-guidelines">
+            <div className="resume-upload-guideline">
+              <span className="resume-upload-guideline-icon"><FaCheckCircle /></span>
+              <div>
+                <strong>Use a clear format</strong>
+                <p>Keep headings, sections, and project details easy to scan quickly.</p>
+              </div>
+            </div>
+
+            <div className="resume-upload-guideline">
+              <span className="resume-upload-guideline-icon"><FaShieldAlt /></span>
+              <div>
+                <strong>Stay within limits</strong>
+                <p>Only PDF, DOC, and DOCX files are accepted, with a maximum size of 5MB.</p>
+              </div>
+            </div>
+
+            <div className="resume-upload-guideline">
+              <span className="resume-upload-guideline-icon"><FaFileAlt /></span>
+              <div>
+                <strong>Keep it updated</strong>
+                <p>Refresh your resume whenever you add new skills, internships, or projects.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
     </div>
   );
 }

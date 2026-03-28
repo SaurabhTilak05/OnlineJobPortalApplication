@@ -1,13 +1,22 @@
 import axios from "axios";
 
+const getHrAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("HR login token is missing. Please sign in again.");
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 const HRService = {
   getAllHR: async () => {
     try {
       const res = await axios.get("http://localhost:8080/viewHr", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: getHrAuthHeaders(),
       });
       return res.data; 
     } catch (err) {
@@ -18,9 +27,7 @@ const HRService = {
   
     deleteHR: async (hr_id) => {
     const res = await axios.delete(`http://localhost:8080/deleteHR/${hr_id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: getHrAuthHeaders(),
     });
     return res.data;
   },
@@ -29,11 +36,16 @@ const HRService = {
    getHRDetails: async () => {
     try {
       const response = await axios.get("http://localhost:8080/hrprofile", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // your JWT
-        },
+        headers: getHrAuthHeaders(),
       });
-      return response.data.hr; // because backend returns { message, hr }
+      const hr = response.data?.hr || {};
+      return {
+        hr_id: hr.hr_id || localStorage.getItem("hrId") || "",
+        hr_name: hr.hr_name || "",
+        email: hr.email || "",
+        phone: hr.phone || "",
+        company_name: hr.company_name || "",
+      };
     } catch (error) {
       console.error("Error fetching HR details:", error);
       throw error;
@@ -43,9 +55,7 @@ const HRService = {
   getRecentJobsByHR: async () => {
   try {
     const response = await axios.get("http://localhost:8080/hr/jobs", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: getHrAuthHeaders(),
     });
     return response;  // ✅ must return full response, not response.data
   } catch (error) {
@@ -56,12 +66,20 @@ const HRService = {
 
    updateHRProfile: async (id, hrData) => {
     try {
-      const token = localStorage.getItem("token"); // get JWT
-      const response = await axios.put(`http://localhost:8080/updatehrProfile/${id}`,
-        hrData,
+      const payload = {
+        ...hrData,
+        hr_id: id || hrData.hr_id || localStorage.getItem("hrId") || "",
+      };
+      const endpoint = payload.hr_id
+        ? `http://localhost:8080/updatehrProfile/${payload.hr_id}`
+        : "http://localhost:8080/updatehrProfile";
+
+      const response = await axios.put(endpoint,
+        payload,
         {
           headers: {
-            Authorization: `Bearer ${token}`, //  Important
+            ...getHrAuthHeaders(),
+            "Content-Type": "application/json",
           },
         }
       );

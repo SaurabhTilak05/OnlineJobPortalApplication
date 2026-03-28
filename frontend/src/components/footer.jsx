@@ -1,40 +1,44 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
+  FaArrowRight,
+  FaEnvelope,
   FaFacebookF,
-  FaTwitter,
   FaInstagram,
   FaLinkedinIn,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaTwitter,
 } from "react-icons/fa";
 import "./footer.css";
 
 export default function Footer() {
   return (
-    <footer className="footer bg-dark text-white pt-5 pb-3">
+    <footer className="site-footer">
       <div className="container">
-        <div className="row gy-4">
-
-          {/* About Section */}
-          <div className="col-lg-4 col-md-6 col-sm-12">
-            <h5 className="fw-bold mb-3 text-uppercase">QuickStart Career</h5>
-            <p className="small">
-              Your trusted platform for job postings, placements, and career
-              growth. Connecting job seekers with top companies effortlessly.
+        <div className="site-footer-top">
+          <div className="site-footer-brand">
+            <span className="site-footer-kicker">QuickStart Career</span>
+            <h2>Build better career momentum with one trusted platform.</h2>
+            <p>
+              QuickStart Career helps students, recruiters, and administrators
+              stay connected through jobs, applications, interviews, and
+              placement workflows.
             </p>
 
-            {/* Social Icons */}
-            <div className="d-flex gap-3 mt-3 justify-content-md-start justify-content-center">
-              <a href="#" className="text-white fs-5 footer-icon">
+            <div className="site-footer-socials">
+              <a href="#" aria-label="Facebook" className="site-footer-social">
                 <FaFacebookF />
               </a>
-              <a href="#" className="text-white fs-5 footer-icon">
+              <a href="#" aria-label="Twitter" className="site-footer-social">
                 <FaTwitter />
               </a>
               <a
                 href="https://www.instagram.com/saurabh_tilak_061/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white fs-5 footer-icon"
+                aria-label="Instagram"
+                className="site-footer-social"
               >
                 <FaInstagram />
               </a>
@@ -42,79 +46,74 @@ export default function Footer() {
                 href="https://www.linkedin.com/in/saurabh-tilak-502ab6350/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white fs-5 footer-icon"
+                aria-label="LinkedIn"
+                className="site-footer-social"
               >
                 <FaLinkedinIn />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="col-lg-2 col-md-6 col-sm-6">
-            <h6 className="fw-bold mb-3 text-uppercase">Quick Links</h6>
-            <ul className="list-unstyled small">
-              <li className="mb-2">
-                <NavLink className="footer-link" to="/">Home</NavLink>
-              </li>
-              <li className="mb-2">
-                <NavLink className="footer-link" to="/about">About Us</NavLink>
-              </li>
-              <li className="mb-2">
-                <NavLink className="footer-link" to="/contact">Contact</NavLink>
-              </li>
-              <li className="mb-2">
-                <NavLink className="footer-link" to="/signup">Sign Up</NavLink>
-              </li>
-              <li className="mb-2">
-                <NavLink className="footer-link" to="/register">Register</NavLink>
-              </li>
-            </ul>
-          </div>
+          <div className="site-footer-links">
+            <div className="site-footer-column">
+              <h3>Explore</h3>
+              <NavLink className="site-footer-link" to="/">Home</NavLink>
+              <NavLink className="site-footer-link" to="/about">About Us</NavLink>
+              <NavLink className="site-footer-link" to="/contact">Contact</NavLink>
+              <NavLink className="site-footer-link" to="/signup">Sign In</NavLink>
+              <NavLink className="site-footer-link" to="/register">Register</NavLink>
+            </div>
 
-          {/* Contact Info */}
-          <div className="col-lg-4 col-md-6 col-sm-6">
-            <h6 className="fw-bold mb-3 text-uppercase">Contact Info</h6>
-            <p className="small mb-1">
-              <strong>Email:</strong> quickstartcareer01@gmail.com
-            </p>
-            <p className="small mb-1">
-              <strong>Phone:</strong> +91 97653 03776
-            </p>
-            <p className="small">
-              <strong>Address:</strong> 123, Tech Park, Pune, India
-            </p>
-          </div>
-
-          {/* Newsletter */}
-          <div className="col-lg-2 col-md-6 col-sm-12">
-            <h6 className="fw-bold mb-3 text-uppercase">Newsletter</h6>
-            <p className="small mb-2">Subscribe for latest updates</p>
-            <form className="newsletter-form">
-              <div className="mb-2">
-                <input
-                  type="email"
-                  className="form-control form-control-sm"
-                  placeholder="Enter email"
-                  required
-                />
+            <div className="site-footer-column">
+              <h3>Contact</h3>
+              <div className="site-footer-contact-item">
+                <span><FaEnvelope /></span>
+                <div>
+                  <small>Email</small>
+                  <strong>quickstartcareer01@gmail.com</strong>
+                </div>
               </div>
-              <button
-                type="submit"
-                className="btn btn-danger btn-sm w-100 fw-semibold"
-              >
-                Subscribe
-              </button>
-            </form>
+              <div className="site-footer-contact-item">
+                <span><FaPhoneAlt /></span>
+                <div>
+                  <small>Phone</small>
+                  <strong>+91 97653 03776</strong>
+                </div>
+              </div>
+              <div className="site-footer-contact-item">
+                <span><FaMapMarkerAlt /></span>
+                <div>
+                  <small>Address</small>
+                  <strong>123, Tech Park, Pune, India</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="site-footer-column">
+              <h3>Updates</h3>
+              <p className="site-footer-note">
+                Stay connected for the latest placement drives, platform
+                updates, and career opportunities.
+              </p>
+              <form className="site-footer-newsletter">
+                <input type="email" placeholder="Enter your email" required />
+                <button type="submit">
+                  <span>Subscribe</span>
+                  <FaArrowRight />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
-        <hr className="bg-light opacity-25 mt-4" />
-
-        <div className="text-center small">
-          &copy; {new Date().getFullYear()} <strong>QuickStart Career</strong>. All rights reserved. <br />
-          <span className="text-secondary">
+        <div className="site-footer-bottom">
+          <p>
+            Copyright {new Date().getFullYear()} <strong>QuickStart Career</strong>.
+            All rights reserved.
+          </p>
+          <p>
             Developed by <strong>Tilak Saurabh</strong>
-          </span>
+          </p>
         </div>
       </div>
     </footer>

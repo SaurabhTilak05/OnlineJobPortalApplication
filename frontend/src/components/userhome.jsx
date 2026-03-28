@@ -1,28 +1,31 @@
-// src/components/UserProfile.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  FaUser,
+  FaBars,
   FaBriefcase,
-  FaEdit,
   FaClipboardCheck,
+  FaEdit,
+  FaFileAlt,
   FaSignOutAlt,
   FaTachometerAlt,
+  FaTimes,
+  FaUser,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./userhome.css";
 
 export default function UserProfile() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("loading");
   const [studentName, setStudentName] = useState(
     () => localStorage.getItem("username") || "User"
   );
-  const profileMenuRef = useRef();
+  const profileMenuRef = useRef(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
-  // Fetch profile picture (and optional username from server)
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -30,7 +33,7 @@ export default function UserProfile() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        // if server returns a username/name, use it (fallback to localStorage)
+
         if (data.username) {
           setStudentName(data.username);
         } else if (data.name) {
@@ -50,19 +53,20 @@ export default function UserProfile() {
         setProfilePic("none");
       }
     };
+
     if (token) fetchProfile();
   }, [token]);
 
   const navItems = [
-    { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Home" },
-    { to: "view-jobs", icon: <FaBriefcase />, label: "View Jobs" },
-    { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied Jobs" },
+    { to: "user-dashboard", icon: <FaTachometerAlt />, label: "Dashboard" },
+    { to: "view-jobs", icon: <FaBriefcase />, label: "Jobs" },
+    { to: "applied-jobs", icon: <FaClipboardCheck />, label: "Applied" },
   ];
 
   const profileMenu = [
     { to: "view-profile", icon: <FaUser />, label: "View Profile" },
     { to: "update-profile", icon: <FaEdit />, label: "Update Profile" },
-    { to: "upload-resume", icon: <FaBriefcase />, label: "Upload Resume" },
+    { to: "upload-resume", icon: <FaFileAlt />, label: "Upload Resume" },
     { to: "intschedule", icon: <FaClipboardCheck />, label: "My Schedule" },
   ];
 
@@ -71,7 +75,6 @@ export default function UserProfile() {
     navigate("/signup");
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -82,250 +85,164 @@ export default function UserProfile() {
         setProfileMenuOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [profileMenuOpen]);
 
   if (!token) return <h1 className="text-center mt-5">Invalid Access</h1>;
 
-  const renderProfile = (size = 40) => {
+  const renderProfile = (size = 44) => {
     if (profilePic === "loading" || profilePic === "none") {
       return (
         <div
-          className="d-flex justify-content-center align-items-center bg-secondary text-white rounded-circle"
-          style={{ width: size, height: size, border: "2px solid white" }}
+          className="user-shell-avatar-fallback"
+          style={{ width: size, height: size }}
         >
-          <FaUser size={size * 0.6} />
+          <FaUser size={size * 0.46} />
         </div>
       );
     }
+
     return (
       <img
         src={profilePic}
         alt="Profile"
         onError={() => setProfilePic("none")}
-        className="rounded-circle"
-        style={{
-          width: size,
-          height: size,
-          objectFit: "cover",
-          border: "2px solid white",
-        }}
+        className="user-shell-avatar"
+        style={{ width: size, height: size }}
       />
     );
   };
 
-  return (
-    <div style={{ "--user-topnav": "70px" }}>
-      {/* Navbar */}
-      <nav
-        className="navbar shadow-sm fixed-top d-flex justify-content-between align-items-center px-3"
-        style={{
-          height: "var(--user-topnav)",
-          zIndex: 1030,
-          background: "linear-gradient(90deg, #0d6efd, #6610f2)",
-        }}
-      >
-        {/* Left: Logo */}
-        <div className="d-flex align-items-center gap-2">
-          <NavLink
-            to="user-dashboard"
-            className="navbar-brand fw-bold text-white ms-2"
-          >
-            QuickStart <span className="text-warning">Career</span>
-          </NavLink>
-        </div>
+  const closeMobileNav = () => setMobileNavOpen(false);
 
-        {/* Right: Desktop nav + profile */}
-        <div className="d-flex align-items-center gap-2">
-          {/* Desktop Nav Items (only desktop) */}
-          <div className="d-none d-lg-flex align-items-center gap-2">
-            {navItems.map((item, i) => (
+  return (
+    <div className="user-shell">
+      <nav className="user-shell-topbar">
+        <div className="user-shell-topbar-inner">
+          <div className="user-shell-brand-row">
+            <button
+              type="button"
+              className="user-shell-menu-btn d-lg-none"
+              onClick={() => setMobileNavOpen((open) => !open)}
+              aria-label="Toggle navigation"
+            >
+              {mobileNavOpen ? <FaTimes /> : <FaBars />}
+            </button>
+
+            <NavLink to="user-dashboard" className="user-shell-brand">
+              <span className="user-shell-brand-badge">Q</span>
+              <span>
+                QuickStart <span>Career</span>
+              </span>
+            </NavLink>
+          </div>
+
+          <div className="user-shell-nav d-none d-lg-flex">
+            {navItems.map((item) => (
               <NavLink
-                key={i}
+                key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `btn btn-outline-light btn-sm ${
-                    isActive ? "active fw-bold bg-warning text-dark" : ""
-                  }`
+                  `user-shell-nav-link ${isActive ? "active" : ""}`
                 }
               >
-                {item.label}
+                <span className="user-shell-nav-icon">{item.icon}</span>
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </div>
 
-          {/* Profile Dropdown */}
-          <div className="position-relative" ref={profileMenuRef}>
+          <div className="user-shell-topbar-actions" ref={profileMenuRef}>
+            <div className="user-shell-chip d-none d-md-inline-flex">
+              <span>Student Workspace</span>
+            </div>
+
             <button
-              className="btn p-0"
-              onClick={() => setProfileMenuOpen((p) => !p)}
-              style={{ border: "none", background: "transparent" }}
+              className="user-shell-profile-btn"
+              onClick={() => setProfileMenuOpen((prev) => !prev)}
               aria-label="Profile menu"
+              type="button"
             >
-              {renderProfile(40)}
+              {renderProfile(44)}
             </button>
 
             {profileMenuOpen && (
-              <div className="profile-hamburger shadow-lg rounded-3 d-flex flex-column">
-                <div className="header d-flex align-items-center gap-2">
-                  {renderProfile(70)}
-                  {/* username as NavLink -> navigate to view-profile and close menu */}
-                  <NavLink
-                    to="view-profile"
-                    className="username text-white text-decoration-none"
-                    onClick={() => setProfileMenuOpen(false)}
-                  >
-                    {studentName}
-                  </NavLink>
+              <div className="user-shell-profile-menu">
+                <div className="user-shell-profile-menu-head">
+                  {renderProfile(64)}
+                  <div>
+                    <strong>{studentName}</strong>
+                    <span>Student account</span>
+                  </div>
                 </div>
 
-                {/* Mobile menu scrollable */}
-                <div className="menu-list flex-grow-1">
-                  <ul>
-                    {/* All items only in mobile (visible inside dropdown) */}
-                    <div className="d-lg-none">
-                      {navItems.map((item, i) => (
-                        <li key={`nav-${i}`}>
-                          <NavLink
-                            to={item.to}
-                            className="dropdown-item d-flex align-items-center"
-                            onClick={() => setProfileMenuOpen(false)}
-                          >
-                            <span className="me-3 fs-5 text-primary">
-                              {item.icon}
-                            </span>
-                            <span>{item.label}</span>
-                          </NavLink>
-                        </li>
-                      ))}
-                    </div>
-
-                    {profileMenu.map((item, i) => (
-                      <li key={`profile-${i}`}>
-                        <NavLink
-                          to={item.to}
-                          className="dropdown-item d-flex align-items-center"
-                          onClick={() => setProfileMenuOpen(false)}
-                        >
-                          <span className="me-3 fs-5 text-primary">
-                            {item.icon}
-                          </span>
-                          <span>{item.label}</span>
-                        </NavLink>
-                      </li>
+                <div className="user-shell-profile-menu-list">
+                  <div className="d-lg-none">
+                    {navItems.map((item) => (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        className="user-shell-profile-link"
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          closeMobileNav();
+                        }}
+                      >
+                        <span className="user-shell-profile-link-icon">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </NavLink>
                     ))}
-                  </ul>
+                  </div>
+
+                  {profileMenu.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className="user-shell-profile-link"
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      <span className="user-shell-profile-link-icon">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </NavLink>
+                  ))}
                 </div>
 
-                {/* Fixed Logout */}
-                <div className="logout-box bg-light text-center">
-                  <button className="logout-btn" onClick={handleLogout}>
-                    <FaSignOutAlt className="me-2" /> Logout
-                  </button>
-                </div>
+                <button className="user-shell-logout-btn" onClick={handleLogout} type="button">
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
               </div>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Main Content */}
+      {mobileNavOpen && (
+        <>
+          <div className="user-shell-mobile-nav d-lg-none">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `user-shell-mobile-link ${isActive ? "active" : ""}`
+                }
+                onClick={closeMobileNav}
+              >
+                <span className="user-shell-mobile-link-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+          <div className="user-shell-overlay d-lg-none" onClick={closeMobileNav} />
+        </>
+      )}
+
       <main className="user-main">
         <Outlet />
       </main>
-
-      {/* Styles */}
-      <style>{`
-        .user-main {
-          margin-top: 70px;
-          min-height: 100vh;
-          padding: 0;
-          background: #f8f9fa;
-        }
-        .profile-hamburger {
-          position: absolute;
-          right: 0;
-          top: 110%;
-          width: 260px;
-          background: #fff;
-          z-index: 2000;
-          border-radius: 12px;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-          max-height: 70vh;
-          display: flex;
-          flex-direction: column;
-        }
-        .profile-hamburger .header {
-          background: linear-gradient(135deg, #0d6efd, #6610f2);
-          color: #fff;
-          padding: 12px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-weight: bold;
-        }
-        /* username styling */
-        .profile-hamburger .header .username {
-          font-size: 18px;
-          font-weight: 600;
-          color: #fff;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: inline-block;
-          max-width: 140px;
-          cursor: pointer;
-        }
-        .profile-hamburger .menu-list {
-          flex-grow: 1;
-          overflow-y: auto;
-        }
-        .profile-hamburger ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-        }
-        .profile-hamburger li {
-          border-bottom: 1px solid #f1f1f1;
-        }
-        .profile-hamburger li a {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          color: #333;
-          text-decoration: none;
-          border-radius: 8px;
-        }
-        .profile-hamburger li a:hover {
-          background: rgba(13,110,253,0.1);
-          color: #0d6efd;
-        }
-        .profile-hamburger .logout-box {
-          padding: 12px;
-          border-top: 1px solid #eee;
-        }
-        .profile-hamburger .logout-btn {
-          display: block;
-          width: 100%;
-          background: #dc3545;
-          color: #fff;
-          font-weight: bold;
-          border: none;
-          border-radius: 8px;
-          padding: 10px 0;
-        }
-        .profile-hamburger .logout-btn:hover {
-          background: #c82333;
-        }
-
-        /* Ensure desktop nav stays as-is and mobile dropdown only used on small screens */
-        @media (max-width: 991px) {
-          /* on mobile/tablet screens you might want to hide the desktop nav items
-             so users use the dropdown instead - but you already used d-none d-lg-flex */
-        }
-      `}</style>
     </div>
   );
 }

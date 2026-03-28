@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import {
+  FaArrowRight,
+  FaClock,
+  FaEnvelope,
+  FaHeadset,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+} from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Jobservice from "../service/Jobservice.js";
+import "./contact.css";
 
 void motion;
 
@@ -16,7 +25,6 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,7 +33,6 @@ export default function Contact() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // Validate inputs
   const validate = () => {
     let temp = {};
 
@@ -51,7 +58,6 @@ export default function Contact() {
     return Object.keys(temp).length === 0;
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,11 +66,11 @@ export default function Contact() {
 
     try {
       await Jobservice.contactUs(formData);
-      toast.success("✅ Message sent successfully!", { autoClose: 3000 });
+      toast.success("Message sent successfully!", { autoClose: 3000 });
       setFormData({ full_name: "", email: "", message: "" });
     } catch (err) {
       console.error(err);
-      toast.error("❌ Failed to send message. Please try again.", {
+      toast.error("Failed to send message. Please try again.", {
         autoClose: 3000,
       });
     } finally {
@@ -72,7 +78,6 @@ export default function Contact() {
     }
   };
 
-  // Animation variants
   const fadeUp = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
@@ -80,140 +85,153 @@ export default function Contact() {
 
   return (
     <motion.section
-      className="py-5 text-light"
+      className="contact-shell"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeUp}
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(9,9,121,0.9) 35%, rgba(0,212,255,1) 100%)",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-      }}
     >
       <div className="container">
-        <motion.h1
-          className="text-center fw-bold mb-4"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          Contact <span className="text-warning">Us</span>
-        </motion.h1>
-        <p className="lead text-center mb-5">
-          Have questions or need help? Fill out the form below and we’ll get
-          back to you soon.
-        </p>
-
-        <div className="row justify-content-center">
+        <div className="contact-layout">
           <motion.div
-            className="col-md-8"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            className="contact-showcase"
+            initial={{ opacity: 0, x: -32 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.75 }}
           >
-            <div
-              className="card shadow-lg border-0 p-4"
-              style={{
-                borderRadius: "15px",
-                background: "rgba(255, 255, 255, 0.15)",
-                backdropFilter: "blur(10px)",
-              }}
-            >
-              <form onSubmit={handleSubmit}>
-                {/* Full Name */}
-                <div className="mb-3">
-                  <label className="form-label fw-bold text-light">
-                    Full Name
-                  </label>
+            <div className="contact-showcase-card">
+              <span className="contact-kicker">Contact Support</span>
+              <h1>Let&apos;s help you move faster with the right guidance.</h1>
+              <p>
+                Reach out for platform support, placement help, recruiter
+                questions, or account-related assistance. We will get back to
+                you as soon as possible.
+              </p>
+
+              <div className="contact-feature-list">
+                <article className="contact-feature">
+                  <span><FaHeadset /></span>
+                  <div>
+                    <strong>Quick response support</strong>
+                    <p>Share your issue clearly and our team can assist you faster.</p>
+                  </div>
+                </article>
+                <article className="contact-feature">
+                  <span><FaClock /></span>
+                  <div>
+                    <strong>Reliable follow-up</strong>
+                    <p>Your message is captured in the admin panel for direct tracking.</p>
+                  </div>
+                </article>
+              </div>
+
+              <div className="contact-info-grid">
+                <article className="contact-info-card">
+                  <span><FaEnvelope /></span>
+                  <div>
+                    <small>Email</small>
+                    <strong>quickstartcareer01@gmail.com</strong>
+                  </div>
+                </article>
+                <article className="contact-info-card">
+                  <span><FaPhoneAlt /></span>
+                  <div>
+                    <small>Phone</small>
+                    <strong>+91 97653 03776</strong>
+                  </div>
+                </article>
+                <article className="contact-info-card">
+                  <span><FaMapMarkerAlt /></span>
+                  <div>
+                    <small>Support scope</small>
+                    <strong>Students, HR, and admin queries</strong>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="contact-panel"
+            initial={{ opacity: 0, x: 32 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.75 }}
+          >
+            <div className="contact-panel-card">
+              <div className="contact-panel-head">
+                <span className="contact-panel-label">Send a message</span>
+                <h2>Tell us what you need</h2>
+                <p>Fill out the form below and our team will get back to you soon.</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="contact-form">
+                <div className="contact-field">
+                  <label className="contact-label">Full Name</label>
                   <input
                     type="text"
-                    className={`form-control ${
-                      errors.full_name ? "is-invalid" : ""
+                    className={`contact-input ${
+                      errors.full_name ? "contact-input-error" : ""
                     }`}
                     name="full_name"
-                    placeholder="Enter your name"
+                    placeholder="Enter your full name"
                     value={formData.full_name}
                     onChange={handleChange}
                   />
                   {errors.full_name && (
-                    <div className="invalid-feedback">{errors.full_name}</div>
+                    <div className="contact-error">{errors.full_name}</div>
                   )}
                 </div>
 
-                {/* Email */}
-                <div className="mb-3">
-                  <label className="form-label fw-bold text-light">
-                    Email Address
-                  </label>
+                <div className="contact-field">
+                  <label className="contact-label">Email Address</label>
                   <input
                     type="email"
-                    className={`form-control ${
-                      errors.email ? "is-invalid" : ""
+                    className={`contact-input ${
+                      errors.email ? "contact-input-error" : ""
                     }`}
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder="Enter your email address"
                     value={formData.email}
                     onChange={handleChange}
                   />
                   {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
+                    <div className="contact-error">{errors.email}</div>
                   )}
                 </div>
 
-                {/* Message */}
-                <div className="mb-3">
-                  <label className="form-label fw-bold text-light">
-                    Message
-                  </label>
+                <div className="contact-field">
+                  <label className="contact-label">Message</label>
                   <textarea
-                    className={`form-control ${
-                      errors.message ? "is-invalid" : ""
+                    className={`contact-input contact-textarea ${
+                      errors.message ? "contact-input-error" : ""
                     }`}
-                    rows="4"
+                    rows="5"
                     name="message"
-                    placeholder="Write your message..."
+                    placeholder="Write your message here..."
                     value={formData.message}
                     onChange={handleChange}
                   ></textarea>
                   {errors.message && (
-                    <div className="invalid-feedback">{errors.message}</div>
+                    <div className="contact-error">{errors.message}</div>
                   )}
                 </div>
 
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                   type="submit"
-                  className="btn btn-warning w-100 fw-bold"
+                  className="contact-submit-btn"
                   disabled={submitting}
                 >
-                  {submitting ? "Sending..." : "Send Message"}
+                  <span>{submitting ? "Sending..." : "Send Message"}</span>
+                  <FaArrowRight />
                 </motion.button>
               </form>
             </div>
           </motion.div>
         </div>
-
-        {/* Contact Info */}
-        <motion.div
-          className="text-center mt-5"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <p>
-            <strong>Email:</strong> quickstartcareer01@gmail.com
-          </p>
-          <p>
-            <strong>Phone:</strong> +91 97653 03776
-          </p>
-        </motion.div>
       </div>
 
-      {/* Toasts */}
       <ToastContainer position="top-center" theme="colored" />
     </motion.section>
   );

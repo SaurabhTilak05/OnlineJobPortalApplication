@@ -17,6 +17,7 @@ class AdminAuthService {
 
   hrLogin(data) {
     return axios.post("http://localhost:8080/hr/login", data).then((res) => {
+      localStorage.setItem("token", res.data.token);
       localStorage.setItem("hrId", res.data.hr_id);
       localStorage.setItem("role", "hr");
       return res.data;

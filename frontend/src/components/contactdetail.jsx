@@ -1,6 +1,24 @@
 import React, { useEffect, useState } from "react";
+import {
+  FaCalendarAlt,
+  FaEnvelope,
+  FaFilter,
+  FaInbox,
+  FaRegCommentDots,
+  FaUser,
+} from "react-icons/fa";
 import AdminAuthService from "../service/AdminAuthService";
 import "./adminpanel.css";
+import "./contactdetail.css";
+
+const formatDateTime = (value) =>
+  new Date(value).toLocaleString([], {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
 export default function ContactDetails() {
   const [contacts, setContacts] = useState([]);
@@ -42,8 +60,8 @@ export default function ContactDetails() {
   const fromMonthStr = toMonthString(fromYear, fromMonth);
   const toMonthStr = toMonthString(toYear, toMonth);
 
-  const filteredContacts = contacts.filter((c) => {
-    const contactMonth = new Date(c.submitted_at).toISOString().slice(0, 7);
+  const filteredContacts = contacts.filter((contact) => {
+    const contactMonth = new Date(contact.submitted_at).toISOString().slice(0, 7);
     if (fromMonthStr && toMonthStr) return contactMonth >= fromMonthStr && contactMonth <= toMonthStr;
     if (fromMonthStr) return contactMonth >= fromMonthStr;
     if (toMonthStr) return contactMonth <= toMonthStr;
@@ -54,56 +72,130 @@ export default function ContactDetails() {
   const indexOfLastContact = currentPage * contactsPerPage;
   const indexOfFirstContact = indexOfLastContact - contactsPerPage;
   const currentContacts = filteredContacts.slice(indexOfFirstContact, indexOfLastContact);
+  const latestContact = contacts.length
+    ? [...contacts].sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at))[0]
+    : null;
+  const activeFilters = [fromMonth, fromYear, toMonth, toYear].filter(Boolean).length;
+  const uniqueSenders = new Set(contacts.map((contact) => contact.email).filter(Boolean)).size;
 
-  if (loading) return <div className="admin-page"><p className="admin-empty">Loading...</p></div>;
-  if (error) return <div className="admin-page"><p className="admin-empty text-danger">{error}</p></div>;
+  if (loading) {
+    return <div className="admin-page"><p className="admin-empty">Loading...</p></div>;
+  }
+
+  if (error) {
+    return <div className="admin-page"><p className="admin-empty text-danger">{error}</p></div>;
+  }
 
   return (
     <div className="admin-page">
-      <section className="admin-page-header">
-        <div>
+      <section className="admin-page-header contact-page-hero">
+        <div className="contact-page-hero-copy">
           <span className="admin-section-kicker">Messages</span>
-          <h1 className="admin-page-title">Contact submissions</h1>
+          <h1 className="admin-page-title">Contact inbox</h1>
           <p className="admin-page-subtitle">
-            Review messages sent through the platform and filter them by month and year range.
+            Review platform inquiries in a clean admin workspace, filter by date range, and keep every
+            message easy to read and follow up.
           </p>
         </div>
+        <aside className="contact-page-hero-panel">
+          <span className="contact-page-hero-label">Latest message</span>
+          <strong>{latestContact ? latestContact.full_name : "No submissions yet"}</strong>
+          <p>{latestContact ? latestContact.email : "Incoming messages will appear here."}</p>
+          {latestContact && <span className="contact-page-hero-date">{formatDateTime(latestContact.submitted_at)}</span>}
+        </aside>
       </section>
 
-      <section className="admin-surface">
-        <div className="admin-table-toolbar">
-          <div className="d-flex align-items-center gap-2 flex-wrap">
-            <strong>From:</strong>
-            <select className="form-select" value={fromMonth} onChange={(e) => { setFromMonth(e.target.value); setCurrentPage(1); }}>
+      <section className="contact-page-stats">
+        <article className="contact-page-stat-card">
+          <span className="contact-page-stat-icon"><FaInbox /></span>
+          <div>
+            <strong>{contacts.length}</strong>
+            <p>Total messages</p>
+          </div>
+        </article>
+        <article className="contact-page-stat-card">
+          <span className="contact-page-stat-icon"><FaEnvelope /></span>
+          <div>
+            <strong>{uniqueSenders}</strong>
+            <p>Unique senders</p>
+          </div>
+        </article>
+        <article className="contact-page-stat-card">
+          <span className="contact-page-stat-icon"><FaFilter /></span>
+          <div>
+            <strong>{activeFilters}</strong>
+            <p>Active filters</p>
+          </div>
+        </article>
+        <article className="contact-page-stat-card">
+          <span className="contact-page-stat-icon"><FaRegCommentDots /></span>
+          <div>
+            <strong>{filteredContacts.length}</strong>
+            <p>Visible results</p>
+          </div>
+        </article>
+      </section>
+
+      <section className="admin-surface contact-page-surface">
+        <div className="contact-page-toolbar">
+          <div>
+            <h2>Filter messages</h2>
+            <p>Choose a month and year range to narrow the inbox.</p>
+          </div>
+          <div className="contact-page-toolbar-chip">
+            <FaCalendarAlt />
+            <span>Page {Math.min(currentPage, Math.max(totalPages, 1))} of {Math.max(totalPages, 1)}</span>
+          </div>
+        </div>
+
+        <div className="contact-page-filter-grid">
+          <div className="contact-page-filter-field">
+            <label>From month</label>
+            <select className="form-select contact-page-select" value={fromMonth} onChange={(e) => { setFromMonth(e.target.value); setCurrentPage(1); }}>
               <option value="">Month</option>
-              {months.map((m) => <option key={m.value} value={m.value}>{m.name}</option>)}
+              {months.map((month) => <option key={month.value} value={month.value}>{month.name}</option>)}
             </select>
-            <select className="form-select" value={fromYear} onChange={(e) => { setFromYear(e.target.value); setCurrentPage(1); }}>
+          </div>
+          <div className="contact-page-filter-field">
+            <label>From year</label>
+            <select className="form-select contact-page-select" value={fromYear} onChange={(e) => { setFromYear(e.target.value); setCurrentPage(1); }}>
               <option value="">Year</option>
-              {years.map((y) => <option key={y} value={y}>{y}</option>)}
+              {years.map((year) => <option key={year} value={year}>{year}</option>)}
             </select>
-            <strong>To:</strong>
-            <select className="form-select" value={toMonth} onChange={(e) => { setToMonth(e.target.value); setCurrentPage(1); }}>
+          </div>
+          <div className="contact-page-filter-field">
+            <label>To month</label>
+            <select className="form-select contact-page-select" value={toMonth} onChange={(e) => { setToMonth(e.target.value); setCurrentPage(1); }}>
               <option value="">Month</option>
-              {months.map((m) => <option key={m.value} value={m.value}>{m.name}</option>)}
+              {months.map((month) => <option key={month.value} value={month.value}>{month.name}</option>)}
             </select>
-            <select className="form-select" value={toYear} onChange={(e) => { setToYear(e.target.value); setCurrentPage(1); }}>
+          </div>
+          <div className="contact-page-filter-field">
+            <label>To year</label>
+            <select className="form-select contact-page-select" value={toYear} onChange={(e) => { setToYear(e.target.value); setCurrentPage(1); }}>
               <option value="">Year</option>
-              {years.map((y) => <option key={y} value={y}>{y}</option>)}
+              {years.map((year) => <option key={year} value={year}>{year}</option>)}
             </select>
-            {(fromMonth || fromYear || toMonth || toYear) && (
-              <button className="btn admin-btn-secondary" onClick={() => {
-                setFromMonth(""); setFromYear(""); setToMonth(""); setToYear(""); setCurrentPage(1);
-              }}>
-                Clear
-              </button>
-            )}
+          </div>
+          <div className="contact-page-filter-action">
+            <button
+              className="btn admin-btn-secondary contact-page-clear-btn"
+              onClick={() => {
+                setFromMonth("");
+                setFromYear("");
+                setToMonth("");
+                setToYear("");
+                setCurrentPage(1);
+              }}
+            >
+              Clear
+            </button>
           </div>
         </div>
 
         {currentContacts.length > 0 ? (
           <>
-            <div className="admin-card-grid">
+            <div className="admin-card-grid contact-page-card-grid">
               {currentContacts.map((contact) => (
                 <ContactCard key={contact.id || contact.contact_id} contact={contact} />
               ))}
@@ -112,7 +204,7 @@ export default function ContactDetails() {
               <nav className="mt-4">
                 <ul className="pagination justify-content-center admin-pagination">
                   <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                    <button className="page-link" onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>Prev</button>
+                    <button className="page-link" onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}>Prev</button>
                   </li>
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
@@ -120,7 +212,7 @@ export default function ContactDetails() {
                     </li>
                   ))}
                   <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                    <button className="page-link" onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}>Next</button>
+                    <button className="page-link" onClick={() => setCurrentPage((page) => Math.min(page + 1, totalPages))}>Next</button>
                   </li>
                 </ul>
               </nav>
@@ -136,26 +228,48 @@ export default function ContactDetails() {
 
 function ContactCard({ contact }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const previewLength = 80;
+  const previewLength = 140;
+  const message = contact.message || "";
+  const isLongMessage = message.length > previewLength;
 
   return (
-    <article className="admin-contact-card">
-      <h3>{contact.full_name}</h3>
-      <p><strong>Email:</strong> {contact.email}</p>
-      <p>
-        <strong>Message:</strong>{" "}
-        {contact.message.length > previewLength ? (
-          <>
-            {isExpanded ? contact.message : `${contact.message.substring(0, previewLength)}...`}
-            <button className="btn btn-link p-0 ms-2 text-decoration-none" onClick={() => setIsExpanded((prev) => !prev)}>
-              {isExpanded ? "Read Less" : "Read More"}
-            </button>
-          </>
-        ) : (
-          contact.message
-        )}
-      </p>
-      <p><strong>Date & Time:</strong> {new Date(contact.submitted_at).toLocaleString()}</p>
+    <article className="admin-contact-card contact-page-card">
+      <div className="contact-page-card-head">
+        <div className="contact-page-card-user">
+          <span className="contact-page-avatar">{contact.full_name?.charAt(0)?.toUpperCase() || "U"}</span>
+          <div className="contact-page-card-user-copy">
+            <h3>{contact.full_name}</h3>
+            <p>{contact.email}</p>
+          </div>
+        </div>
+        <div className="contact-page-card-date-row">
+          <span className="contact-page-date-chip">{formatDateTime(contact.submitted_at)}</span>
+        </div>
+      </div>
+
+      <div className="contact-page-card-meta">
+        <p><FaUser /> <span>{contact.full_name}</span></p>
+        <p><FaEnvelope /> <span>{contact.email}</span></p>
+      </div>
+
+      <div className="contact-page-message">
+        <strong>Message</strong>
+        <p>
+          {isLongMessage ? (
+            <>
+              {isExpanded ? message : `${message.substring(0, previewLength)}...`}
+              <button
+                className="btn btn-link p-0 ms-2 text-decoration-none contact-page-readmore"
+                onClick={() => setIsExpanded((prev) => !prev)}
+              >
+                {isExpanded ? "Read Less" : "Read More"}
+              </button>
+            </>
+          ) : (
+            message
+          )}
+        </p>
+      </div>
     </article>
   );
 }

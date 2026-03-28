@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FaBuilding, FaEnvelope, FaPhone, FaSearch, FaTrash, FaUsers } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaBuilding,
+  FaEnvelope,
+  FaPhone,
+  FaSearch,
+  FaTrash,
+  FaUserTie,
+  FaUsers,
+} from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HRService from "../service/HrService.js";
 import "./adminpanel.css";
+import "./ViewHR.css";
 
 export default function ViewHR() {
   const [hrList, setHrList] = useState([]);
@@ -46,6 +56,10 @@ export default function ViewHR() {
     hr.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const companyCount = new Set(filteredHRs.map((hr) => hr.company_name)).size;
+  const phoneCount = filteredHRs.filter((hr) => hr.phone).length;
+  const coverageRate = filteredHRs.length ? Math.round((phoneCount / filteredHRs.length) * 100) : 0;
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredHRs.slice(indexOfFirstItem, indexOfLastItem);
@@ -53,38 +67,63 @@ export default function ViewHR() {
 
   return (
     <div className="admin-page">
-      <section className="admin-page-header">
-        <div>
+      <section className="admin-page-header viewhr-hero">
+        <div className="viewhr-hero-copy">
           <span className="admin-section-kicker">HR Directory</span>
-          <h1 className="admin-page-title">All HR accounts</h1>
+          <h1 className="admin-page-title">Manage recruiter accounts from one polished workspace</h1>
           <p className="admin-page-subtitle">
-            Review registered recruiters, confirm company details, and remove outdated accounts when needed.
+            Review recruiter profiles, verify company details, and keep your hiring partner directory clean,
+            trusted, and easy to navigate.
           </p>
+          <div className="viewhr-hero-inline">
+            <span className="viewhr-inline-chip">Active records: {filteredHRs.length}</span>
+            <span className="viewhr-inline-chip">Company reach: {companyCount}</span>
+          </div>
         </div>
-        <div className="admin-chip">
-          <FaUsers />
-          <span>{filteredHRs.length} HRs</span>
-        </div>
+        <aside className="viewhr-hero-panel">
+          <div className="viewhr-hero-panel-top">
+            <span className="viewhr-panel-label">Directory health</span>
+            <strong>{coverageRate}%</strong>
+          </div>
+          <p>Profiles with direct phone contact available for quick admin follow-up.</p>
+          <div className="viewhr-panel-microstats">
+            <div>
+              <span>Recruiters</span>
+              <strong>{filteredHRs.length}</strong>
+            </div>
+            <div>
+              <span>Companies</span>
+              <strong>{companyCount}</strong>
+            </div>
+          </div>
+        </aside>
       </section>
 
-      <section className="admin-card-grid admin-compact-stats">
-        <article className="admin-info-card admin-summary-card">
+      <section className="admin-card-grid admin-compact-stats viewhr-metrics">
+        <article className="admin-info-card admin-summary-card viewhr-metric-card">
           <span className="admin-summary-icon"><FaUsers /></span>
           <div>
             <h3>{filteredHRs.length}</h3>
             <p>Visible recruiters</p>
           </div>
         </article>
-        <article className="admin-info-card admin-summary-card">
+        <article className="admin-info-card admin-summary-card viewhr-metric-card">
           <span className="admin-summary-icon"><FaBuilding /></span>
           <div>
-            <h3>{new Set(filteredHRs.map((hr) => hr.company_name)).size}</h3>
+            <h3>{companyCount}</h3>
             <p>Companies connected</p>
+          </div>
+        </article>
+        <article className="admin-info-card admin-summary-card viewhr-metric-card">
+          <span className="admin-summary-icon"><FaPhone /></span>
+          <div>
+            <h3>{phoneCount}</h3>
+            <p>Profiles with phone numbers</p>
           </div>
         </article>
       </section>
 
-      <section className="admin-surface admin-table-wrap">
+      <section className="admin-surface admin-table-wrap viewhr-directory-shell">
         <div className="admin-table-toolbar">
           <div className="admin-search-wrap">
             <FaSearch />
@@ -99,6 +138,10 @@ export default function ViewHR() {
               }}
             />
           </div>
+          <div className="viewhr-toolbar-note">
+            <FaUserTie />
+            <span>Page {currentPage} of {Math.max(totalPages, 1)}</span>
+          </div>
         </div>
 
         {loading && <p className="admin-empty">Loading...</p>}
@@ -107,7 +150,7 @@ export default function ViewHR() {
         {!loading && !error && currentItems.length > 0 && (
           <>
             <div className="table-responsive d-none d-lg-block">
-              <table className="table admin-table align-middle">
+              <table className="table admin-table align-middle viewhr-table">
                 <thead>
                   <tr>
                     <th>HR</th>
@@ -129,11 +172,13 @@ export default function ViewHR() {
                           </div>
                         </div>
                       </td>
-                      <td>{hr.company_name}</td>
-                      <td>{hr.email}</td>
-                      <td>{hr.phone}</td>
                       <td>
-                        <button className="btn admin-btn-danger" onClick={() => deleteHR(hr.hr_id)}>
+                        <span className="viewhr-company-pill">{hr.company_name}</span>
+                      </td>
+                      <td>{hr.email}</td>
+                      <td>{hr.phone || "Not shared"}</td>
+                      <td>
+                        <button className="btn admin-btn-danger viewhr-delete-btn" onClick={() => deleteHR(hr.hr_id)}>
                           <FaTrash className="me-2" />
                           Delete
                         </button>
@@ -146,7 +191,7 @@ export default function ViewHR() {
 
             <div className="admin-card-grid d-lg-none">
               {currentItems.map((hr) => (
-                <article key={hr.hr_id} className="admin-info-card admin-hr-card">
+                <article key={hr.hr_id} className="admin-info-card admin-hr-card viewhr-mobile-card">
                   <div className="admin-hr-card-head">
                     <div className="admin-row-user">
                       <div className="admin-avatar">{hr.hr_name.charAt(0).toUpperCase()}</div>
@@ -159,10 +204,14 @@ export default function ViewHR() {
                       <FaTrash />
                     </button>
                   </div>
+                  <div className="viewhr-mobile-company">
+                    <span>{hr.company_name}</span>
+                    <FaArrowRight />
+                  </div>
                   <div className="admin-hr-meta">
                     <p><FaBuilding /> <span>{hr.company_name}</span></p>
                     <p><FaEnvelope /> <span>{hr.email}</span></p>
-                    <p><FaPhone /> <span>{hr.phone}</span></p>
+                    <p><FaPhone /> <span>{hr.phone || "Not shared"}</span></p>
                   </div>
                 </article>
               ))}

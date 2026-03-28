@@ -27,6 +27,13 @@ class UserJobservice {
       headers: { Authorization: `Bearer ${token}` },
     });
   }
+
+  getAppliedJobs(seekerId) {
+    const token = localStorage.getItem("token");
+    return axios.get(`http://localhost:8080/appliedJobs/${seekerId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
 }
 
 export default new UserJobservice();
